@@ -138,7 +138,7 @@ def fetchMaskiner(self):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -156,6 +156,7 @@ delagare = ttk.Frame(tabControl)
 tabControl.add(home, text='Home')
 tabControl.add(delagare, text='Delägare')
 tabControl.grid(column=0, row=0)
+
 
 #variables
 
@@ -218,49 +219,68 @@ LbMaskiner.config(yscrollcommand=ScbDMaskiner.set)
 
 #frames
 
+#Tk.grid_rowconfigure(0, weight=1) # this needed to be added
+#Tk.grid_columnconfigure(0, weight=1) # as did this
+
+#delagare.columnconfigure(0, weight=1)
+delagare.columnconfigure(1, weight=1)
+delagare.rowconfigure(0, weight=1)
+
+frame1 = Frame(delagare, bg = "red")
+frame1.grid(row = 0, column = 0, sticky = NW)
+frame2= Frame(delagare, bg = "blue")
+frame2.grid(row = 1, column =0, sticky = NW)
+frame3 = Frame(delagare, bg="yellow")
+frame3.grid(row = 0, column =1, rowspan = 2, sticky = "nswe")
+frame3.grid_rowconfigure(0, weight=1)
+frame3.grid_columnconfigure(1, weight=1)
 #frameDelagare = Frame(delagare, height = 145, bg = "red")
 #frameDelagare.grid(row = 2, column = 3)
 
+LbDelagaresMaskiner = Listbox(frame2, width = 45)
+LbDelagaresMaskiner.grid(row = 0, column = 0)
+#LbDelagaresMaskiner.bind('<<ListboxSelect>>', fetchMaskiner)
+
 #sida delägare
 
-lblMedlemsnummer = Label(delagare, text = "Medlemsnr.")
+lblMedlemsnummer = Label(frame1, text = "Medlemsnr.")
 lblMedlemsnummer.grid(row = 1, column = 0, sticky=W)
-txtMedlemsnummerDelagare = Text(delagare, width = 5, height=0.1)
+txtMedlemsnummerDelagare = Text(frame1, width = 5, height=0.1)
 txtMedlemsnummerDelagare.grid(row = 1, column =1, sticky = W)
 
-lblForetag = Label(delagare, text = "Företag")
+lblForetag = Label(frame1, text = "Företag")
 lblForetag.grid(row = 2, column = 0, sticky=W)
-txtForetag = Text(delagare, width = 25, height=0.1)
+txtForetag = Text(frame1, width = 25, height=0.1)
 txtForetag.grid(row = 2, column =1, sticky = W)
 
-lblFornamn = Label(delagare, text = "Förnamn")
+lblFornamn = Label(frame1, text = "Förnamn")
 lblFornamn.grid(row = 3, column = 0, sticky=W)
-txtFornamn = Text(delagare, width = 25, height=0.1)
+txtFornamn = Text(frame1, width = 25, height=0.1)
 txtFornamn.grid(row = 3, column =1, sticky = W)
 
-lblEfternamn = Label(delagare, text = "Efternamn")
+lblEfternamn = Label(frame1, text = "Efternamn")
 lblEfternamn.grid(row = 4, column = 0, sticky=W)
-txtEfternamn = Text(delagare, width = 25, height=0.1)
+txtEfternamn = Text(frame1, width = 25, height=0.1)
 txtEfternamn.grid(row = 4, column =1, sticky = W)
 
-lblAdress = Label(delagare, text = "Adress")
+lblAdress = Label(frame1, text = "Adress")
 lblAdress.grid(row = 5, column = 0, sticky=W)
-txtAdress = Text(delagare, width = 25, height=0.1)
+txtAdress = Text(frame1, width = 25, height=0.1)
 txtAdress.grid(row = 5, column =1, sticky = W)
 
-lblPostnummer = Label(delagare, text = "Postnummer")
+lblPostnummer = Label(frame1, text = "Postnummer")
 lblPostnummer.grid(row = 6, column = 0, sticky=W)
-txtPostnummer = Text(delagare, width = 25, height=0.1)
+txtPostnummer = Text(frame1, width = 25, height=0.1)
 txtPostnummer.grid(row = 6, column =1, sticky = W)
 
-lblPostadress = Label(delagare, text = "Ort")
+lblPostadress = Label(frame1, text = "Ort")
 lblPostadress.grid(row = 7, column = 0, sticky=W)
-txtPostadress = Text(delagare, width = 25, height=0.1)
+txtPostadress = Text(frame1, width = 25, height=0.1)
 txtPostadress.grid(row = 7, column =1, sticky = W)
 
-lblTelefon = Label(delagare, text = "Telefon")
+lblTelefon = Label(frame1, text = "Telefon")
 lblTelefon.grid(row = 8, column = 0, sticky=W)
-txtTelefon = Text(delagare, width = 25, height=0.1)
+txtTelefon = Text(frame1, width = 25, height=0.1)
 txtTelefon.grid(row = 8, column =1, sticky = W)
 
 
