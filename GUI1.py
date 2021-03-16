@@ -146,7 +146,7 @@ cursor = db.cursor()
 # skapar och namnger fönster samt bestämmer storlek på fönstret
 root = Tk()
 root.title("T-schakts delägarregister")
-root.geometry("1250x500")
+root.geometry("1250x550")
  
 #tabs?#
 
@@ -225,16 +225,16 @@ delagare.rowconfigure(0, weight=1)
 frameDelagare = Frame(delagare)
 frameDelagare.grid(row = 0, column = 0, sticky = NW)
 frameMaskiner= Frame(delagare)
-frameMaskiner.grid(row = 1, column =0, sticky = NW)
+frameMaskiner.grid(row = 1, column =0, sticky = NSEW)
 frameMaskininfo = Frame(delagare)
-frameMaskininfo.grid(row = 0, column =1, rowspan = 2, sticky = "nswe")
+frameMaskininfo.grid(row = 0, column =1, rowspan = 2, sticky = NSEW)
 frameMaskininfo.grid_rowconfigure(0, weight=1)
 frameMaskininfo.grid_columnconfigure(1, weight=1)
 
 
 #Listbox, maskiner tillhörande delägare
 LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45)
-LbDelagaresMaskiner.grid(row = 0, column = 0, sticky="nwse")
+LbDelagaresMaskiner.grid(row = 0, column = 0, sticky=NSEW)
 LbDelagaresMaskiner.grid_rowconfigure(1, weight=1)
 LbDelagaresMaskiner.grid_columnconfigure(0, weight=1)
 
@@ -395,6 +395,34 @@ lblMaskinperiod = Label(frameMaskininfo, text="Period")
 lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0))
 txtMaskinperiod=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinperiod.grid(column=1, row=20, sticky=W, padx=(10,0))
+
+lblMaskinarsbelopp = Label(frameMaskininfo, text="Årsbelopp")
+lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0))
+txtMaskinarsbelopp=Text(frameMaskininfo, width = 20, height=0.1)
+txtMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
+
+#Buttons
+
+btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation")
+btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
+
+btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration")
+btnMiljodeklaration.grid(column=1, row=22, sticky=W, padx=(10,0), pady=(20,0))
+
+btnHistorik=Button(frameMaskininfo, text="Historik")
+btnHistorik.grid(column=6, row=0, sticky=W, padx=(10,0))
+
+btnLaggtillmaskin=Button(frameMaskininfo, text="Lägg till ny")
+btnLaggtillmaskin.grid(column=4, row=22, sticky=W, pady=(20,0))
+btnAndramaskin=Button(frameMaskininfo, text="Ändra")
+btnAndramaskin.grid(column=4, row=22,sticky=E, pady=(20,0))
+btnBytmaskin=Button(frameMaskininfo, text="Byt maskin")
+btnBytmaskin.grid(column=5, row=22, sticky=W, padx=(10,0), pady=(20,0))
+btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin")
+btnTabortmaskin.grid(column=5, row=22, sticky=E, pady=(20,0))
+
+
+
 #--------------------
 
 lblMaskinmiljostatus = Label(frameMaskininfo, text="Miljöstatus")
@@ -441,10 +469,7 @@ lblMaskinbild = Label(frameMaskininfo, text="Maskinbild")
 lblMaskinbild.grid(column=2, row=9, sticky = W, padx=(10,0))
 #Lägg till vad man nu än använder för bilder här
 
-lblMaskinarsbelopp = Label(frameMaskininfo, text="Årsbelopp")
-lblMaskinarsbelopp.grid(column=2, row=19, sticky = W, padx=(10,0))
-txtMaskinarsbelopp=Text(frameMaskininfo, width = 20, height=0.1)
-txtMaskinarsbelopp.grid(column=3, row=19, sticky=W, padx=(10,0))
+
 #------------------------
 
 lblMaskinbransle = Label(frameMaskininfo, text="Bränsle")
@@ -493,6 +518,8 @@ lblMaskinreferens.grid(column=4, row=9, sticky = W, padx=(10,0))
 #Listbox
 lblMaskintillbehor = Label(frameMaskininfo, text="Tillbehör")
 lblMaskintillbehor.grid(column=4, row=10, sticky = W, padx=(10,0))
+lbMaskintillbehor=Listbox(frameMaskininfo)
+lbMaskintillbehor.grid(column=4, row=11, rowspan=11, columnspan=2,sticky=NSEW, padx=(10,0))
 
 
 
