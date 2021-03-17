@@ -318,7 +318,8 @@ def nyMaskin():
      lbMaskintillbehor = Listbox(nyMaskin)
      lbMaskintillbehor.grid(column=4, row=11, columnspan=2, rowspan=10, sticky=NSEW, padx=(10,0), pady=(5,5))
      #txtMaskintillbehor.bind('<Return>', lambda x=None: lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end'))
-     txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
+     txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
+     #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
      
      
 
