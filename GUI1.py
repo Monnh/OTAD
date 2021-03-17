@@ -1,6 +1,7 @@
 # importerar Tkinter, PIL och MySQL Connector
 from tkinter import *
 from tkinter import ttk
+from PIL import ImageTk,Image
 import PIL
 import mysql.connector
 
@@ -138,7 +139,7 @@ def fetchMaskiner(self):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -146,7 +147,7 @@ cursor = db.cursor()
 # skapar och namnger fönster samt bestämmer storlek på fönstret
 root = Tk()
 root.title("T-schakts delägarregister")
-root.geometry("1250x550")
+root.geometry("1280x750")
  
 #tabs?#
 
@@ -223,181 +224,181 @@ delagare.columnconfigure(1, weight=1)
 delagare.rowconfigure(0, weight=1)
 
 frameDelagare = Frame(delagare)
-frameDelagare.grid(row = 0, column = 0, sticky = NW)
+frameDelagare.grid(row = 0, column = 0, sticky = NW, padx=(10,0), pady=(10,0))
 frameMaskiner= Frame(delagare)
-frameMaskiner.grid(row = 1, column =0, sticky = NSEW)
+frameMaskiner.grid(row = 1, column =0, sticky = NSEW, padx=(10,0), pady=(10,0))
 frameMaskininfo = Frame(delagare)
-frameMaskininfo.grid(row = 0, column =1, rowspan = 2, sticky = NSEW)
+frameMaskininfo.grid(row = 0, column =1, rowspan = 2, sticky = NSEW, pady=(10,0))
 frameMaskininfo.grid_rowconfigure(0, weight=1)
 frameMaskininfo.grid_columnconfigure(1, weight=1)
 
 
 #Listbox, maskiner tillhörande delägare
-LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45)
-LbDelagaresMaskiner.grid(row = 0, column = 0, sticky=NSEW)
+LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45, height = 25)
+LbDelagaresMaskiner.grid(row = 0, column = 0)
 LbDelagaresMaskiner.grid_rowconfigure(1, weight=1)
 LbDelagaresMaskiner.grid_columnconfigure(0, weight=1)
 
 #Delägareinfo
 
 lblMedlemsnummer = Label(frameDelagare, text = "Medlemsnr.")
-lblMedlemsnummer.grid(row = 1, column = 0, sticky=W)
+lblMedlemsnummer.grid(row = 1, column = 0, sticky=W, pady=(0,8))
 txtMedlemsnummerDelagare = Text(frameDelagare, width = 5, height=0.1)
 txtMedlemsnummerDelagare.grid(row = 1, column =1, sticky = W )
 
 lblForetag = Label(frameDelagare, text = "Företag")
-lblForetag.grid(row = 2, column = 0, sticky=W)
+lblForetag.grid(row = 2, column = 0, sticky=W, pady=(0,8))
 txtForetag = Text(frameDelagare, width = 25, height=0.1)
 txtForetag.grid(row = 2, column =1, sticky = W)
 
 lblFornamn = Label(frameDelagare, text = "Förnamn")
-lblFornamn.grid(row = 3, column = 0, sticky=W)
+lblFornamn.grid(row = 3, column = 0, sticky=W, pady=(0,8))
 txtFornamn = Text(frameDelagare, width = 25, height=0.1)
 txtFornamn.grid(row = 3, column =1, sticky = W)
 
 lblEfternamn = Label(frameDelagare, text = "Efternamn")
-lblEfternamn.grid(row = 4, column = 0, sticky=W)
+lblEfternamn.grid(row = 4, column = 0, sticky=W, pady=(0,8))
 txtEfternamn = Text(frameDelagare, width = 25, height=0.1)
 txtEfternamn.grid(row = 4, column =1, sticky = W)
 
 lblAdress = Label(frameDelagare, text = "Adress")
-lblAdress.grid(row = 5, column = 0, sticky=W)
+lblAdress.grid(row = 5, column = 0, sticky=W, pady=(0,8))
 txtAdress = Text(frameDelagare, width = 25, height=0.1)
 txtAdress.grid(row = 5, column =1, sticky = W)
 
 lblPostnummer = Label(frameDelagare, text = "Postnummer")
-lblPostnummer.grid(row = 6, column = 0, sticky=W)
+lblPostnummer.grid(row = 6, column = 0, sticky=W, pady=(0,8))
 txtPostnummer = Text(frameDelagare, width = 25, height=0.1)
 txtPostnummer.grid(row = 6, column =1, sticky = W)
 
 lblPostadress = Label(frameDelagare, text = "Ort")
-lblPostadress.grid(row = 7, column = 0, sticky=W)
+lblPostadress.grid(row = 7, column = 0, sticky=W, pady=(0,8))
 txtPostadress = Text(frameDelagare, width = 25, height=0.1)
 txtPostadress.grid(row = 7, column =1, sticky = W)
 
 lblTelefon = Label(frameDelagare, text = "Telefon")
-lblTelefon.grid(row = 8, column = 0, sticky=W)
+lblTelefon.grid(row = 8, column = 0, sticky=W, pady=(0,8))
 txtTelefon = Text(frameDelagare, width = 25, height=0.1)
 txtTelefon.grid(row = 8, column =1, sticky = W)
 
 #Maskininfo
 
 lblMaskinnummermaskininfo = Label(frameMaskininfo, text= "Maskinnummer")
-lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0))
+lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinnummermaskininfo = Text(frameMaskininfo, width = 5, height=0.1)
 txtMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0))
 
 lblMaskinbeteckning = Label(frameMaskininfo, text="Beteckning")
-lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0))
+lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinbeteckning = Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinbeteckning.grid(column=1, row=1, sticky = W, padx=(10,0))
 
 
 lblMaskinme_klass = Label(frameMaskininfo, text="ME-Klass")
-lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0))
+lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinme_klass = Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0))
 
 
 lblMaskinmotorfabrikat = Label(frameMaskininfo, text="Motorfabrikat")
-lblMaskinmotorfabrikat.grid(column=0, row=3, sticky = W, padx=(10,0))
+lblMaskinmotorfabrikat.grid(column=0, row=3, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinmotorfabrikat = Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinmotorfabrikat.grid(column=1, row=3, sticky=W, padx=(10,0))
 
 
 lblMaskinmotortyp = Label(frameMaskininfo, text="Motortyp")
-lblMaskinmotortyp.grid(column=0, row=4, sticky = W, padx=(10,0))
+lblMaskinmotortyp.grid(column=0, row=4, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinmotortyp=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinmotortyp.grid(column=1, row=4, sticky=W, padx=(10,0))
 
 
 lblMaskinmotor = Label(frameMaskininfo, text="Motor")
-lblMaskinmotor.grid(column=0, row=5, sticky = W, padx=(10,0))
+lblMaskinmotor.grid(column=0, row=5, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinmotor = Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinmotor.grid(column=1, row=5, sticky=W, padx=(10,0))
 
 
 lblMaskinvaxellada = Label(frameMaskininfo, text="Växellåda")
-lblMaskinvaxellada.grid(column=0, row=6, sticky = W, padx=(10,0))
+lblMaskinvaxellada.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinvaxellada=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinvaxellada.grid(column=1, row=6, sticky=W, padx=(10,0))
 
 
 lblMaskinhydraulsystem = Label(frameMaskininfo, text="Hydraulsystem")
-lblMaskinhydraulsystem.grid(column=0, row=7, sticky = W, padx=(10,0))
+lblMaskinhydraulsystem.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinhydraulsystem=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinhydraulsystem.grid(column=1, row=7, sticky=W, padx=(10,0))
 
 
 lblMaskinkylvatska = Label(frameMaskininfo, text="Kylvätska")
-lblMaskinkylvatska.grid(column=0, row=8, sticky = W, padx=(10,0))
+lblMaskinkylvatska.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinkylvatska=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinkylvatska.grid(column=1, row=8, sticky=W, padx=(10,0))
 
 
 lblMaskinmotoreffekt = Label(frameMaskininfo, text="Motoreffekt/KW")
-lblMaskinmotoreffekt.grid(column=0, row=9, sticky = W, padx=(10,0))
+lblMaskinmotoreffekt.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinmotoreffekt=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinmotoreffekt.grid(column=1, row=9, sticky=W, padx=(10,0))
 
 lblMaskinmotorvarmare = Label(frameMaskininfo, text="Motorvärmare")
-lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0))
+lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinmotorvarmare=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinmotorvarmare.grid(column=1, row=10, sticky=W, padx=(10,0))
 
 lblMaskinkatalysator = Label(frameMaskininfo, text="Katalysator")
-lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0))
+lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinkatalysator=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinkatalysator.grid(column=1,row=11, sticky=W, padx=(10,0))
 
 lblMaskinpartikelfilter = Label(frameMaskininfo, text="Partikelfilte")
-lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0))
+lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinpartikelfilter=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinpartikelfilter.grid(column=1,row=12, sticky=W, padx=(10,0))
 
 lblMaskinvattenbaseradlack = Label(frameMaskininfo, text="Vattenbaserad lack")
-lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0))
+lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinvattenbaseradlack=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinvattenbaseradlack.grid(column=1, row=13, sticky=W, padx=(10,0))
 
 lblMaskinkylmedia = Label(frameMaskininfo, text="Kylmedia")
-lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0))
+lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinkylmedia=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinkylmedia.grid(column=1, row=14, sticky=W, padx=(10,0))
 
 lblMaskinbullernivautv = Label(frameMaskininfo, text="Bullernivå utvändigt")
-lblMaskinbullernivautv.grid(column=0, row=15, sticky = W, padx=(10,0))
+lblMaskinbullernivautv.grid(column=0, row=15, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinbullernivautv=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinbullernivautv.grid(column=1, row=15, sticky=W, padx=(10,0))
 
 lblMaskinbullernivainv = Label(frameMaskininfo, text="Bullernivå invändigt")
-lblMaskinbullernivainv.grid(column=0, row=16, sticky = W, padx=(10,0))
+lblMaskinbullernivainv.grid(column=0, row=16, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinbullernivainv=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinbullernivainv.grid(column=1, row=16, sticky=W, padx=(10,0))
 
 lblMaskinsmorjfett = Label(frameMaskininfo, text="Smörjfett")
-lblMaskinsmorjfett.grid(column=0, row=17, sticky = W, padx=(10,0))
+lblMaskinsmorjfett.grid(column=0, row=17, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinsmorjfett=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinsmorjfett.grid(column=1, row=17, sticky=W, padx=(10,0))
 
 lblMaskinBatterityp = Label(frameMaskininfo, text="Batterityp")
-lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0))
+lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinBatterityp=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
 
+#checkbox
 lblMaskinKollektivforsakring = Label(frameMaskininfo, text="Kollektiv försäkring")
-lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0))
-#Byt till checkbox här
-txtmaskinkollektivforsakring=Text(frameMaskininfo, width = 20, height=0.1)
-txtmaskinkollektivforsakring.grid(column=1, row=19, padx=(10,0))
+lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0), pady=(0,8))
+cbMaskinKollektivforsakring = Checkbutton(frameMaskininfo)
+cbMaskinKollektivforsakring.grid(column = 1, row = 19, sticky = W, padx=(5,0))
 
 lblMaskinperiod = Label(frameMaskininfo, text="Period")
-lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0))
+lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinperiod=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinperiod.grid(column=1, row=20, sticky=W, padx=(10,0))
 
 lblMaskinarsbelopp = Label(frameMaskininfo, text="Årsbelopp")
-lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0))
+lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
 txtMaskinarsbelopp=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
 
@@ -466,9 +467,14 @@ txtMaskinkylvatskavolym=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
 
 lblMaskinbild = Label(frameMaskininfo, text="Maskinbild")
-lblMaskinbild.grid(column=2, row=9, sticky = W, padx=(10,0))
-#Lägg till vad man nu än använder för bilder här
-
+lblMaskinbild.grid(column=2, row=10, sticky = W, padx=(10,0))
+#Bild
+img = ImageTk.PhotoImage(Image.open("c:/filer/OTAD/OTAD/1.jpg"))  
+img = img.resize((50, 50), Image. ANTIALIAS)
+#root.create_image(20, 20, anchor=NW, image=img)  
+img_label = Label(frameMaskininfo, image=img)
+img_label.image = img
+img_label.grid(row=12, column=2, rowspan =2, columnspan =10)
 
 #------------------------
 
@@ -490,9 +496,14 @@ txtMaskindimension.grid(column=5, row=2, sticky=W, padx=(10,0))
 #Checkbox
 lblMaskinregummerbara = Label(frameMaskininfo, text="Regummerbara")
 lblMaskinregummerbara.grid(column=4, row=3, sticky = W, padx=(10,0))
+cbMaskinregummerbara = Checkbutton(frameMaskininfo)
+cbMaskinregummerbara.grid(column = 5, row = 3, sticky = W, padx=(5,0))
+
 #Checkbox
 lblMaskinregummerade = Label(frameMaskininfo, text="Regummerade")
 lblMaskinregummerade.grid(column=4, row=4, sticky = W, padx=(10,0))
+cbMaskinregummerade = Checkbutton(frameMaskininfo)
+cbMaskinregummerade.grid(column = 5, row = 4, sticky = W, padx=(5,0))
 
 lblMaskingasolanlaggning = Label(frameMaskininfo, text="Gasolanläggning")
 lblMaskingasolanlaggning.grid(column=4, row=5, sticky = W, padx=(10,0))
@@ -507,14 +518,19 @@ txtMaskinSaneringsvatska.grid(column=5, row=6, sticky=W, padx=(10,0))
 #Checkbox
 lblMaskininsattserlagd = Label(frameMaskininfo, text="Maskininsats erlagd")
 lblMaskininsattserlagd.grid(column=4, row=7, sticky = W, padx=(10,0))
+cbMaskininsatserlagd = Checkbutton(frameMaskininfo)
+cbMaskininsatserlagd.grid(column = 5, row = 7, sticky = W, padx=(5,0))
 
-#Listbox?
 lblMaskinforare = Label(frameMaskininfo, text="Förare")
 lblMaskinforare.grid(column=4, row=8, sticky = W, padx=(10,0))
+txtMaskinforare=Text(frameMaskininfo, width = 20, height=0.1)
+txtMaskinforare.grid(column=5, row=8, sticky=W, padx=(10,0))
 
-#Listbox
 lblMaskinreferens = Label(frameMaskininfo, text="Referensjobb")
 lblMaskinreferens.grid(column=4, row=9, sticky = W, padx=(10,0))
+txtMaskinreferens=Text(frameMaskininfo, width = 20, height=0.1)
+txtMaskinreferens.grid(column=5, row=9, sticky=W, padx=(10,0))
+
 #Listbox
 lblMaskintillbehor = Label(frameMaskininfo, text="Tillbehör")
 lblMaskintillbehor.grid(column=4, row=10, sticky = W, padx=(10,0))
