@@ -1113,7 +1113,7 @@ def fetchMaskiner(self):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -1447,11 +1447,11 @@ lblMaskinbild = Label(frameMaskininfo, text="Maskinbild")
 lblMaskinbild.grid(column=2, row=10, sticky = W, padx=(10,0))
 #Bild
 
-#img = Image.open("1.jpg")  
-#img = img.resize((295, 295), Image. ANTIALIAS)
-#img2 = ImageTk.PhotoImage(img)
-#img_label = Label(frameMaskininfo, image=img2)
-#img_label.grid(row=11, column=2, rowspan =10, columnspan =2, sticky = NW, padx=(10,0))
+img = Image.open("1.jpg")  
+img = img.resize((295, 295), Image. ANTIALIAS)
+img2 = ImageTk.PhotoImage(img)
+img_label = Label(frameMaskininfo, image=img2)
+img_label.grid(row=11, column=2, rowspan =10, columnspan =2, sticky = NW, padx=(10,0))
 
 
 #------------------------
