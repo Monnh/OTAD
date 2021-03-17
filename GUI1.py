@@ -7,12 +7,732 @@ import mysql.connector
 
 #funktioner
 
-def bytFlik():
+def fyllMaskinInfo(self):
+     global maskinnummer
+
+     selectedMaskin = LbMaskiner.get(LbMaskiner.curselection())
+     stringSelectedMaskin = str(selectedMaskin[0])
+     maskinnummer = "".join(stringSelectedMaskin)
+     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     maskinInfo = cursor.fetchone()
+     maskinInfo = list(maskinInfo)
+     
+     try:
+          txtMaskinnummermaskininfo.config(state=NORMAL)
+          txtMaskinnummermaskininfo.delete('1.0', 'end')
+          txtMaskinnummermaskininfo.insert('end', maskinInfo[0])
+          txtMaskinnummermaskininfo.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinbeteckning.config(state=NORMAL)
+          txtMaskinbeteckning.delete('1.0', 'end')
+          txtMaskinbeteckning.insert('end', maskinInfo[1])
+          txtMaskinbeteckning.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinme_klass.config(state=NORMAL)
+          txtMaskinme_klass.delete('1.0', 'end')
+          txtMaskinme_klass.insert('end', maskinInfo[2])
+          txtMaskinme_klass.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinmotorfabrikat.config(state=NORMAL)
+          txtMaskinmotorfabrikat.delete('1.0', 'end')
+          txtMaskinmotorfabrikat.insert('end', maskinInfo[8])
+          txtMaskinmotorfabrikat.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmotortyp.config(state=NORMAL)
+          txtMaskinmotortyp.delete('1.0', 'end')
+          txtMaskinmotortyp.insert('end', maskinInfo[9])
+          txtMaskinmotortyp.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmotor.config(state=NORMAL)
+          txtMaskinmotor.delete('1.0', 'end')
+          txtMaskinmotor.insert('end', maskinInfo[16])
+          txtMaskinmotor.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinvaxellada.config(state=NORMAL)
+          txtMaskinvaxellada.delete('1.0', 'end')
+          txtMaskinvaxellada.insert('end', maskinInfo[18])
+          txtMaskinvaxellada.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinhydraulsystem.config(state=NORMAL)
+          txtMaskinhydraulsystem.delete('1.0', 'end')
+          txtMaskinhydraulsystem.insert('end', maskinInfo[20])
+          txtMaskinhydraulsystem.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinkylvatska.config(state=NORMAL)
+          txtMaskinkylvatska.delete('1.0', 'end')
+          txtMaskinkylvatska.insert('end', maskinInfo[33])
+          txtMaskinkylvatska.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinmotoreffekt.config(state=NORMAL)
+          txtMaskinmotoreffekt.delete('1.0', 'end')
+          txtMaskinmotoreffekt.insert('end', maskinInfo[10])
+          txtMaskinmotoreffekt.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmotorvarmare.config(state=NORMAL)
+          txtMaskinmotorvarmare.delete('1.0', 'end')
+          txtMaskinmotorvarmare.insert('end', maskinInfo[12])
+          txtMaskinmotorvarmare.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinkatalysator.config(state=NORMAL)
+          txtMaskinkatalysator.delete('1.0', 'end')
+          txtMaskinkatalysator.insert('end', maskinInfo[14])
+          txtMaskinkatalysator.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinpartikelfilter.config(state=NORMAL)
+          txtMaskinpartikelfilter.delete('1.0', 'end')
+          txtMaskinpartikelfilter.insert('end', maskinInfo[15])
+          txtMaskinpartikelfilter.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinvattenbaseradlack.config(state=NORMAL)
+          txtMaskinvattenbaseradlack.delete('1.0', 'end')
+          txtMaskinvattenbaseradlack.insert('end', maskinInfo[11])
+          txtMaskinvattenbaseradlack.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinkylmedia.config(state=NORMAL)
+          txtMaskinkylmedia.delete('1.0', 'end')
+          txtMaskinkylmedia.insert('end', maskinInfo[13])
+          txtMaskinkylmedia.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinbullernivautv.config(state=NORMAL)
+          txtMaskinbullernivautv.delete('1.0', 'end')
+          txtMaskinbullernivautv.insert('end', maskinInfo[29])
+          txtMaskinbullernivautv.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinbullernivainv.config(state=NORMAL)
+          txtMaskinbullernivainv.delete('1.0', 'end')
+          txtMaskinbullernivainv.insert('end', maskinInfo[31])
+          txtMaskinbullernivainv.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinsmorjfett.config(state=NORMAL)
+          txtMaskinsmorjfett.delete('1.0', 'end')
+          txtMaskinsmorjfett.insert('end', maskinInfo[24])
+          txtMaskinsmorjfett.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinBatterityp.config(state=NORMAL)
+          txtMaskinBatterityp.delete('1.0', 'end')
+          txtMaskinBatterityp.insert('end', maskinInfo[38])
+          txtMaskinBatterityp.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinperiod.config(state=NORMAL)
+          txtMaskinperiod.delete('1.0', 'end')
+          txtMaskinperiod.insert('end', maskinInfo[7])
+          txtMaskinperiod.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinarsbelopp.config(state=NORMAL)
+          txtMaskinarsbelopp.delete('1.0', 'end')
+          txtMaskinarsbelopp.insert('end', maskinInfo[5])
+          txtMaskinarsbelopp.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmiljostatus.config(state=NORMAL)
+          txtMaskinmiljostatus.delete('1.0', 'end')
+          txtMaskinmiljostatus.insert('end', maskinInfo[30])
+          txtMaskinmiljostatus.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinarsmodell.config(state=NORMAL)
+          txtMaskinarsmodell.delete('1.0', 'end')
+          txtMaskinarsmodell.insert('end', maskinInfo[6])
+          txtMaskinarsmodell.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinregistreringsnummer.config(state=NORMAL)
+          txtMaskinregistreringsnummer.delete('1.0', 'end')
+          txtMaskinregistreringsnummer.insert('end', maskinInfo[26])
+          txtMaskinregistreringsnummer.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskintyp.config(state=NORMAL)
+          txtMaskintyp.delete('1.0', 'end')
+          txtMaskintyp.insert('end', maskinInfo[27])
+          txtMaskintyp.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmotoroljevolym.config(state=NORMAL)
+          txtMaskinmotoroljevolym.delete('1.0', 'end')
+          txtMaskinmotoroljevolym.insert('end', maskinInfo[17])
+          txtMaskinmotoroljevolym.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinvaxelladevolym.config(state=NORMAL)
+          txtMaskinvaxelladevolym.delete('1.0', 'end')
+          txtMaskinvaxelladevolym.insert('end', maskinInfo[19])
+          txtMaskinvaxelladevolym.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinhydraulsystemvolym.config(state=NORMAL)
+          txtMaskinhydraulsystemvolym.delete('1.0', 'end')
+          txtMaskinhydraulsystemvolym.insert('end', maskinInfo[21])
+          txtMaskinhydraulsystemvolym.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinkylvatskavolym.config(state=NORMAL)
+          txtMaskinkylvatskavolym.delete('1.0', 'end')
+          txtMaskinkylvatskavolym.insert('end', maskinInfo[32])
+          txtMaskinkylvatskavolym.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinbransle.config(state=NORMAL)
+          txtMaskinbransle.delete('1.0', 'end')
+          txtMaskinbransle.insert('end', maskinInfo[23])
+          txtMaskinbransle.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskindackfabrikat.config(state=NORMAL)
+          txtMaskindackfabrikat.delete('1.0', 'end')
+          txtMaskindackfabrikat.insert('end', maskinInfo[25])
+          txtMaskindackfabrikat.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskindimension.config(state=NORMAL)
+          txtMaskindimension.delete('1.0', 'end')
+          txtMaskindimension.insert('end', maskinInfo[34])
+          txtMaskindimension.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskingasolanlaggning.config(state=NORMAL)
+          txtMaskingasolanlaggning.delete('1.0', 'end')
+          txtMaskingasolanlaggning.insert('end', maskinInfo[37])
+          txtMaskingasolanlaggning.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinSaneringsvatska.config(state=NORMAL)
+          txtMaskinSaneringsvatska.delete('1.0', 'end')
+          txtMaskinSaneringsvatska.insert('end', maskinInfo[22])
+          txtMaskinSaneringsvatska.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinforare.config(state=NORMAL)
+          txtMaskinforare.delete('1.0', 'end')
+          txtMaskinforare.insert('end', maskinInfo[40])
+          txtMaskinforare.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinreferens.config(state=NORMAL)
+          txtMaskinreferens.delete('1.0', 'end')
+          txtMaskinreferens.insert('end', maskinInfo[41], maskinInfo[42])
+          txtMaskinreferens.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          if maskinInfo[28] == "Ja":
+               cbMaskininsatserlagd.state(['selected'])
+               cbMaskininsatserlagd.state(['disabled'])
+          else:
+               cbMaskininsatserlagd.state(['!selected'])
+               cbMaskininsatserlagd.state(['disabled'])
+     except:
+          pass
+     
+     try:
+          if maskinInfo[36] == "Ja":
+               cbMaskinregummerade.state(['selected'])
+               cbMaskinregummerade.state(['disabled'])
+          else:
+               cbMaskinregummerade.state(['!selected'])
+               cbMaskinregummerade.state(['disabled'])
+     except:
+          pass
+
+     try:
+          if maskinInfo[35] == "Ja":
+               cbMaskinregummerbara.state(['selected'])
+               cbMaskinregummerbara.state(['disabled'])
+          else:
+               cbMaskinregummerbara.state(['!selected'])
+               cbMaskinregummerbara.state(['disabled'])
+     except:
+          pass
+
+     try:
+          if maskinInfo[3] == "Förs. Kollektiv Länsförsäkringar":
+               cbMaskinKollektivforsakring.state(['selected'])
+               cbMaskinKollektivforsakring.state(['disabled'])
+          else:
+               cbMaskinKollektivforsakring.state(['!selected'])
+               cbMaskinKollektivforsakring.state(['disabled'])
+     except:
+          pass
+     
+     cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
+     tillbehor = cursor.fetchall()
+     
+     if lbMaskintillbehor.index("end") != 0:
+          lbMaskintillbehor.delete(0, "end")
+          for x in tillbehor:
+               lbMaskintillbehor.insert("end", x)
+     else:
+          for x in tillbehor:
+               lbMaskintillbehor.insert("end", x)
+     
+     cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+     maskiner = cursor.fetchall()
+
+     if LbDelagaresMaskiner.index("end") != 0:
+          LbDelagaresMaskiner.delete(0, "end")
+          for x in maskiner:
+               LbDelagaresMaskiner.insert("end", x)
+     else:
+          for x in maskiner:
+               LbDelagaresMaskiner.insert("end", x)    
+
+
      tabControl.select(delagare)
 
 def clickButton():
      pass
 
+
+def fyllMaskinInfoIgen(self):
+     global maskinnummer
+
+     selectedMaskin = LbMaskiner.get(LbDelagaresMaskiner.curselection())
+     stringSelectedMaskin = str(selectedMaskin[0])
+     maskinnummer = "".join(stringSelectedMaskin)
+     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     maskinInfo = cursor.fetchone()
+     maskinInfo = list(maskinInfo)
+
+     try:
+          txtMaskinnummermaskininfo.config(state=NORMAL)
+          txtMaskinnummermaskininfo.delete('1.0', 'end')
+          txtMaskinnummermaskininfo.insert('end', maskinInfo[0])
+          txtMaskinnummermaskininfo.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinbeteckning.config(state=NORMAL)
+          txtMaskinbeteckning.delete('1.0', 'end')
+          txtMaskinbeteckning.insert('end', maskinInfo[1])
+          txtMaskinbeteckning.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinme_klass.config(state=NORMAL)
+          txtMaskinme_klass.delete('1.0', 'end')
+          txtMaskinme_klass.insert('end', maskinInfo[2])
+          txtMaskinme_klass.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinmotorfabrikat.config(state=NORMAL)
+          txtMaskinmotorfabrikat.delete('1.0', 'end')
+          txtMaskinmotorfabrikat.insert('end', maskinInfo[8])
+          txtMaskinmotorfabrikat.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmotortyp.config(state=NORMAL)
+          txtMaskinmotortyp.delete('1.0', 'end')
+          txtMaskinmotortyp.insert('end', maskinInfo[9])
+          txtMaskinmotortyp.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmotor.config(state=NORMAL)
+          txtMaskinmotor.delete('1.0', 'end')
+          txtMaskinmotor.insert('end', maskinInfo[16])
+          txtMaskinmotor.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinvaxellada.config(state=NORMAL)
+          txtMaskinvaxellada.delete('1.0', 'end')
+          txtMaskinvaxellada.insert('end', maskinInfo[18])
+          txtMaskinvaxellada.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinhydraulsystem.config(state=NORMAL)
+          txtMaskinhydraulsystem.delete('1.0', 'end')
+          txtMaskinhydraulsystem.insert('end', maskinInfo[20])
+          txtMaskinhydraulsystem.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinkylvatska.config(state=NORMAL)
+          txtMaskinkylvatska.delete('1.0', 'end')
+          txtMaskinkylvatska.insert('end', maskinInfo[33])
+          txtMaskinkylvatska.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinmotoreffekt.config(state=NORMAL)
+          txtMaskinmotoreffekt.delete('1.0', 'end')
+          txtMaskinmotoreffekt.insert('end', maskinInfo[10])
+          txtMaskinmotoreffekt.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmotorvarmare.config(state=NORMAL)
+          txtMaskinmotorvarmare.delete('1.0', 'end')
+          txtMaskinmotorvarmare.insert('end', maskinInfo[12])
+          txtMaskinmotorvarmare.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinkatalysator.config(state=NORMAL)
+          txtMaskinkatalysator.delete('1.0', 'end')
+          txtMaskinkatalysator.insert('end', maskinInfo[14])
+          txtMaskinkatalysator.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinpartikelfilter.config(state=NORMAL)
+          txtMaskinpartikelfilter.delete('1.0', 'end')
+          txtMaskinpartikelfilter.insert('end', maskinInfo[15])
+          txtMaskinpartikelfilter.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinvattenbaseradlack.config(state=NORMAL)
+          txtMaskinvattenbaseradlack.delete('1.0', 'end')
+          txtMaskinvattenbaseradlack.insert('end', maskinInfo[11])
+          txtMaskinvattenbaseradlack.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinkylmedia.config(state=NORMAL)
+          txtMaskinkylmedia.delete('1.0', 'end')
+          txtMaskinkylmedia.insert('end', maskinInfo[13])
+          txtMaskinkylmedia.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinbullernivautv.config(state=NORMAL)
+          txtMaskinbullernivautv.delete('1.0', 'end')
+          txtMaskinbullernivautv.insert('end', maskinInfo[29])
+          txtMaskinbullernivautv.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinbullernivainv.config(state=NORMAL)
+          txtMaskinbullernivainv.delete('1.0', 'end')
+          txtMaskinbullernivainv.insert('end', maskinInfo[31])
+          txtMaskinbullernivainv.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinsmorjfett.config(state=NORMAL)
+          txtMaskinsmorjfett.delete('1.0', 'end')
+          txtMaskinsmorjfett.insert('end', maskinInfo[24])
+          txtMaskinsmorjfett.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtMaskinBatterityp.config(state=NORMAL)
+          txtMaskinBatterityp.delete('1.0', 'end')
+          txtMaskinBatterityp.insert('end', maskinInfo[38])
+          txtMaskinBatterityp.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinperiod.config(state=NORMAL)
+          txtMaskinperiod.delete('1.0', 'end')
+          txtMaskinperiod.insert('end', maskinInfo[7])
+          txtMaskinperiod.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinarsbelopp.config(state=NORMAL)
+          txtMaskinarsbelopp.delete('1.0', 'end')
+          txtMaskinarsbelopp.insert('end', maskinInfo[5])
+          txtMaskinarsbelopp.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmiljostatus.config(state=NORMAL)
+          txtMaskinmiljostatus.delete('1.0', 'end')
+          txtMaskinmiljostatus.insert('end', maskinInfo[30])
+          txtMaskinmiljostatus.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinarsmodell.config(state=NORMAL)
+          txtMaskinarsmodell.delete('1.0', 'end')
+          txtMaskinarsmodell.insert('end', maskinInfo[6])
+          txtMaskinarsmodell.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinregistreringsnummer.config(state=NORMAL)
+          txtMaskinregistreringsnummer.delete('1.0', 'end')
+          txtMaskinregistreringsnummer.insert('end', maskinInfo[26])
+          txtMaskinregistreringsnummer.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskintyp.config(state=NORMAL)
+          txtMaskintyp.delete('1.0', 'end')
+          txtMaskintyp.insert('end', maskinInfo[27])
+          txtMaskintyp.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinmotoroljevolym.config(state=NORMAL)
+          txtMaskinmotoroljevolym.delete('1.0', 'end')
+          txtMaskinmotoroljevolym.insert('end', maskinInfo[17])
+          txtMaskinmotoroljevolym.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinvaxelladevolym.config(state=NORMAL)
+          txtMaskinvaxelladevolym.delete('1.0', 'end')
+          txtMaskinvaxelladevolym.insert('end', maskinInfo[19])
+          txtMaskinvaxelladevolym.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinhydraulsystemvolym.config(state=NORMAL)
+          txtMaskinhydraulsystemvolym.delete('1.0', 'end')
+          txtMaskinhydraulsystemvolym.insert('end', maskinInfo[21])
+          txtMaskinhydraulsystemvolym.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinkylvatskavolym.config(state=NORMAL)
+          txtMaskinkylvatskavolym.delete('1.0', 'end')
+          txtMaskinkylvatskavolym.insert('end', maskinInfo[32])
+          txtMaskinkylvatskavolym.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinbransle.config(state=NORMAL)
+          txtMaskinbransle.delete('1.0', 'end')
+          txtMaskinbransle.insert('end', maskinInfo[23])
+          txtMaskinbransle.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskindackfabrikat.config(state=NORMAL)
+          txtMaskindackfabrikat.delete('1.0', 'end')
+          txtMaskindackfabrikat.insert('end', maskinInfo[25])
+          txtMaskindackfabrikat.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskindimension.config(state=NORMAL)
+          txtMaskindimension.delete('1.0', 'end')
+          txtMaskindimension.insert('end', maskinInfo[34])
+          txtMaskindimension.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskingasolanlaggning.config(state=NORMAL)
+          txtMaskingasolanlaggning.delete('1.0', 'end')
+          txtMaskingasolanlaggning.insert('end', maskinInfo[37])
+          txtMaskingasolanlaggning.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinSaneringsvatska.config(state=NORMAL)
+          txtMaskinSaneringsvatska.delete('1.0', 'end')
+          txtMaskinSaneringsvatska.insert('end', maskinInfo[22])
+          txtMaskinSaneringsvatska.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinforare.config(state=NORMAL)
+          txtMaskinforare.delete('1.0', 'end')
+          txtMaskinforare.insert('end', maskinInfo[40])
+          txtMaskinforare.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          txtMaskinreferens.config(state=NORMAL)
+          txtMaskinreferens.delete('1.0', 'end')
+          txtMaskinreferens.insert('end', maskinInfo[41], maskinInfo[42])
+          txtMaskinreferens.config(state=DISABLED)
+     except:
+          pass
+
+     try:
+          if maskinInfo[28] == "Ja":
+               cbMaskininsatserlagd.state(['selected'])
+               cbMaskininsatserlagd.state(['disabled'])
+          else:
+               cbMaskininsatserlagd.state(['!selected'])
+               cbMaskininsatserlagd.state(['disabled'])
+     except:
+          pass
+     
+     try:
+          if maskinInfo[36] == "Ja":
+               cbMaskinregummerade.state(['selected'])
+               cbMaskinregummerade.state(['disabled'])
+          else:
+               cbMaskinregummerade.state(['!selected'])
+               cbMaskinregummerade.state(['disabled'])
+     except:
+          pass
+
+     try:
+          if maskinInfo[35] == "Ja":
+               cbMaskinregummerbara.state(['selected'])
+               cbMaskinregummerbara.state(['disabled'])
+          else:
+               cbMaskinregummerbara.state(['!selected'])
+               cbMaskinregummerbara.state(['disabled'])
+     except:
+          pass
+
+     try:
+          if maskinInfo[3] == "Förs. Kollektiv Länsförsäkringar":
+               cbMaskinKollektivforsakring.state(['selected'])
+               cbMaskinKollektivforsakring.state(['disabled'])
+          else:
+               cbMaskinKollektivforsakring.state(['!selected'])
+               cbMaskinKollektivforsakring.state(['disabled'])
+     except:
+          pass
+     
+     cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
+     tillbehor = cursor.fetchall()
+     
+     if lbMaskintillbehor.index("end") != 0:
+          lbMaskintillbehor.delete(0, "end")
+          for x in tillbehor:
+               lbMaskintillbehor.insert("end", x)
+     else:
+          for x in tillbehor:
+               lbMaskintillbehor.insert("end", x)
+     
+     cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+     maskiner = cursor.fetchall()
+
+     if LbDelagaresMaskiner.index("end") != 0:
+          LbDelagaresMaskiner.delete(0, "end")
+          for x in maskiner:
+               LbDelagaresMaskiner.insert("end", x)
+     else:
+          for x in maskiner:
+               LbDelagaresMaskiner.insert("end", x)
 
 
 def nyDelagare():
@@ -116,7 +836,6 @@ def nyMaskin():
      lblMaskinvaxellada.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(0,8))
      txtMaskinvaxellada=Text(nyMaskin, width = 20, height=0.1)
      txtMaskinvaxellada.grid(column=1, row=6, sticky=W, padx=(10,0))
-
 
      lblMaskinhydraulsystem = Label(nyMaskin, text="Hydraulsystem")
      lblMaskinhydraulsystem.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(0,8))
@@ -344,7 +1063,6 @@ def fetchMaskiner(self):
      cursor.execute('SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = ' + medlemsnummer+ ';')
      delagarInfo = cursor.fetchone()
      delagarInfo = list(delagarInfo)
-     print(delagarInfo[2])
 
      #sätter delägaresidans info
 
@@ -381,11 +1099,13 @@ def fetchMaskiner(self):
      txtPostadress.insert('end', delagarInfo[6])
      txtPostadress.config(state=DISABLED)
 
-     txtTelefon.config(state=NORMAL)
-     txtTelefon.delete('1.0', 'end')
-     txtTelefon.insert('end', delagarInfo[7])
-     txtTelefon.config(state=DISABLED)
-
+     try:
+          txtTelefon.config(state=NORMAL)
+          txtTelefon.delete('1.0', 'end')
+          txtTelefon.insert('end', delagarInfo[7])
+          txtTelefon.config(state=DISABLED)
+     except:
+          pass
 
 
 
@@ -436,7 +1156,7 @@ EntMaskinnummer.insert(0, "Maskinnummer")
 EntMaskinnummer.bind("<FocusIn>", lambda args: EntMaskinnummer.delete('0', 'end'))
 
 #skapar en knapp
-BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: bytFlik()) 
+BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: clickButton()) 
 BtnMaskinnummerSok.grid(row=1, column=4, sticky ="w")
 
 BtnNyDelagare = Button (home, text ="Ny delägare", command = lambda: nyDelagare())
@@ -452,12 +1172,13 @@ BtnInstallningar = Button (home, text ="Inställningar", width=16, command = cli
 BtnInstallningar.grid(row = 5, column =5, pady=(8,0))
 
 # skapar en listbox
-LbDelagare = Listbox(home, width = 50)
+LbDelagare = Listbox(home, width = 50, exportselection=0)
 LbDelagare.grid(row = 2, column = 1, columnspan = 2, rowspan = 2, padx=(0,10))
 LbDelagare.bind('<<ListboxSelect>>', fetchMaskiner)
 
-LbMaskiner = Listbox(home, width = 50)
+LbMaskiner = Listbox(home, width = 50, exportselection=0)
 LbMaskiner.grid(row = 2, column = 3, columnspan = 2, rowspan = 2)
+LbMaskiner.bind('<Double-Button>', fyllMaskinInfo)
 
 # skapar en scrollbar
 ScbDelagare = Scrollbar(home, orient="vertical")
@@ -488,10 +1209,11 @@ frameMaskininfo.grid_columnconfigure(1, weight=1)
 
 
 #Listbox, maskiner tillhörande delägare
-LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45, height = 25)
+LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45, height = 25, exportselection=0)
 LbDelagaresMaskiner.grid(row = 0, column = 0)
 LbDelagaresMaskiner.grid_rowconfigure(1, weight=1)
 LbDelagaresMaskiner.grid_columnconfigure(0, weight=1)
+LbDelagaresMaskiner.bind('<<ListboxSelect>>', fyllMaskinInfoIgen)
 
 #Delägareinfo
 
@@ -643,7 +1365,8 @@ txtMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
 #checkbox
 lblMaskinKollektivforsakring = Label(frameMaskininfo, text="Kollektiv försäkring")
 lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0), pady=(0,8))
-cbMaskinKollektivforsakring = Checkbutton(frameMaskininfo)
+cbMaskinKollektivforsakring = ttk.Checkbutton(frameMaskininfo)
+cbMaskinKollektivforsakring.state(['!alternate', '!selected', 'disabled'])
 cbMaskinKollektivforsakring.grid(column = 1, row = 19, sticky = W, padx=(5,0))
 
 lblMaskinperiod = Label(frameMaskininfo, text="Period")
@@ -723,11 +1446,13 @@ txtMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
 lblMaskinbild = Label(frameMaskininfo, text="Maskinbild")
 lblMaskinbild.grid(column=2, row=10, sticky = W, padx=(10,0))
 #Bild
+
 img = Image.open("1.jpg")  
 img = img.resize((295, 295), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameMaskininfo, image=img2)
 img_label.grid(row=11, column=2, rowspan =10, columnspan =2, sticky = NW, padx=(10,0))
+
 
 #------------------------
 
@@ -749,13 +1474,15 @@ txtMaskindimension.grid(column=5, row=2, sticky=W, padx=(10,0))
 #Checkbox
 lblMaskinregummerbara = Label(frameMaskininfo, text="Regummerbara")
 lblMaskinregummerbara.grid(column=4, row=3, sticky = W, padx=(10,0))
-cbMaskinregummerbara = Checkbutton(frameMaskininfo)
+cbMaskinregummerbara = ttk.Checkbutton(frameMaskininfo)
+cbMaskinregummerbara.state(['!alternate', '!selected', 'disabled'])
 cbMaskinregummerbara.grid(column = 5, row = 3, sticky = W, padx=(5,0))
 
 #Checkbox
 lblMaskinregummerade = Label(frameMaskininfo, text="Regummerade")
 lblMaskinregummerade.grid(column=4, row=4, sticky = W, padx=(10,0))
-cbMaskinregummerade = Checkbutton(frameMaskininfo)
+cbMaskinregummerade = ttk.Checkbutton(frameMaskininfo)
+cbMaskinregummerade.state(['!alternate', '!selected', 'disabled'])
 cbMaskinregummerade.grid(column = 5, row = 4, sticky = W, padx=(5,0))
 
 lblMaskingasolanlaggning = Label(frameMaskininfo, text="Gasolanläggning")
@@ -771,7 +1498,8 @@ txtMaskinSaneringsvatska.grid(column=5, row=6, sticky=W, padx=(10,0))
 #Checkbox
 lblMaskininsattserlagd = Label(frameMaskininfo, text="Maskininsats erlagd")
 lblMaskininsattserlagd.grid(column=4, row=7, sticky = W, padx=(10,0))
-cbMaskininsatserlagd = Checkbutton(frameMaskininfo)
+cbMaskininsatserlagd = ttk.Checkbutton(frameMaskininfo)
+cbMaskininsatserlagd.state(['!alternate', '!selected', 'disabled'])
 cbMaskininsatserlagd.grid(column = 5, row = 7, sticky = W, padx=(5,0))
 
 lblMaskinforare = Label(frameMaskininfo, text="Förare")
