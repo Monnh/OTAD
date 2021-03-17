@@ -469,12 +469,11 @@ txtMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
 lblMaskinbild = Label(frameMaskininfo, text="Maskinbild")
 lblMaskinbild.grid(column=2, row=10, sticky = W, padx=(10,0))
 #Bild
-img = ImageTk.PhotoImage(Image.open("c:/filer/OTAD/OTAD/1.jpg"))  
-img = img.resize((50, 50), Image. ANTIALIAS)
-#root.create_image(20, 20, anchor=NW, image=img)  
-img_label = Label(frameMaskininfo, image=img)
-img_label.image = img
-img_label.grid(row=12, column=2, rowspan =2, columnspan =10)
+img = Image.open("c:/filer/OTAD/OTAD/1.jpg")  
+img = img.resize((295, 295), Image. ANTIALIAS)
+img2 = ImageTk.PhotoImage(img)
+img_label = Label(frameMaskininfo, image=img2)
+img_label.grid(row=11, column=2, rowspan =10, columnspan =2, sticky = NW, padx=(10,0))
 
 #------------------------
 
