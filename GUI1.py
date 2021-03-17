@@ -13,9 +13,7 @@ def bytFlik():
 def clickButton():
      pass
 
-def addTillbehor(self):
-     txt = txtMaskintillbehor.get()
-     print (txt)
+
 
 def nyDelagare():
      
@@ -309,10 +307,20 @@ def nyMaskin():
      lblMaskintillbehor.grid(column=4, row=10, sticky = W, padx=(10,0))
      txtMaskintillbehor=Text(nyMaskin, width = 20, height=0.1)
      txtMaskintillbehor.grid(column=5, row=10, sticky=W, padx=(10,0))
-     txtMaskintillbehor.bind('<Return>', addTillbehor)
+
+     def addTillbehor():
+     
+          txt = txtMaskintillbehor.get('1.0','end')
+          lbMaskintillbehor.insert('end',txt)
+          txtMaskintillbehor.delete('1.0','end')
+     
 
      lbMaskintillbehor = Listbox(nyMaskin)
      lbMaskintillbehor.grid(column=4, row=11, columnspan=2, rowspan=10, sticky=NSEW, padx=(10,0), pady=(5,5))
+     #txtMaskintillbehor.bind('<Return>', lambda x=None: lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end'))
+     txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
+     
+     
 
 def fetchMaskiner(self):
      global medlemsnummer, delagarInfo
@@ -384,7 +392,7 @@ def fetchMaskiner(self):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "sennaa66",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -714,7 +722,7 @@ txtMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
 lblMaskinbild = Label(frameMaskininfo, text="Maskinbild")
 lblMaskinbild.grid(column=2, row=10, sticky = W, padx=(10,0))
 #Bild
-img = Image.open("c:/filer/OTAD/OTAD/1.jpg")  
+img = Image.open("1.jpg")  
 img = img.resize((295, 295), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameMaskininfo, image=img2)
