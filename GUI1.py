@@ -2,10 +2,113 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk,Image
+from PyPDF2 import PdfFileWriter, PdfFileReader
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 import PIL
 import mysql.connector
 
 #funktioner
+
+def miljodeklaration():
+     global maskinnummer
+
+     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     maskinInfo = cursor.fetchone()
+     maskinInfo = list(maskinInfo)
+     
+     cursor.execute('SELECT Fornamn, Efternamn, Foretagsnamn, Gatuadress, Postnummer, Postadress FROM foretagsregister WHERE Medlemsnummer = ' + str(maskinInfo[4]) + ';')
+     delagarInfoLista = cursor.fetchone()
+     delagarInfoLista = list(delagarInfoLista)
+
+
+     packet = io.BytesIO()
+     c = canvas.Canvas(packet, pagesize=letter)
+
+     #Översta delen
+     c.drawString(130, 722, str(maskinInfo[4]))
+     c.drawString(130, 702, str(delagarInfoLista[2]))
+     c.drawString(130, 682, str(delagarInfoLista[0]))
+     c.drawString(195, 682, str(delagarInfoLista[1]))
+     c.drawString(130, 662, str(delagarInfoLista[3]))
+     c.drawString(130, 642, str(delagarInfoLista[4]))
+     c.drawString(190, 642, str(delagarInfoLista[5]))
+     c.drawString(470, 722, str(maskinInfo[0]))
+     c.drawString(458, 702, str(maskinInfo[1]))
+     c.drawString(458, 682, str(maskinInfo[6]))
+     c.drawString(458, 662, str(maskinInfo[26]))
+     c.drawString(458, 642, str(maskinInfo[2]))
+     c.drawString(458, 622, str(maskinInfo[27]))
+
+     #Motor
+     c.drawString(50, 540, str(maskinInfo[8]))
+     c.drawString(160, 540, str(maskinInfo[9]))
+     c.drawString(270, 540, str(maskinInfo[10]))
+
+     #Eftermonterad avgasreninsutrustning
+     c.drawString(50, 480, str(maskinInfo[14]))
+     c.drawString(120, 480, str(maskinInfo[15]))
+     c.drawString(195, 480, str(maskinInfo[12]))
+     c.drawString(280, 480, str(maskinInfo[11]))
+
+
+     #Emissioner
+     c.drawString(337, 480, "-")
+     c.drawString(365, 480, "-")
+     c.drawString(393, 480, "-")
+     c.drawString(420, 480, "-")
+
+     #Oljor och smörjmedel - Volym, liter
+     c.drawString(50, 420, str(maskinInfo[16])) 
+     c.drawString(205, 420, str(maskinInfo[17]))
+     c.drawString(50, 390, str(maskinInfo[18]))
+     c.drawString(205, 390, str(maskinInfo[19]))
+     c.drawString(50, 360, str(maskinInfo[20]))
+     c.drawString(205, 360, str(maskinInfo[21]))
+     c.drawString(50, 325, str(maskinInfo[24]))
+
+     #Miljöklassificering
+     c.drawString(340, 420, str(maskinInfo[30]))
+     c.drawString(345, 330, str(maskinInfo[22]))
+
+     #Övrigt
+     c.drawString(50, 244, str(maskinInfo[13]))
+     c.drawString(125, 244, str(maskinInfo[29]))
+     c.drawString(205, 244, str(maskinInfo[25]))
+     c.drawString(375, 244, str(maskinInfo[35]))
+     c.drawString(475, 244, str(maskinInfo[37]))
+     c.drawString(50, 210, str(maskinInfo[33]))
+     c.drawString(125, 210, str(maskinInfo[31]))
+     c.drawString(205, 210, str(maskinInfo[34]))
+     c.drawString(375, 210, str(maskinInfo[36]))
+     c.drawString(475, 210, str(maskinInfo[38]))
+
+     #Bränsle
+     c.drawString(50, 155, str(maskinInfo[23]))
+     c.drawString(125, 155, str( maskinInfo[7]))
+     #c.drawString(210, 155, str(maskinInfo[20]))
+     #c.drawString(330, 155, str(maskinInfo[32]))
+
+     #Försärking
+     c.drawString(50, 102, str(maskinInfo[3]))
+
+     c.save()
+
+     packet.seek(0)
+     new_pdf = PdfFileReader(packet)
+
+     existing_pdf = PdfFileReader(open("miljodeklaration.pdf", "rb"))
+     output = PdfFileWriter()
+
+     page = existing_pdf.getPage(0)
+     page.mergePage(new_pdf.getPage(0))
+     output.addPage(page)
+
+     outputStream = open( "" + maskinnummer + ".pdf", "wb")
+     output.write(outputStream)
+     outputStream.close()
+
 
 def fyllMaskinInfo(self):
      global maskinnummer
@@ -373,7 +476,6 @@ def fyllMaskinInfo(self):
 def clickButton():
      pass
 
-
 def fyllMaskinInfoIgen(self):
      global maskinnummer
 
@@ -723,18 +825,6 @@ def fyllMaskinInfoIgen(self):
           for x in tillbehor:
                lbMaskintillbehor.insert("end", x)
      
-     cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
-     maskiner = cursor.fetchall()
-
-     if LbDelagaresMaskiner.index("end") != 0:
-          LbDelagaresMaskiner.delete(0, "end")
-          for x in maskiner:
-               LbDelagaresMaskiner.insert("end", x)
-     else:
-          for x in maskiner:
-               LbDelagaresMaskiner.insert("end", x)
-
-
 def nyDelagare():
      
      nyDelagare = Toplevel(root)
@@ -783,11 +873,11 @@ def nyDelagare():
      entNyTelefon = Entry(nyDelagare, width = 25)
      entNyTelefon.grid(row = 7, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
-     btnSpara = Button(nyDelagare, text="Spara")
-     btnSpara.grid(row = 8, column = 1, sticky = W, pady = (10, 0), padx=(5,0))
+     btnSparaNyDelagare = Button(nyDelagare, text="Spara", command = lambda: tabControl.select(delagare)) #måste göra om till function för att kunna byta flik & stänga
+     btnSparaNyDelagare.grid(row = 8, column = 1, sticky = W, pady = (10, 0), padx=(5,0))
 
-     btnAvbryt = Button(nyDelagare, text="Avbryt")
-     btnAvbryt.grid(row = 8, column = 1, pady = (10, 0), padx=(5,0))
+     btnAvbrytNyDelagare = Button(nyDelagare, text="Avbryt", command = lambda: nyDelagare.destroy())
+     btnAvbrytNyDelagare.grid(row = 8, column = 1, pady = (10, 0), padx=(5,0))
 
 def nyMaskin():
      
@@ -919,7 +1009,7 @@ def nyMaskin():
 
      btnSparaNyMaskin=Button(nyMaskin, text="Spara", command = lambda: nyMaskin())
      btnSparaNyMaskin.grid(column=5, row=21, sticky=E, padx=(0,55))
-     btnAvbrytNyMaskin=Button(nyMaskin, text="Avbryt")
+     btnAvbrytNyMaskin=Button(nyMaskin, text="Avbryt", command = lambda: nyMaskin.destroy())
      btnAvbrytNyMaskin.grid(column=5, row=21,sticky=E)
 
      #--------------------
@@ -1040,8 +1130,6 @@ def nyMaskin():
      txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
      #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
      
-     
-
 def fetchMaskiner(self):
      global medlemsnummer, delagarInfo
 
@@ -1113,7 +1201,7 @@ def fetchMaskiner(self):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -1384,7 +1472,7 @@ txtMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
 btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation")
 btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
-btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration")
+btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration())
 btnMiljodeklaration.grid(column=1, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
 btnHistorik=Button(frameMaskininfo, text="Historik")
@@ -1447,7 +1535,7 @@ lblMaskinbild = Label(frameMaskininfo, text="Maskinbild")
 lblMaskinbild.grid(column=2, row=10, sticky = W, padx=(10,0))
 #Bild
 
-img = Image.open("1.jpg")  
+img = Image.open("C:/Users/User/Documents/Kurser/Termin 5/OTAD/OTAD/1.jpg")  
 img = img.resize((295, 295), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameMaskininfo, image=img2)
