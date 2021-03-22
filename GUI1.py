@@ -11,7 +11,7 @@ import mysql.connector
 
 #funktioner
 
-def miljodeklaration():
+def miljodeklaration():       #flytta runt objekt
      global maskinnummer
 
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
@@ -105,10 +105,60 @@ def miljodeklaration():
      page.mergePage(new_pdf.getPage(0))
      output.addPage(page)
 
-     outputStream = open( "" + maskinnummer + ".pdf", "wb")
+     outputStream = open( "miljödeklaration - " + maskinnummer + ".pdf", "wb")
      output.write(outputStream)
      outputStream.close()
 
+def maskinpresentation():     #behöver lägga till funktion för bilder + finslipa tillbehör
+     global maskinnummer
+
+     cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forare FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     maskinInfo = cursor.fetchone()
+     maskinInfo = list(maskinInfo)
+
+     cursor.execute('SELECT Foretagsnamn FROM foretagsregister WHERE medlemsnummer = ' + str(maskinInfo[0]) + ';')
+     foretag = cursor.fetchone()
+     foretag = list(foretag)
+
+     cursor.execute('SELECT Tillbehor1 FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     tillbehor = cursor.fetchone()
+     tillbehor = list(tillbehor)
+
+     cursor.execute('SELECT Referensjobb1, Referensjobb2 FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     referenser = cursor.fetchone()
+     referenser = list(referenser)
+
+     packet = io.BytesIO()
+     c = canvas.Canvas(packet, pagesize=letter)
+
+     c.drawString(133, 710, str(maskinInfo[0])) 
+     c.drawString(455, 690, str(maskinInfo[1]))
+     c.drawString(455, 670, str(maskinInfo[2]))
+     c.drawString(455, 650, str(maskinInfo[3]))
+     c.drawString(455, 630, str(maskinInfo[4]))
+     c.drawString(455, 610, str(maskinInfo[5]))
+     c.drawString(133, 670, str(maskinInfo[6]))
+     c.drawString(133, 690, str(foretag[0]))
+     c.drawString(467, 710, str(maskinnummer))
+     c.drawString(140, 557, str(tillbehor[0]))
+     c.drawString(152, 112, str(referenser[0]))
+     c.drawString(152, 86, str(referenser[1]))
+
+     c.save()
+
+     packet.seek(0)
+     new_pdf = PdfFileReader(packet)
+
+     existing_pdf = PdfFileReader(open("maskinpresentation.pdf", "rb"))
+     output = PdfFileWriter()
+
+     page = existing_pdf.getPage(0)
+     page.mergePage(new_pdf.getPage(0))
+     output.addPage(page)
+
+     outputStream = open( "maskinpresentation - " + maskinnummer + ".pdf", "wb")
+     output.write(outputStream)
+     outputStream.close()
 
 def fyllMaskinInfo(self):
      global maskinnummer
@@ -1469,7 +1519,7 @@ txtMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
 
 #Buttons
 
-btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation")
+btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation())
 btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
 btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration())
