@@ -9,6 +9,8 @@ from reportlab.lib.pagesizes import letter
 import PIL
 import mysql.connector
 from tkinter import filedialog
+from tkcalendar import DateEntry
+from datetime import datetime
 
 #funktioner
 
@@ -443,10 +445,15 @@ def fyllMaskinInfo(self):
      except:
           pass
 
+     forarnamn=""
+     if maskinInfo[40] != None:
+          cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+          forarnamn = cursor.fetchone()
+
      try:
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', maskinInfo[40])
+          txtMaskinforare.insert('end', forarnamn)
           txtMaskinforare.config(state=DISABLED)
      except:
           pass
@@ -809,10 +816,15 @@ def fyllMaskinInfoIgen(self):
      except:
           pass
 
+     forarnamn=""
+     if maskinInfo[40] != None:
+          cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+          forarnamn = cursor.fetchone()
+
      try:
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', maskinInfo[40])
+          txtMaskinforare.insert('end', forarnamn)
           txtMaskinforare.config(state=DISABLED)
      except:
           pass
@@ -1032,7 +1044,12 @@ def nyMaskin(Typ):
 
      nyMaskin = Toplevel(root)
 
-     nyMaskin.title("Lägg till ny maskin")
+     if Typ=="Ny":
+          nyMaskin.title("Lägg till ny maskin")
+     elif Typ=="Byt":
+          nyMaskin.title("Byt maskin")
+     else:
+          nyMaskin.title("Ändra maskin")
 
      nyMaskin.geometry("950x680")
 
@@ -1043,116 +1060,123 @@ def nyMaskin(Typ):
 
      lblMaskinbeteckning = Label(nyMaskin, text="Beteckning")
      lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinbeteckning = Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinbeteckning = Text(nyMaskin, width = 25, height=0.1)
      txtMaskinbeteckning.grid(column=1, row=1, sticky = W, padx=(10,0))
 
 
      lblMaskinme_klass = Label(nyMaskin, text="ME-Klass")
      lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinme_klass = Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinme_klass = Text(nyMaskin, width = 25, height=0.1)
      txtMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0))
 
 
      lblMaskinmotorfabrikat = Label(nyMaskin, text="Motorfabrikat")
      lblMaskinmotorfabrikat.grid(column=0, row=3, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinmotorfabrikat = Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinmotorfabrikat = Text(nyMaskin, width = 25, height=0.1)
      txtMaskinmotorfabrikat.grid(column=1, row=3, sticky=W, padx=(10,0))
 
 
      lblMaskinmotortyp = Label(nyMaskin, text="Motortyp")
      lblMaskinmotortyp.grid(column=0, row=4, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinmotortyp=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinmotortyp=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinmotortyp.grid(column=1, row=4, sticky=W, padx=(10,0))
 
 
      lblMaskinmotor = Label(nyMaskin, text="Motor")
      lblMaskinmotor.grid(column=0, row=5, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinmotor = Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinmotor = Text(nyMaskin, width = 25, height=0.1)
      txtMaskinmotor.grid(column=1, row=5, sticky=W, padx=(10,0))
 
 
      lblMaskinvaxellada = Label(nyMaskin, text="Växellåda")
      lblMaskinvaxellada.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinvaxellada=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinvaxellada=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinvaxellada.grid(column=1, row=6, sticky=W, padx=(10,0))
 
      lblMaskinhydraulsystem = Label(nyMaskin, text="Hydraulsystem")
      lblMaskinhydraulsystem.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinhydraulsystem=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinhydraulsystem=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinhydraulsystem.grid(column=1, row=7, sticky=W, padx=(10,0))
 
 
      lblMaskinkylvatska = Label(nyMaskin, text="Kylvätska")
      lblMaskinkylvatska.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinkylvatska=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinkylvatska=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinkylvatska.grid(column=1, row=8, sticky=W, padx=(10,0))
 
 
      lblMaskinmotoreffekt = Label(nyMaskin, text="Motoreffekt/KW")
      lblMaskinmotoreffekt.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinmotoreffekt=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinmotoreffekt=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinmotoreffekt.grid(column=1, row=9, sticky=W, padx=(10,0))
 
      lblMaskinmotorvarmare = Label(nyMaskin, text="Motorvärmare")
      lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinmotorvarmare=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinmotorvarmare=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinmotorvarmare.grid(column=1, row=10, sticky=W, padx=(10,0))
 
      lblMaskinkatalysator = Label(nyMaskin, text="Katalysator")
      lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinkatalysator=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinkatalysator=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinkatalysator.grid(column=1,row=11, sticky=W, padx=(10,0))
 
      lblMaskinpartikelfilter = Label(nyMaskin, text="Partikelfilter")
      lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinpartikelfilter=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinpartikelfilter=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinpartikelfilter.grid(column=1,row=12, sticky=W, padx=(10,0))
 
      lblMaskinvattenbaseradlack = Label(nyMaskin, text="Vattenbaserad lack")
      lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinvattenbaseradlack=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinvattenbaseradlack=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinvattenbaseradlack.grid(column=1, row=13, sticky=W, padx=(10,0))
 
      lblMaskinkylmedia = Label(nyMaskin, text="Kylmedia")
      lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinkylmedia=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinkylmedia=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinkylmedia.grid(column=1, row=14, sticky=W, padx=(10,0))
 
      lblMaskinbullernivautv = Label(nyMaskin, text="Bullernivå utvändigt")
      lblMaskinbullernivautv.grid(column=0, row=15, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinbullernivautv=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinbullernivautv=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinbullernivautv.grid(column=1, row=15, sticky=W, padx=(10,0))
 
      lblMaskinbullernivainv = Label(nyMaskin, text="Bullernivå invändigt")
      lblMaskinbullernivainv.grid(column=0, row=16, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinbullernivainv=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinbullernivainv=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinbullernivainv.grid(column=1, row=16, sticky=W, padx=(10,0))
 
      lblMaskinsmorjfett = Label(nyMaskin, text="Smörjfett")
      lblMaskinsmorjfett.grid(column=0, row=17, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinsmorjfett=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinsmorjfett=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinsmorjfett.grid(column=1, row=17, sticky=W, padx=(10,0))
 
      lblMaskinBatterityp = Label(nyMaskin, text="Batterityp")
      lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinBatterityp=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinBatterityp=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
 
      #checkbox
      lblMaskinKollektivforsakring = Label(nyMaskin, text="Kollektiv försäkring")
      lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0), pady=(0,8))
      cbMaskinKollektivforsakring = ttk.Checkbutton(nyMaskin)
-     cbMaskinKollektivforsakring.state(['!alternate', '!selected', 'disabled'])
+     cbMaskinKollektivforsakring.state(['!alternate', '!selected', '!disabled'])
      cbMaskinKollektivforsakring.grid(column = 1, row = 19, sticky = W, padx=(5,0))
 
      lblMaskinperiod = Label(nyMaskin, text="Period")
      lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinperiod=Text(nyMaskin, width = 20, height=0.1)
-     txtMaskinperiod.grid(column=1, row=20, sticky=W, padx=(10,0))
+
+     #Date entry
+     deMaskinperiod1 = DateEntry(nyMaskin, values="Text", date_pattern="yyyy-mm-dd")
+     deMaskinperiod1.delete(0, 'end')
+     deMaskinperiod1.grid(column=1, row=20, sticky=W, padx=(10,0))
+
+     deMaskinperiod2 = DateEntry(nyMaskin, values="Text", date_pattern="yyyy-mm-dd")
+     deMaskinperiod2.delete(0, 'end')
+     deMaskinperiod2.grid(column=1, row=20, sticky=E)
 
      lblMaskinarsbelopp = Label(nyMaskin, text="Årsbelopp")
      lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinarsbelopp=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinarsbelopp=Text(nyMaskin, width = 25, height=0.1)
      txtMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
 
      #Buttons
@@ -1254,14 +1278,14 @@ def nyMaskin(Typ):
      lblMaskinregummerbara = Label(nyMaskin, text="Regummerbara")
      lblMaskinregummerbara.grid(column=4, row=3, sticky = W, padx=(10,0))
      cbMaskinregummerbara = ttk.Checkbutton(nyMaskin)
-     cbMaskinregummerbara.state(['!alternate', '!selected', 'disabled'])
+     cbMaskinregummerbara.state(['!alternate', '!selected', '!disabled'])
      cbMaskinregummerbara.grid(column = 5, row = 3, sticky = W, padx=(5,0))
 
      #Checkbox
      lblMaskinregummerade = Label(nyMaskin, text="Regummerade")
      lblMaskinregummerade.grid(column=4, row=4, sticky = W, padx=(10,0))
      cbMaskinregummerade = ttk.Checkbutton(nyMaskin)
-     cbMaskinregummerade.state(['!alternate', '!selected', 'disabled'])
+     cbMaskinregummerade.state(['!alternate', '!selected', '!disabled'])
      cbMaskinregummerade.grid(column = 5, row = 4, sticky = W, padx=(5,0))
 
      lblMaskingasolanlaggning = Label(nyMaskin, text="Gasolanläggning")
@@ -1278,7 +1302,7 @@ def nyMaskin(Typ):
      lblMaskininsattserlagd = Label(nyMaskin, text="Maskininsats erlagd")
      lblMaskininsattserlagd.grid(column=4, row=7, sticky = W, padx=(10,0))
      cbMaskininsatserlagd = ttk.Checkbutton(nyMaskin)
-     cbMaskininsatserlagd.state(['!alternate', '!selected', 'disabled'])
+     cbMaskininsatserlagd.state(['!alternate', '!selected', '!disabled'])
      cbMaskininsatserlagd.grid(column = 5, row = 7, sticky = W, padx=(5,0))
 
      lblMaskinforare = Label(nyMaskin, text="Förare")
@@ -1313,16 +1337,17 @@ def nyMaskin(Typ):
      #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
 
      if Typ !="Ny" or Typ!="Byt":
-          cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + Typ + ';')
-          maskinInfo = cursor.fetchone()
-          maskinInfo = list(maskinInfo)
-
+          try:
+               cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + Typ + ';')
+               maskinInfo = cursor.fetchone()
+               maskinInfo = list(maskinInfo)
+          except:
+               pass
           
           try:
                txtMaskinnummermaskininfo.config(state=NORMAL)
                txtMaskinnummermaskininfo.delete('1.0', 'end')
                txtMaskinnummermaskininfo.insert('end', maskinInfo[0])
-               txtMaskinnummermaskininfo.config(state=DISABLED)
           except:
                pass
 
@@ -1330,7 +1355,6 @@ def nyMaskin(Typ):
                txtMaskinbeteckning.config(state=NORMAL)
                txtMaskinbeteckning.delete('1.0', 'end')
                txtMaskinbeteckning.insert('end', maskinInfo[1])
-               txtMaskinbeteckning.config(state=DISABLED)
           except:
                pass
 
@@ -1338,7 +1362,6 @@ def nyMaskin(Typ):
                txtMaskinme_klass.config(state=NORMAL)
                txtMaskinme_klass.delete('1.0', 'end')
                txtMaskinme_klass.insert('end', maskinInfo[2])
-               txtMaskinme_klass.config(state=DISABLED)
           except:
                pass
           
@@ -1346,7 +1369,6 @@ def nyMaskin(Typ):
                txtMaskinmotorfabrikat.config(state=NORMAL)
                txtMaskinmotorfabrikat.delete('1.0', 'end')
                txtMaskinmotorfabrikat.insert('end', maskinInfo[8])
-               txtMaskinmotorfabrikat.config(state=DISABLED)
           except:
                pass
 
@@ -1354,7 +1376,6 @@ def nyMaskin(Typ):
                txtMaskinmotortyp.config(state=NORMAL)
                txtMaskinmotortyp.delete('1.0', 'end')
                txtMaskinmotortyp.insert('end', maskinInfo[9])
-               txtMaskinmotortyp.config(state=DISABLED)
           except:
                pass
 
@@ -1362,7 +1383,6 @@ def nyMaskin(Typ):
                txtMaskinmotor.config(state=NORMAL)
                txtMaskinmotor.delete('1.0', 'end')
                txtMaskinmotor.insert('end', maskinInfo[16])
-               txtMaskinmotor.config(state=DISABLED)
           except:
                pass
           
@@ -1370,7 +1390,6 @@ def nyMaskin(Typ):
                txtMaskinvaxellada.config(state=NORMAL)
                txtMaskinvaxellada.delete('1.0', 'end')
                txtMaskinvaxellada.insert('end', maskinInfo[18])
-               txtMaskinvaxellada.config(state=DISABLED)
           except:
                pass
           
@@ -1378,7 +1397,6 @@ def nyMaskin(Typ):
                txtMaskinhydraulsystem.config(state=NORMAL)
                txtMaskinhydraulsystem.delete('1.0', 'end')
                txtMaskinhydraulsystem.insert('end', maskinInfo[20])
-               txtMaskinhydraulsystem.config(state=DISABLED)
           except:
                pass
           
@@ -1386,7 +1404,6 @@ def nyMaskin(Typ):
                txtMaskinkylvatska.config(state=NORMAL)
                txtMaskinkylvatska.delete('1.0', 'end')
                txtMaskinkylvatska.insert('end', maskinInfo[33])
-               txtMaskinkylvatska.config(state=DISABLED)
           except:
                pass
           
@@ -1394,7 +1411,6 @@ def nyMaskin(Typ):
                txtMaskinmotoreffekt.config(state=NORMAL)
                txtMaskinmotoreffekt.delete('1.0', 'end')
                txtMaskinmotoreffekt.insert('end', maskinInfo[10])
-               txtMaskinmotoreffekt.config(state=DISABLED)
           except:
                pass
 
@@ -1402,7 +1418,6 @@ def nyMaskin(Typ):
                txtMaskinmotorvarmare.config(state=NORMAL)
                txtMaskinmotorvarmare.delete('1.0', 'end')
                txtMaskinmotorvarmare.insert('end', maskinInfo[12])
-               txtMaskinmotorvarmare.config(state=DISABLED)
           except:
                pass
 
@@ -1410,7 +1425,6 @@ def nyMaskin(Typ):
                txtMaskinkatalysator.config(state=NORMAL)
                txtMaskinkatalysator.delete('1.0', 'end')
                txtMaskinkatalysator.insert('end', maskinInfo[14])
-               txtMaskinkatalysator.config(state=DISABLED)
           except:
                pass
 
@@ -1418,7 +1432,6 @@ def nyMaskin(Typ):
                txtMaskinpartikelfilter.config(state=NORMAL)
                txtMaskinpartikelfilter.delete('1.0', 'end')
                txtMaskinpartikelfilter.insert('end', maskinInfo[15])
-               txtMaskinpartikelfilter.config(state=DISABLED)
           except:
                pass
 
@@ -1426,7 +1439,6 @@ def nyMaskin(Typ):
                txtMaskinvattenbaseradlack.config(state=NORMAL)
                txtMaskinvattenbaseradlack.delete('1.0', 'end')
                txtMaskinvattenbaseradlack.insert('end', maskinInfo[11])
-               txtMaskinvattenbaseradlack.config(state=DISABLED)
           except:
                pass
 
@@ -1434,7 +1446,6 @@ def nyMaskin(Typ):
                txtMaskinkylmedia.config(state=NORMAL)
                txtMaskinkylmedia.delete('1.0', 'end')
                txtMaskinkylmedia.insert('end', maskinInfo[13])
-               txtMaskinkylmedia.config(state=DISABLED)
           except:
                pass
 
@@ -1442,7 +1453,6 @@ def nyMaskin(Typ):
                txtMaskinbullernivautv.config(state=NORMAL)
                txtMaskinbullernivautv.delete('1.0', 'end')
                txtMaskinbullernivautv.insert('end', maskinInfo[29])
-               txtMaskinbullernivautv.config(state=DISABLED)
           except:
                pass
 
@@ -1450,7 +1460,6 @@ def nyMaskin(Typ):
                txtMaskinbullernivainv.config(state=NORMAL)
                txtMaskinbullernivainv.delete('1.0', 'end')
                txtMaskinbullernivainv.insert('end', maskinInfo[31])
-               txtMaskinbullernivainv.config(state=DISABLED)
           except:
                pass
 
@@ -1458,7 +1467,6 @@ def nyMaskin(Typ):
                txtMaskinsmorjfett.config(state=NORMAL)
                txtMaskinsmorjfett.delete('1.0', 'end')
                txtMaskinsmorjfett.insert('end', maskinInfo[24])
-               txtMaskinsmorjfett.config(state=DISABLED)
           except:
                pass
           
@@ -1466,15 +1474,17 @@ def nyMaskin(Typ):
                txtMaskinBatterityp.config(state=NORMAL)
                txtMaskinBatterityp.delete('1.0', 'end')
                txtMaskinBatterityp.insert('end', maskinInfo[38])
-               txtMaskinBatterityp.config(state=DISABLED)
           except:
                pass
 
           try:
-               txtMaskinperiod.config(state=NORMAL)
-               txtMaskinperiod.delete('1.0', 'end')
-               txtMaskinperiod.insert('end', maskinInfo[7])
-               txtMaskinperiod.config(state=DISABLED)
+               dates = maskinInfo[7].split(" - ")
+               #deMaskinperiod1.config(state=NORMAL)
+               #deMaskinperiod1.delete('1.0', 'end')
+               deMaskinperiod1.set_date(datetime.strptime(dates[0], "%Y-%m-%d"))
+               deMaskinperiod2.set_date(datetime.strptime(dates[1], "%Y-%m-%d"))
+               
+               
           except:
                pass
 
@@ -1482,7 +1492,6 @@ def nyMaskin(Typ):
                txtMaskinarsbelopp.config(state=NORMAL)
                txtMaskinarsbelopp.delete('1.0', 'end')
                txtMaskinarsbelopp.insert('end', maskinInfo[5])
-               txtMaskinarsbelopp.config(state=DISABLED)
           except:
                pass
 
@@ -1490,7 +1499,6 @@ def nyMaskin(Typ):
                txtMaskinmiljostatus.config(state=NORMAL)
                txtMaskinmiljostatus.delete('1.0', 'end')
                txtMaskinmiljostatus.insert('end', maskinInfo[30])
-               txtMaskinmiljostatus.config(state=DISABLED)
           except:
                pass
 
@@ -1498,7 +1506,6 @@ def nyMaskin(Typ):
                txtMaskinarsmodell.config(state=NORMAL)
                txtMaskinarsmodell.delete('1.0', 'end')
                txtMaskinarsmodell.insert('end', maskinInfo[6])
-               txtMaskinarsmodell.config(state=DISABLED)
           except:
                pass
 
@@ -1506,7 +1513,6 @@ def nyMaskin(Typ):
                txtMaskinregistreringsnummer.config(state=NORMAL)
                txtMaskinregistreringsnummer.delete('1.0', 'end')
                txtMaskinregistreringsnummer.insert('end', maskinInfo[26])
-               txtMaskinregistreringsnummer.config(state=DISABLED)
           except:
                pass
 
@@ -1514,7 +1520,6 @@ def nyMaskin(Typ):
                txtMaskintyp.config(state=NORMAL)
                txtMaskintyp.delete('1.0', 'end')
                txtMaskintyp.insert('end', maskinInfo[27])
-               txtMaskintyp.config(state=DISABLED)
           except:
                pass
 
@@ -1522,7 +1527,6 @@ def nyMaskin(Typ):
                txtMaskinmotoroljevolym.config(state=NORMAL)
                txtMaskinmotoroljevolym.delete('1.0', 'end')
                txtMaskinmotoroljevolym.insert('end', maskinInfo[17])
-               txtMaskinmotoroljevolym.config(state=DISABLED)
           except:
                pass
 
@@ -1530,7 +1534,6 @@ def nyMaskin(Typ):
                txtMaskinvaxelladevolym.config(state=NORMAL)
                txtMaskinvaxelladevolym.delete('1.0', 'end')
                txtMaskinvaxelladevolym.insert('end', maskinInfo[19])
-               txtMaskinvaxelladevolym.config(state=DISABLED)
           except:
                pass
 
@@ -1538,7 +1541,6 @@ def nyMaskin(Typ):
                txtMaskinhydraulsystemvolym.config(state=NORMAL)
                txtMaskinhydraulsystemvolym.delete('1.0', 'end')
                txtMaskinhydraulsystemvolym.insert('end', maskinInfo[21])
-               txtMaskinhydraulsystemvolym.config(state=DISABLED)
           except:
                pass
 
@@ -1546,7 +1548,6 @@ def nyMaskin(Typ):
                txtMaskinkylvatskavolym.config(state=NORMAL)
                txtMaskinkylvatskavolym.delete('1.0', 'end')
                txtMaskinkylvatskavolym.insert('end', maskinInfo[32])
-               txtMaskinkylvatskavolym.config(state=DISABLED)
           except:
                pass
 
@@ -1554,7 +1555,6 @@ def nyMaskin(Typ):
                txtMaskinbransle.config(state=NORMAL)
                txtMaskinbransle.delete('1.0', 'end')
                txtMaskinbransle.insert('end', maskinInfo[23])
-               txtMaskinbransle.config(state=DISABLED)
           except:
                pass
 
@@ -1562,7 +1562,6 @@ def nyMaskin(Typ):
                txtMaskindackfabrikat.config(state=NORMAL)
                txtMaskindackfabrikat.delete('1.0', 'end')
                txtMaskindackfabrikat.insert('end', maskinInfo[25])
-               txtMaskindackfabrikat.config(state=DISABLED)
           except:
                pass
 
@@ -1570,7 +1569,6 @@ def nyMaskin(Typ):
                txtMaskindimension.config(state=NORMAL)
                txtMaskindimension.delete('1.0', 'end')
                txtMaskindimension.insert('end', maskinInfo[34])
-               txtMaskindimension.config(state=DISABLED)
           except:
                pass
 
@@ -1578,7 +1576,6 @@ def nyMaskin(Typ):
                txtMaskingasolanlaggning.config(state=NORMAL)
                txtMaskingasolanlaggning.delete('1.0', 'end')
                txtMaskingasolanlaggning.insert('end', maskinInfo[37])
-               txtMaskingasolanlaggning.config(state=DISABLED)
           except:
                pass
 
@@ -1586,7 +1583,6 @@ def nyMaskin(Typ):
                txtMaskinSaneringsvatska.config(state=NORMAL)
                txtMaskinSaneringsvatska.delete('1.0', 'end')
                txtMaskinSaneringsvatska.insert('end', maskinInfo[22])
-               txtMaskinSaneringsvatska.config(state=DISABLED)
           except:
                pass
 
@@ -1594,17 +1590,22 @@ def nyMaskin(Typ):
                txtMaskinforare.config(state=NORMAL)
                txtMaskinforare.delete('1.0', 'end')
                txtMaskinforare.insert('end', maskinInfo[40])
-               txtMaskinforare.config(state=DISABLED)
           except:
                pass
-
-          try:
-               txtMaskinreferens.config(state=NORMAL)
-               txtMaskinreferens.delete('1.0', 'end')
-               txtMaskinreferens.insert('end', maskinInfo[41], maskinInfo[42])
-               txtMaskinreferens.config(state=DISABLED)
-          except:
-               pass
+#skall fixas
+          # try:
+          #      cursor.execute('SELECT Beskrivning FROM referens WHERE Maskinnummer = ' + maskinnummer + ';')
+          #      tillbehor = cursor.fetchall()
+          
+          #      if lbMaskintillbehor.index("end") != 0:
+          #           lbMaskintillbehor.delete(0, "end")
+          #           for x in tillbehor:
+          #                lbMaskintillbehor.insert("end", x)
+          #      else:
+          #           for x in tillbehor:
+          #                lbMaskintillbehor.insert("end", x)
+          # except:
+          #      pass
 
           try: 
                if maskinInfo[28] == "Ja":
