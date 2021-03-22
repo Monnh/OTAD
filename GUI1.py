@@ -1,6 +1,6 @@
 # importerar Tkinter, PIL och MySQL Connector
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from PIL import ImageTk,Image
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
@@ -876,11 +876,37 @@ def fyllMaskinInfoIgen(self):
           for x in tillbehor:
                lbMaskintillbehor.insert("end", x)
      
-def nyDelagare():
-     
+def nyDelagare(Typ):
+     global medlemsnummer
+
+     if Typ == "Ändra":
+          titel = "Ändra befintlig delägare"
+     elif Typ == "Ny":
+          titel = "Lägg till ny delägare"
+          
+     def spara(Typ):
+          global medlemsnummer
+          
+          if Typ == "Ändra":               
+               cursor.execute("UPDATE foretagsregister SET Foretagsnamn = '" + entNyForetag.get() + "', Fornamn = '" + entNyFornamn.get() + "', Efternamn = '" + entNyEfternamn.get() + "', Gatuadress = '" + entNyGatuadress.get() + "', Postnummer = '" + entNyPostnummer.get() + "', Postadress = '" + entNyPostadress.get() + "', Telefon = '" + entNyTelefon.get() + "' WHERE Medlemsnummer = " + medlemsnummer +";")
+               db.commit()
+               fyllDelagarInfo()
+               nyDelagare.destroy()
+               tabControl.select(delagare)
+               fyllListboxDelagare()
+
+          elif Typ == "Ny":
+               cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
+               db.commit()
+               medlemsnummer = entNyMedlemsnummer.get()
+               fyllDelagarInfo()
+               nyDelagare.destroy()
+               tabControl.select(delagare)
+               fyllListboxDelagare()
+
      nyDelagare = Toplevel(root)
 
-     nyDelagare.title("Lägg till ny delägare")
+     nyDelagare.title(titel)
 
      nyDelagare.geometry("300x275")
 
@@ -924,11 +950,72 @@ def nyDelagare():
      entNyTelefon = Entry(nyDelagare, width = 25)
      entNyTelefon.grid(row = 7, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
-     btnSparaNyDelagare = Button(nyDelagare, text="Spara", command = lambda: tabControl.select(delagare)) #måste göra om till function för att kunna byta flik & stänga
+     btnSparaNyDelagare = Button(nyDelagare, text="Spara", command = lambda: spara(Typ))
      btnSparaNyDelagare.grid(row = 8, column = 1, sticky = W, pady = (10, 0), padx=(5,0))
 
      btnAvbrytNyDelagare = Button(nyDelagare, text="Avbryt", command = lambda: nyDelagare.destroy())
      btnAvbrytNyDelagare.grid(row = 8, column = 1, pady = (10, 0), padx=(5,0))
+
+     if Typ == "Ändra":
+          cursor.execute('SELECT * FROM foretagsregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+          delagarInformation = cursor.fetchone()
+          delagarInformation = list(delagarInformation)
+
+          try:
+               entNyMedlemsnummer.insert('end', medlemsnummer)
+               entNyMedlemsnummer.config(state = 'disabled')
+          except:
+               pass
+
+          try:
+               entNyForetag.insert('end', delagarInformation[1])
+          except:
+               pass
+
+          try:
+               entNyFornamn.insert('end', delagarInformation[6])
+          except:
+               pass
+
+          try:
+               entNyEfternamn.insert('end', delagarInformation[7])
+          except:
+               pass
+
+          try:
+               entNyGatuadress.insert('end', delagarInformation[2])
+          except:
+               pass
+
+          try:
+               entNyPostnummer.insert('end', delagarInformation[3])
+          except:
+               pass
+
+          try:
+               entNyPostadress.insert('end', delagarInformation[4])
+          except:
+               pass
+
+          try:
+               entNyTelefon.insert('end', delagarInformation[5])
+          except:
+               pass
+
+def taBortDelagare():
+     global medlemsnummer
+
+     response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort delägare nr. " + medlemsnummer + "? \n Detta tar även bort alla maskiner på detta medlemsnummer.")
+     if response == 1:
+          cursor.execute("DELETE FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + ";")
+          cursor.execute("DELETE FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + ";" )
+          db.commit()
+          medlemsnummer = "113"
+          fyllDelagarInfo()
+          fyllListboxDelagare()
+
+     else:
+          pass
 
 def nyMaskin(Typ):
 
@@ -1583,8 +1670,14 @@ def nyMaskin(Typ):
                for x in maskiner:
                     LbDelagaresMaskiner.insert("end", x)    
 
+def fyllListboxDelagare():
 
-     
+     cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn FROM foretagsregister")
+     delagareLista = cursor.fetchall()
+     LbDelagare.delete(0, 'end')
+     for x in delagareLista:
+          LbDelagare.insert("end", x)
+
 def fetchMaskiner(self):
      global medlemsnummer, delagarInfo
 
@@ -1603,52 +1696,57 @@ def fetchMaskiner(self):
           for x in result:
                LbMaskiner.insert("end", x)
 
-     cursor.execute('SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = ' + medlemsnummer+ ';')
-     delagarInfo = cursor.fetchone()
-     delagarInfo = list(delagarInfo)
+     fyllDelagarInfo()
 
-     #sätter delägaresidans info
+def fyllDelagarInfo():
+          global medlemsnummer, delagarInfo
 
-     txtMedlemsnummerDelagare.delete('1.0', 'end')
-     txtMedlemsnummerDelagare.insert('end', delagarInfo[0])
-     
-     txtForetag.config(state=NORMAL)
-     txtForetag.delete('1.0', 'end')
-     txtForetag.insert('end', delagarInfo[1])
-     txtForetag.config(state=DISABLED)
+          cursor.execute('SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = ' + medlemsnummer + ';')
+          delagarInfo = cursor.fetchone()
+          delagarInfo = list(delagarInfo)
 
-     txtFornamn.config(state=NORMAL)
-     txtFornamn.delete('1.0', 'end')
-     txtFornamn.insert('end', delagarInfo[2])
-     txtFornamn.config(state=DISABLED)
+          #sätter delägaresidans info
 
-     txtEfternamn.config(state=NORMAL)
-     txtEfternamn.delete('1.0', 'end')
-     txtEfternamn.insert('end', delagarInfo[3])
-     txtEfternamn.config(state=DISABLED)
+          txtMedlemsnummerDelagare.delete('1.0', 'end')
+          txtMedlemsnummerDelagare.insert('end', delagarInfo[0])
+          
+          txtForetag.config(state=NORMAL)
+          txtForetag.delete('1.0', 'end')
+          txtForetag.insert('end', delagarInfo[1])
+          txtForetag.config(state=DISABLED)
 
-     txtAdress.config(state=NORMAL)
-     txtAdress.delete('1.0', 'end')
-     txtAdress.insert('end', delagarInfo[4])
-     txtAdress.config(state=DISABLED)
+          txtFornamn.config(state=NORMAL)
+          txtFornamn.delete('1.0', 'end')
+          txtFornamn.insert('end', delagarInfo[2])
+          txtFornamn.config(state=DISABLED)
 
-     txtPostnummer.config(state=NORMAL)
-     txtPostnummer.delete('1.0', 'end')
-     txtPostnummer.insert('end', delagarInfo[5])
-     txtPostnummer.config(state=DISABLED)
+          txtEfternamn.config(state=NORMAL)
+          txtEfternamn.delete('1.0', 'end')
+          txtEfternamn.insert('end', delagarInfo[3])
+          txtEfternamn.config(state=DISABLED)
 
-     txtPostadress.config(state=NORMAL)
-     txtPostadress.delete('1.0', 'end')
-     txtPostadress.insert('end', delagarInfo[6])
-     txtPostadress.config(state=DISABLED)
+          txtAdress.config(state=NORMAL)
+          txtAdress.delete('1.0', 'end')
+          txtAdress.insert('end', delagarInfo[4])
+          txtAdress.config(state=DISABLED)
 
-     try:
-          txtTelefon.config(state=NORMAL)
-          txtTelefon.delete('1.0', 'end')
-          txtTelefon.insert('end', delagarInfo[7])
-          txtTelefon.config(state=DISABLED)
-     except:
-          pass
+          txtPostnummer.config(state=NORMAL)
+          txtPostnummer.delete('1.0', 'end')
+          txtPostnummer.insert('end', delagarInfo[5])
+          txtPostnummer.config(state=DISABLED)
+
+          txtPostadress.config(state=NORMAL)
+          txtPostadress.delete('1.0', 'end')
+          txtPostadress.insert('end', delagarInfo[6])
+          txtPostadress.config(state=DISABLED)
+
+          try:
+               txtTelefon.config(state=NORMAL)
+               txtTelefon.delete('1.0', 'end')
+               txtTelefon.insert('end', delagarInfo[7])
+               txtTelefon.config(state=DISABLED)
+          except:
+               pass
 
 
 
@@ -1656,7 +1754,7 @@ def fetchMaskiner(self):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "sennaa66",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -1702,7 +1800,7 @@ EntMaskinnummer.bind("<FocusIn>", lambda args: EntMaskinnummer.delete('0', 'end'
 BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: clickButton()) 
 BtnMaskinnummerSok.grid(row=1, column=4, sticky ="w")
 
-BtnNyDelagare = Button (home, text ="Ny delägare", command = lambda: nyDelagare())
+BtnNyDelagare = Button (home, text ="Ny delägare", command = lambda: nyDelagare("Ny"))
 BtnNyDelagare.grid(row = 2, column = 5, padx= 10, sticky="n")
 
 BtnRapport = Button (home, text = "Rapport", width = 9, command = clickButton)
@@ -1765,7 +1863,7 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("c:/filer/python/t-schakt1.png")  
+img = Image.open("1.jpg")  
 img = img.resize((225,200), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameOvrigText, image=img2)
@@ -1813,10 +1911,10 @@ lblTelefon.grid(row = 8, column = 0, sticky=W, pady=(0,8))
 txtTelefon = Text(frameDelagare, width = 25, height=0.1)
 txtTelefon.grid(row = 8, column =1, sticky = W)
 
-btnAndraDelagare = Button(frameDelagare, text ="Ändra")
+btnAndraDelagare = Button(frameDelagare, text ="Ändra", command = lambda: nyDelagare("Ändra"))
 btnAndraDelagare.grid(row=9, column=1, sticky=W, padx=(100,0))
 
-btnTaBortDelagare = Button(frameDelagare, text="Ta bort")
+btnTaBortDelagare = Button(frameDelagare, text="Ta bort", command = lambda: taBortDelagare())
 btnTaBortDelagare.grid(row=9, column =1, sticky=E)
 
 #Maskininfo
