@@ -445,10 +445,15 @@ def fyllMaskinInfo(self):
      except:
           pass
 
+     forarnamn=""
+     if maskinInfo[40] != None:
+          cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+          forarnamn = cursor.fetchone()
+
      try:
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', maskinInfo[40])
+          txtMaskinforare.insert('end', forarnamn)
           txtMaskinforare.config(state=DISABLED)
      except:
           pass
@@ -811,10 +816,15 @@ def fyllMaskinInfoIgen(self):
      except:
           pass
 
+     forarnamn=""
+     if maskinInfo[40] != None:
+          cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+          forarnamn = cursor.fetchone()
+
      try:
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', maskinInfo[40])
+          txtMaskinforare.insert('end', forarnamn)
           txtMaskinforare.config(state=DISABLED)
      except:
           pass
