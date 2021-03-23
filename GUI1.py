@@ -11,6 +11,7 @@ import mysql.connector
 from tkinter import filedialog
 from tkcalendar import DateEntry
 from datetime import datetime
+import os
 
 #funktioner
 
@@ -115,7 +116,7 @@ def miljodeklaration():       #flytta runt objekt
 def maskinpresentation():     #behöver lägga till funktion för bilder + finslipa tillbehör
      global maskinnummer
 
-     cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forare FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forarid FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
 
@@ -123,16 +124,26 @@ def maskinpresentation():     #behöver lägga till funktion för bilder + finsl
      foretag = cursor.fetchone()
      foretag = list(foretag)
 
-     cursor.execute('SELECT Tillbehor1 FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
-     tillbehor = cursor.fetchone()
+     cursor.execute('SELECT tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
+     tillbehor = cursor.fetchall()
      tillbehor = list(tillbehor)
 
-     cursor.execute('SELECT Referensjobb1, Referensjobb2 FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
-     referenser = cursor.fetchone()
+     cursor.execute('select namn from forare where forarid ='+ str(maskinInfo[6])+';')
+     forarnamn = cursor.fetchone()
+     forarnamn = list(forarnamn)
+
+     cursor.execute('SELECT Beskrivning FROM referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
+     referenser = cursor.fetchall()
      referenser = list(referenser)
 
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
+     rad1 =""
+     rad2=""
+     rad3=""
+     rad4=""
+     rad5=""
+     y=1
 
      c.drawString(133, 710, str(maskinInfo[0])) 
      c.drawString(455, 690, str(maskinInfo[1]))
@@ -140,12 +151,39 @@ def maskinpresentation():     #behöver lägga till funktion för bilder + finsl
      c.drawString(455, 650, str(maskinInfo[3]))
      c.drawString(455, 630, str(maskinInfo[4]))
      c.drawString(455, 610, str(maskinInfo[5]))
-     c.drawString(133, 670, str(maskinInfo[6]))
+     c.drawString(133, 670, str(forarnamn[0]))
      c.drawString(133, 690, str(foretag[0]))
      c.drawString(467, 710, str(maskinnummer))
-     c.drawString(140, 557, str(tillbehor[0]))
-     c.drawString(152, 112, str(referenser[0]))
-     c.drawString(152, 86, str(referenser[1]))
+     for x in tillbehor:
+          s = x[0]
+          s+=", "
+          print(s)
+          if y>12:
+               rad5+=s
+          elif y>9:
+               y+=1
+               rad4+=s          
+          elif y>6:
+               y+=1
+               rad3+=s
+          elif y>3:
+               y+=1
+               rad2+=s
+          else:
+               y+=1
+               rad1+=s         
+
+          
+          
+
+
+     c.drawString(140, 558, str(rad1))
+     c.drawString(140, 538, str(rad2))
+     c.drawString(140, 518, str(rad3))
+     c.drawString(140, 498, str(rad4))
+     c.drawString(140, 478, str(rad5))
+     c.drawString(152, 112, str(referenser[0][0]))
+     c.drawString(152, 86, str(referenser[1][0]))
 
      c.save()
 
@@ -158,16 +196,19 @@ def maskinpresentation():     #behöver lägga till funktion för bilder + finsl
      page = existing_pdf.getPage(0)
      page.mergePage(new_pdf.getPage(0))
      output.addPage(page)
-
+     #Fixa i framtiden så att man kan använda sig av custom paths (till servern) för att spara dokumenten på andra ställen.
      outputStream = open( "maskinpresentation - " + maskinnummer + ".pdf", "wb")
      output.write(outputStream)
      outputStream.close()
+     #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
+     os.startfile("maskinpresentation - "+maskinnummer + ".pdf" )
 
 def fyllMaskinInfo(self):
      global maskinnummer
 
      selectedMaskin = LbMaskiner.get(LbMaskiner.curselection())
-     stringSelectedMaskin = str(selectedMaskin[0])
+     index2 = selectedMaskin.index(" ")
+     stringSelectedMaskin = str(selectedMaskin[0:index2])
      maskinnummer = "".join(stringSelectedMaskin)
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
      maskinInfo = cursor.fetchone()
@@ -453,16 +494,25 @@ def fyllMaskinInfo(self):
      try:
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', forarnamn)
+          txtMaskinforare.insert('end', forarnamn[0])
           txtMaskinforare.config(state=DISABLED)
      except:
           pass
-
+     
+     referenser = []     
+     referenser.clear()
+     if maskinInfo[40] != None:
+          cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+          referenser = cursor.fetchall()
+          
      try:
-          txtMaskinreferens.config(state=NORMAL)
-          txtMaskinreferens.delete('1.0', 'end')
-          txtMaskinreferens.insert('end', maskinInfo[41], maskinInfo[42])
-          txtMaskinreferens.config(state=DISABLED)
+          if lbMaskinreferens.index("end") != 0:
+               lbMaskinreferens.delete(0, "end")
+               for x in referenser:
+                    lbMaskinreferens.insert("end", x[0])
+          else:
+               for x in referenser:
+                    lbMaskinreferens.insert("end", x[0])
      except:
           pass
 
@@ -512,10 +562,10 @@ def fyllMaskinInfo(self):
      if lbMaskintillbehor.index("end") != 0:
           lbMaskintillbehor.delete(0, "end")
           for x in tillbehor:
-               lbMaskintillbehor.insert("end", x)
+               lbMaskintillbehor.insert("end", x[0])
      else:
           for x in tillbehor:
-               lbMaskintillbehor.insert("end", x)
+               lbMaskintillbehor.insert("end", x[0])
      
      cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
      maskiner = cursor.fetchall()
@@ -824,16 +874,25 @@ def fyllMaskinInfoIgen(self):
      try:
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', forarnamn)
+          txtMaskinforare.insert('end', forarnamn[0])
           txtMaskinforare.config(state=DISABLED)
      except:
           pass
 
+     referenser = []     
+     referenser.clear()
+     if maskinInfo[40] != None:
+          cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+          referenser = cursor.fetchall()
+
      try:
-          txtMaskinreferens.config(state=NORMAL)
-          txtMaskinreferens.delete('1.0', 'end')
-          txtMaskinreferens.insert('end', maskinInfo[41], maskinInfo[42])
-          txtMaskinreferens.config(state=DISABLED)
+          if lbMaskinreferens.index("end") != 0:
+               lbMaskinreferens.delete(0, "end")
+               for x in referenser:
+                    lbMaskinreferens.insert("end", x)
+          else:
+               for x in referenser:
+                    lbMaskinreferens.insert("end", x)
      except:
           pass
 
@@ -1238,7 +1297,12 @@ def nyMaskin(Typ):
      ScbTxtOvrigText.grid(row = 10, column = 3, sticky = N+S+E, rowspan = 4)
      ScbTxtOvrigText.config(command =TxtOvrigText.yview)
 
-     TxtOvrigText.config(yscrollcommand=ScbTxtOvrigText.set)     
+     TxtOvrigText.config(yscrollcommand=ScbTxtOvrigText.set) 
+
+
+
+
+         
 
      def fileDialog():
  
@@ -1323,6 +1387,7 @@ def nyMaskin(Typ):
      txtMaskintillbehor=Text(nyMaskin, width = 20, height=0.1)
      txtMaskintillbehor.grid(column=5, row=15, sticky=W, padx=(10,0))
 
+
      #def addTillbehor():
      
      #     txt = txtMaskintillbehor.get('1.0','end')
@@ -1331,6 +1396,17 @@ def nyMaskin(Typ):
      
      lbMaskintillbehor = Listbox(nyMaskin, height=4)
      lbMaskintillbehor.grid(column=4, row=16, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0), pady=(5,5))
+     
+
+     ScbLbMaskintillbehor = Scrollbar(nyMaskin, orient="vertical")
+     ScbLbMaskintillbehor.grid(row = 16, column = 5, sticky = N+S+E, rowspan = 4)
+     ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
+     lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
+
+     scbLbReferenser = Scrollbar(nyMaskin, orient="vertical")
+     scbLbReferenser.grid(row = 10, column=5, sticky = N+S+E, rowspan=4)
+     scbLbReferenser.config(command=lbMaskinreferens.yview)
+     lbMaskinreferens.config(yscrollcommand=scbLbReferenser.set)
      
      txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
      txtMaskinreferens.bind('<Return>', lambda x: (lbMaskinreferens.insert('end', txtMaskinreferens.get('1.0', 'end')), txtMaskinreferens.delete('1.0','end')))
@@ -1344,6 +1420,12 @@ def nyMaskin(Typ):
           except:
                pass
           
+          try:
+               cursor.execute('SELECT Namn from forare where forarid ='+str(maskinInfo[40]))
+               forare = cursor.fetchone()
+          except:
+               pass
+
           try:
                txtMaskinnummermaskininfo.config(state=NORMAL)
                txtMaskinnummermaskininfo.delete('1.0', 'end')
@@ -1589,23 +1671,26 @@ def nyMaskin(Typ):
           try:
                txtMaskinforare.config(state=NORMAL)
                txtMaskinforare.delete('1.0', 'end')
-               txtMaskinforare.insert('end', maskinInfo[40])
+               txtMaskinforare.insert('end', forare)
           except:
                pass
-#skall fixas
-          # try:
-          #      cursor.execute('SELECT Beskrivning FROM referens WHERE Maskinnummer = ' + maskinnummer + ';')
-          #      tillbehor = cursor.fetchall()
-          
-          #      if lbMaskintillbehor.index("end") != 0:
-          #           lbMaskintillbehor.delete(0, "end")
-          #           for x in tillbehor:
-          #                lbMaskintillbehor.insert("end", x)
-          #      else:
-          #           for x in tillbehor:
-          #                lbMaskintillbehor.insert("end", x)
-          # except:
-          #      pass
+
+          referenser = []     
+          referenser.clear()
+          if maskinInfo[40] != None:
+               cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+               referenser = cursor.fetchall()
+
+          try:
+               if lbMaskinreferens.index("end") != 0:
+                    lbMaskinreferens.delete(0, "end")
+                    for x in referenser:
+                         lbMaskinreferens.insert("end", x)
+               else:
+                    for x in referenser:
+                         lbMaskinreferens.insert("end", x)
+          except:
+               pass
 
           try: 
                if maskinInfo[28] == "Ja":
@@ -1692,10 +1777,17 @@ def fetchMaskiner(self):
      if LbMaskiner.index("end") != 0:
           LbMaskiner.delete(0, "end")
           for x in result:
-               LbMaskiner.insert("end", x)
+               s=""
+               s += str(x[0])
+               s+= " "
+               s+=str(x[1])                              
+               LbMaskiner.insert("end",s )
      else:
           for x in result:
-               LbMaskiner.insert("end", x)
+               s=""
+               s += str(x[0])
+               s+=str(x[1])                              
+               LbMaskiner.insert("end",s )
 
      fyllDelagarInfo()
 
@@ -1755,7 +1847,7 @@ def fyllDelagarInfo():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2173,17 +2265,19 @@ lblMaskinforare.grid(column=4, row=8, sticky = W, padx=(10,0))
 txtMaskinforare=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinforare.grid(column=5, row=8, sticky=W, padx=(10,0))
 
+
+
 lblMaskinreferens = Label(frameMaskininfo, text="Referensjobb")
 lblMaskinreferens.grid(column=4, row=9, sticky =W, padx=(10,0))
-txtMaskinreferens=Text(frameMaskininfo, width = 20, height=5)
-txtMaskinreferens.grid(column=4, row=10, sticky=NSEW, padx=(10,0), columnspan=2, rowspan=3)
+lbMaskinreferens=Listbox(frameMaskininfo, width = 20, height=5)
+lbMaskinreferens.grid(column=4, row=10, sticky=NSEW, padx=(10,0), columnspan=2, rowspan=3)
 
 #Scrollbar
 ScbTxtMaskinreferens = Scrollbar(frameMaskininfo, orient="vertical")
 ScbTxtMaskinreferens.grid(row = 10, column = 5, sticky = N+S+E, rowspan = 3)
 ScbTxtMaskinreferens.config(command =LbMaskiner.yview)
 
-txtMaskinreferens.config(yscrollcommand=ScbTxtMaskinreferens.set)
+lbMaskinreferens.config(yscrollcommand=ScbTxtMaskinreferens.set)
 
 #Listbox
 lblMaskintillbehor = Label(frameMaskininfo, text="Tillbehör")
