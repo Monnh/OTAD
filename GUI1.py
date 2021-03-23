@@ -115,7 +115,7 @@ def miljodeklaration():       #flytta runt objekt
 def maskinpresentation():     #behöver lägga till funktion för bilder + finslipa tillbehör
      global maskinnummer
 
-     cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forare FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forarid FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
 
@@ -123,16 +123,26 @@ def maskinpresentation():     #behöver lägga till funktion för bilder + finsl
      foretag = cursor.fetchone()
      foretag = list(foretag)
 
-     cursor.execute('SELECT Tillbehor1 FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
-     tillbehor = cursor.fetchone()
+     cursor.execute('SELECT tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
+     tillbehor = cursor.fetchall()
      tillbehor = list(tillbehor)
 
-     cursor.execute('SELECT Referensjobb1, Referensjobb2 FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
-     referenser = cursor.fetchone()
+     cursor.execute('select namn from forare where forarid ='+ str(maskinInfo[6])+';')
+     forarnamn = cursor.fetchone()
+     forarnamn = list(forarnamn)
+
+     cursor.execute('SELECT Beskrivning FROM referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
+     referenser = cursor.fetchall()
      referenser = list(referenser)
 
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
+     rad1 =""
+     rad2=""
+     rad3=""
+     rad4=""
+     rad5=""
+     y=1
 
      c.drawString(133, 710, str(maskinInfo[0])) 
      c.drawString(455, 690, str(maskinInfo[1]))
@@ -140,12 +150,39 @@ def maskinpresentation():     #behöver lägga till funktion för bilder + finsl
      c.drawString(455, 650, str(maskinInfo[3]))
      c.drawString(455, 630, str(maskinInfo[4]))
      c.drawString(455, 610, str(maskinInfo[5]))
-     c.drawString(133, 670, str(maskinInfo[6]))
+     c.drawString(133, 670, str(forarnamn[0]))
      c.drawString(133, 690, str(foretag[0]))
      c.drawString(467, 710, str(maskinnummer))
-     c.drawString(140, 557, str(tillbehor[0]))
-     c.drawString(152, 112, str(referenser[0]))
-     c.drawString(152, 86, str(referenser[1]))
+     for x in tillbehor:
+          s = x[0]
+          s+=", "
+          print(s)
+          if y>12:
+               rad5+=s
+          elif y>9:
+               y+=1
+               rad4+=s          
+          elif y>6:
+               y+=1
+               rad3+=s
+          elif y>3:
+               y+=1
+               rad2+=s
+          else:
+               y+=1
+               rad1+=s         
+
+          
+          
+
+
+     c.drawString(140, 558, str(rad1))
+     c.drawString(140, 538, str(rad2))
+     c.drawString(140, 518, str(rad3))
+     c.drawString(140, 498, str(rad4))
+     c.drawString(140, 478, str(rad5))
+     c.drawString(152, 112, str(referenser[0][0]))
+     c.drawString(152, 86, str(referenser[1][0]))
 
      c.save()
 
