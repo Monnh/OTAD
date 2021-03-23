@@ -11,6 +11,7 @@ import mysql.connector
 from tkinter import filedialog
 from tkcalendar import DateEntry
 from datetime import datetime
+import os
 
 #funktioner
 
@@ -195,10 +196,12 @@ def maskinpresentation():     #behöver lägga till funktion för bilder + finsl
      page = existing_pdf.getPage(0)
      page.mergePage(new_pdf.getPage(0))
      output.addPage(page)
-
+     #Fixa i framtiden så att man kan använda sig av custom paths (till servern) för att spara dokumenten på andra ställen.
      outputStream = open( "maskinpresentation - " + maskinnummer + ".pdf", "wb")
      output.write(outputStream)
      outputStream.close()
+     #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
+     os.startfile("maskinpresentation - "+maskinnummer + ".pdf" )
 
 def fyllMaskinInfo(self):
      global maskinnummer
