@@ -207,7 +207,8 @@ def fyllMaskinInfo(self):
      global maskinnummer
 
      selectedMaskin = LbMaskiner.get(LbMaskiner.curselection())
-     stringSelectedMaskin = str(selectedMaskin[0])
+     index2 = selectedMaskin.index(" ")
+     stringSelectedMaskin = str(selectedMaskin[0:index2])
      maskinnummer = "".join(stringSelectedMaskin)
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
      maskinInfo = cursor.fetchone()
@@ -493,7 +494,7 @@ def fyllMaskinInfo(self):
      try:
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', forarnamn)
+          txtMaskinforare.insert('end', forarnamn[0])
           txtMaskinforare.config(state=DISABLED)
      except:
           pass
@@ -508,10 +509,10 @@ def fyllMaskinInfo(self):
           if lbMaskinreferens.index("end") != 0:
                lbMaskinreferens.delete(0, "end")
                for x in referenser:
-                    lbMaskinreferens.insert("end", x)
+                    lbMaskinreferens.insert("end", x[0])
           else:
                for x in referenser:
-                    lbMaskinreferens.insert("end", x)
+                    lbMaskinreferens.insert("end", x[0])
      except:
           pass
 
@@ -561,10 +562,10 @@ def fyllMaskinInfo(self):
      if lbMaskintillbehor.index("end") != 0:
           lbMaskintillbehor.delete(0, "end")
           for x in tillbehor:
-               lbMaskintillbehor.insert("end", x)
+               lbMaskintillbehor.insert("end", x[0])
      else:
           for x in tillbehor:
-               lbMaskintillbehor.insert("end", x)
+               lbMaskintillbehor.insert("end", x[0])
      
      cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
      maskiner = cursor.fetchall()
@@ -873,7 +874,7 @@ def fyllMaskinInfoIgen(self):
      try:
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', forarnamn)
+          txtMaskinforare.insert('end', forarnamn[0])
           txtMaskinforare.config(state=DISABLED)
      except:
           pass
@@ -1776,10 +1777,17 @@ def fetchMaskiner(self):
      if LbMaskiner.index("end") != 0:
           LbMaskiner.delete(0, "end")
           for x in result:
-               LbMaskiner.insert("end", x)
+               s=""
+               s += str(x[0])
+               s+= " "
+               s+=str(x[1])                              
+               LbMaskiner.insert("end",s )
      else:
           for x in result:
-               LbMaskiner.insert("end", x)
+               s=""
+               s += str(x[0])
+               s+=str(x[1])                              
+               LbMaskiner.insert("end",s )
 
      fyllDelagarInfo()
 
