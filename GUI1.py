@@ -588,7 +588,8 @@ def fyllMaskinInfoIgen(self):
      global maskinnummer
 
      selectedMaskin = LbMaskiner.get(LbDelagaresMaskiner.curselection())
-     stringSelectedMaskin = str(selectedMaskin[0])
+     index2 = selectedMaskin.index(" ")
+     stringSelectedMaskin = str(selectedMaskin[0:index2])
      maskinnummer = "".join(stringSelectedMaskin)
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
      maskinInfo = cursor.fetchone()
@@ -1786,6 +1787,7 @@ def fetchMaskiner(self):
           for x in result:
                s=""
                s += str(x[0])
+               s+= " "
                s+=str(x[1])                              
                LbMaskiner.insert("end",s )
 
