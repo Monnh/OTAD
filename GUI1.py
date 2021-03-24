@@ -12,6 +12,7 @@ from tkinter import filedialog
 from tkcalendar import DateEntry
 from datetime import datetime
 import os
+import traceback
 
 #funktioner
 
@@ -1105,16 +1106,41 @@ def taBortDelagare():
      else:
           pass
 
-def nyMaskin(Typ):
+def nyMaskinFonster(Typ):
 
-     def sparaMaskin():
+     def sparaMaskin(Typ):
           if Typ=="Byt":
                #sparaHistoriken
-               #sparaMaskinen
+               #sparaNyMaskin
+               print("NyMaskin Byt")
+               pass
+          elif Typ=="Ny":
+               #sparaNyMaskin
+               print("nyMaskin Ny")
                pass
           else:
-               #sparaMaskinen
-               pass
+               print("nyMaskin Ändra")
+               try:
+                    andraMaskin(Typ)
+                    nyMaskin.destroy()
+               except:
+                    print("Kunde inte ändra maskin")
+
+     def andraMaskin(Typ):
+          try:
+
+               #"', Forarid = (SELECT Forarid FROM Forare where Namn = '" + txtMaskinforare.get()"')'" 
+               #"', Forsakring = '" + cbMaskinKollektivforsakring.get() 
+               #+ "', Period = '" + deMaskinperiod1.get() 
+               #spara bild
+               #"', Regummerbar = '" + cbMaskinregummerbara.get() +  "', Regummerad = '" + cbMaskinregummerade.get() +
+               #"', Maskininsats = '" + cbMaskininsatserlagd.get() + lbMaskinreferens + lbMaskintillbehor
+               cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + txtMaskinnummermaskininfo.get('1.0','end') + "', MarkeModell = '" + txtMaskinbeteckning.get('1.0','end') + "', ME_Klass = '" + txtMaskinme_klass.get('1.0','end') + "', Motorfabrikat = '" + txtMaskinmotorfabrikat.get('1.0','end') + "', Motortyp = '" + txtMaskinmotortyp.get('1.0','end') + "', Motorolja = '" + txtMaskinmotor.get('1.0','end') + "', Vaxelladsolja = '" + txtMaskinvaxellada.get('1.0','end') + "', Hydraulolja = '" + txtMaskinhydraulsystem.get('1.0','end') + "', Kylvatska = '" + txtMaskinkylvatska.get('1.0','end') + "', Motoreffekt = '" + txtMaskinmotoreffekt.get('1.0','end') + "', Motorvarmare = '" + txtMaskinmotorvarmare.get('1.0','end') + "', Katalysator = '" + txtMaskinkatalysator.get('1.0','end') + "', Partikelfilter = '" + txtMaskinpartikelfilter.get('1.0','end') + "', Vattenbaseradlack = '" + txtMaskinvattenbaseradlack.get('1.0','end') + "', Kylmedia = '" + txtMaskinkylmedia.get('1.0','end') + "', Bullernivaute = '" + txtMaskinbullernivautv.get('1.0','end') + "', Bullernivainne = '" + txtMaskinbullernivainv.get('1.0','end') + "', Smorjfett = '" + txtMaskinsmorjfett.get('1.0','end') + "', Batterityp = '" + txtMaskinBatterityp.get('1.0','end') + "', Arsbelopp = '" + txtMaskinarsbelopp.get('1.0','end') + "', Miljostatus = '" + txtMaskinmiljostatus.get('1.0','end') + "', Arsmodell = '" + txtMaskinarsmodell.get('1.0','end') + "', Registreringsnummer = '" + txtMaskinregistreringsnummer.get('1.0','end') + "', Maskintyp = '" + txtMaskintyp.get('1.0','end') + "', Motorvolymolja = '" + txtMaskinmotoroljevolym.get('1.0','end') + "', Vaxelladavolym = '" + txtMaskinvaxelladevolym.get('1.0','end') + "', Hydraulvolym = '" + txtMaskinhydraulsystemvolym.get('1.0','end') + "', Kylvatskavolym = '" + txtMaskinkylvatskavolym.get('1.0','end') + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + txtMaskinbransle.get('1.0','end') + "', Dackfabrikat = '" + txtMaskindackfabrikat.get('1.0','end') + "', Dimension = '" + txtMaskindimension.get('1.0','end') + "', Gasol = '" + txtMaskingasolanlaggning.get('1.0','end') + "', Saneringsvatska = '" + txtMaskinSaneringsvatska.get('1.0','end') + "'WHERE Maskinnummer = " + Typ +";")
+               #cursor.execute("UPDATE maskinregister SET Motorolja = '" + txtMaskinmotor.get('1.0','end') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
+          db.commit()
+          fyllMaskinInfo(Typ)
 
      print(Typ)
 
@@ -1257,7 +1283,7 @@ def nyMaskin(Typ):
 
      #Buttons
 
-     btnSparaNyMaskin=Button(nyMaskin, text="Spara", command = lambda: sparaMaskin)
+     btnSparaNyMaskin=Button(nyMaskin, text="Spara", command = lambda: sparaMaskin(Typ))
      btnSparaNyMaskin.grid(column=5, row=21, sticky=E, padx=(0,55))
      btnAvbrytNyMaskin=Button(nyMaskin, text="Avbryt", command = lambda: nyMaskin.destroy())
      btnAvbrytNyMaskin.grid(column=5, row=21,sticky=E)
@@ -1868,6 +1894,7 @@ def fyllDelagarInfo():
                pass
 
 
+         
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
@@ -2169,13 +2196,13 @@ btnMiljodeklaration.grid(column=1, row=22, sticky=W, padx=(10,0), pady=(20,0))
 btnHistorik=Button(frameMaskininfo, text="Historik")
 btnHistorik.grid(column=6, row=0, sticky=W, padx=(10,10))
 
-btnLaggtillmaskin=Button(frameMaskininfo, text="Lägg till ny", command = lambda: nyMaskin("Ny"))
+btnLaggtillmaskin=Button(frameMaskininfo, text="Lägg till ny", command = lambda: nyMaskinFonster("Ny"))
 btnLaggtillmaskin.grid(column=4, row=22, sticky=W, pady=(20,0))
 
-btnAndramaskin=Button(frameMaskininfo, text="Ändra", command = lambda: nyMaskin(txtMaskinnummermaskininfo.get('1.0', 'end')))
+btnAndramaskin=Button(frameMaskininfo, text="Ändra", command = lambda: nyMaskinFonster(txtMaskinnummermaskininfo.get('1.0', 'end')))
 btnAndramaskin.grid(column=4, row=22,sticky=E, pady=(20,0))
 
-btnBytmaskin=Button(frameMaskininfo, text="Byt maskin", command = lambda: nyMaskin("Byt"))
+btnBytmaskin=Button(frameMaskininfo, text="Byt maskin", command = lambda: nyMaskinFonster("Byt"))
 btnBytmaskin.grid(column=5, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
 btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin")
