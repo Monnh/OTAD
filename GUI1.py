@@ -447,6 +447,14 @@ def fyllMaskinInfo(self):
           pass
 
      try:
+          TxtOvrigtext.config(state=NORMAL)
+          TxtOvrigtext.delete('1.0', 'end')
+          TxtOvrigtext.insert('end', maskinInfo[41])
+          TxtOvrigtext.config(state=DISABLED)
+     except:
+          pass
+
+     try:
           txtMaskinbransle.config(state=NORMAL)
           txtMaskinbransle.delete('1.0', 'end')
           txtMaskinbransle.insert('end', maskinInfo[23])
@@ -828,6 +836,14 @@ def fyllMaskinInfoIgen(self):
           pass
 
      try:
+          TxtOvrigtext.config(state=NORMAL)
+          TxtOvrigtext.delete('1.0', 'end')
+          TxtOvrigtext.insert('end', maskinInfo[41])
+          TxtOvrigtext.config(state=DISABLED)
+     except:
+          pass
+
+     try:
           txtMaskinbransle.config(state=NORMAL)
           txtMaskinbransle.delete('1.0', 'end')
           txtMaskinbransle.insert('end', maskinInfo[23])
@@ -1111,7 +1127,7 @@ def nyMaskin(Typ):
      else:
           nyMaskin.title("Ändra maskin")
 
-     nyMaskin.geometry("950x680")
+     nyMaskin.geometry("975x680")
 
      lblMaskinnummermaskininfo = Label(nyMaskin, text= "Maskinnummer")
      lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(7,8))
@@ -1288,17 +1304,17 @@ def nyMaskin(Typ):
      txtMaskinkylvatskavolym=Text(nyMaskin, width = 20, height=0.1)
      txtMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
 
-     lblOvrigText = Label(nyMaskin, text="Övrig Text")
-     lblOvrigText.grid(column=2, row=9, sticky = W, padx=(10,0))
-     TxtOvrigText = Text(nyMaskin, width = 20, height=3)
-     TxtOvrigText.grid(row=10, column=2, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0))
+     lblOvrigtext = Label(nyMaskin, text="Övrig Text")
+     lblOvrigtext.grid(column=2, row=9, sticky = W, padx=(10,0))
+     TxtOvrigtext = Text(nyMaskin, width = 20, height=3)
+     TxtOvrigtext.grid(row=10, column=2, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,15))
 
      #Scrollbar
      ScbTxtOvrigText = Scrollbar(nyMaskin, orient="vertical")
      ScbTxtOvrigText.grid(row = 10, column = 3, sticky = N+S+E, rowspan = 4)
-     ScbTxtOvrigText.config(command =TxtOvrigText.yview)
+     ScbTxtOvrigText.config(command =TxtOvrigtext.yview)
 
-     TxtOvrigText.config(yscrollcommand=ScbTxtOvrigText.set) 
+     TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set) 
 
 
 
@@ -1400,12 +1416,12 @@ def nyMaskin(Typ):
      
 
      ScbLbMaskintillbehor = Scrollbar(nyMaskin, orient="vertical")
-     ScbLbMaskintillbehor.grid(row = 16, column = 5, sticky = N+S+E, rowspan = 4)
+     ScbLbMaskintillbehor.grid(row = 16, column = 6, sticky = N+S+W, rowspan = 4)
      ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
      lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 
      scbLbReferenser = Scrollbar(nyMaskin, orient="vertical")
-     scbLbReferenser.grid(row = 10, column=5, sticky = N+S+E, rowspan=4)
+     scbLbReferenser.grid(row = 10, column=6, sticky = N+S+W, rowspan=4)
      scbLbReferenser.config(command=lbMaskinreferens.yview)
      lbMaskinreferens.config(yscrollcommand=scbLbReferenser.set)
      
@@ -1421,12 +1437,6 @@ def nyMaskin(Typ):
           except:
                pass
           
-          try:
-               cursor.execute('SELECT Namn from forare where forarid ='+str(maskinInfo[40]))
-               forare = cursor.fetchone()
-          except:
-               pass
-
           try:
                txtMaskinnummermaskininfo.config(state=NORMAL)
                txtMaskinnummermaskininfo.delete('1.0', 'end')
@@ -1490,6 +1500,14 @@ def nyMaskin(Typ):
           except:
                pass
           
+          try:
+               TxtOvrigtext.config(state=NORMAL)
+               TxtOvrigtext.delete('1.0', 'end')
+               TxtOvrigtext.insert('end', maskinInfo[41])
+               TxtOvrigtext.config(state=DISABLED)
+          except:
+               pass
+
           try:
                txtMaskinmotoreffekt.config(state=NORMAL)
                txtMaskinmotoreffekt.delete('1.0', 'end')
@@ -1669,27 +1687,33 @@ def nyMaskin(Typ):
           except:
                pass
 
+          forarnamn=""
+          if maskinInfo[40] != None:
+               cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+               forarnamn = cursor.fetchone()
+
           try:
                txtMaskinforare.config(state=NORMAL)
                txtMaskinforare.delete('1.0', 'end')
-               txtMaskinforare.insert('end', forare)
+               txtMaskinforare.insert('end', forarnamn[0])
+               txtMaskinforare.config(state=DISABLED)
           except:
                pass
-
+          
           referenser = []     
           referenser.clear()
           if maskinInfo[40] != None:
                cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
                referenser = cursor.fetchall()
-
+               
           try:
                if lbMaskinreferens.index("end") != 0:
                     lbMaskinreferens.delete(0, "end")
                     for x in referenser:
-                         lbMaskinreferens.insert("end", x)
+                         lbMaskinreferens.insert("end", x[0])
                else:
                     for x in referenser:
-                         lbMaskinreferens.insert("end", x)
+                         lbMaskinreferens.insert("end", x[0])
           except:
                pass
 
@@ -1734,17 +1758,17 @@ def nyMaskin(Typ):
                     cbMaskinKollektivforsakring.state(['!disabled'])
           except:
                pass
-          
+
           cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
           tillbehor = cursor.fetchall()
-          
+     
           if lbMaskintillbehor.index("end") != 0:
                lbMaskintillbehor.delete(0, "end")
                for x in tillbehor:
-                    lbMaskintillbehor.insert("end", x)
+                    lbMaskintillbehor.insert("end", x[0])
           else:
                for x in tillbehor:
-                    lbMaskintillbehor.insert("end", x)
+                    lbMaskintillbehor.insert("end", x[0])
           
           cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
           maskiner = cursor.fetchall()
@@ -1849,7 +1873,7 @@ def fyllDelagarInfo():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -1958,7 +1982,7 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("1.jpg")  
+img = Image.open("c:/filer/OTAD/OTAD/1.jpg")  
 img = img.resize((225,200), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameOvrigText, image=img2)
@@ -2202,17 +2226,17 @@ txtMaskinkylvatskavolym=Text(frameMaskininfo, width = 20, height=0.1)
 txtMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
 
 #Textruta, fält för Övrig Text
-lblOvrigText = Label(frameMaskininfo, text="Övrig text")
-lblOvrigText.grid(column=2, row=9, sticky=W, padx=(10,0))
-TxtOvrigText = Text(frameMaskininfo, width = 20, height=4)
-TxtOvrigText.grid(row=10, column=2, columnspan=2, rowspan=3, sticky=NSEW, padx=(10,0))
+lblOvrigtext = Label(frameMaskininfo, text="Övrig text")
+lblOvrigtext.grid(column=2, row=9, sticky=W, padx=(10,0))
+TxtOvrigtext = Text(frameMaskininfo, width = 20, height=4)
+TxtOvrigtext.grid(row=10, column=2, columnspan=2, rowspan=3, sticky=NSEW, padx=(10,15))
 
 #Scrollbar
 ScbTxtOvrigText = Scrollbar(frameMaskininfo, orient="vertical")
 ScbTxtOvrigText.grid(row = 10, column = 3, sticky = N+S+E, rowspan = 3)
-ScbTxtOvrigText.config(command =TxtOvrigText.yview)
+ScbTxtOvrigText.config(command =TxtOvrigtext.yview)
 
-TxtOvrigText.config(yscrollcommand=ScbTxtOvrigText.set)
+TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set)
 
 #------------------------
 
@@ -2276,7 +2300,7 @@ lbMaskinreferens.grid(column=4, row=10, sticky=NSEW, padx=(10,0), columnspan=2, 
 
 #Scrollbar
 ScbTxtMaskinreferens = Scrollbar(frameMaskininfo, orient="vertical")
-ScbTxtMaskinreferens.grid(row = 10, column = 5, sticky = N+S+E, rowspan = 3)
+ScbTxtMaskinreferens.grid(row = 10, column = 6, sticky = W+N+S, rowspan = 3)
 ScbTxtMaskinreferens.config(command =LbMaskiner.yview)
 
 lbMaskinreferens.config(yscrollcommand=ScbTxtMaskinreferens.set)
@@ -2289,7 +2313,7 @@ lbMaskintillbehor.grid(column=4, row=15, rowspan=6, columnspan=2,sticky=NSEW, pa
 
 #Scrollbar
 ScbLbMaskintillbehor = Scrollbar(frameMaskininfo, orient="vertical")
-ScbLbMaskintillbehor.grid(row = 15, column = 5, sticky = N+S+E, rowspan = 6)
+ScbLbMaskintillbehor.grid(row = 15, column = 6, sticky = N+W+S, rowspan = 6)
 ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
 
 lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
