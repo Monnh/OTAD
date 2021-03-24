@@ -159,7 +159,6 @@ def maskinpresentation():     #behöver lägga till funktion för bilder
      for x in tillbehor:
           s = x[0]
           s+=", "
-          print(s)
           if y>12:
                rad5+=s
           elif y>9:
@@ -1100,7 +1099,6 @@ def nyMaskin(Typ):
                #sparaMaskinen
                pass
 
-     print(Typ)
 
      nyMaskin = Toplevel(root)
 
@@ -1766,7 +1764,7 @@ def fyllListboxDelagare():
           LbDelagare.insert("end", x)
 
 def fetchMaskiner(self):
-     global medlemsnummer, delagarInfo
+     global medlemsnummer
 
      selectedDelagare = LbDelagare.get(LbDelagare.curselection())
      stringSelectedDelagare = str(selectedDelagare[0])
@@ -1794,7 +1792,7 @@ def fetchMaskiner(self):
      fyllDelagarInfo()
 
 def fyllDelagarInfo():
-          global medlemsnummer, delagarInfo
+          global medlemsnummer
 
           cursor.execute('SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = ' + medlemsnummer + ';')
           delagarInfo = cursor.fetchone()
@@ -2033,6 +2031,37 @@ def tomDelagareInfo():
           txtTelefon.delete('1.0', 'end')
           txtTelefon.config(state=DISABLED)   
 
+def taBortMaskin():
+     global maskinnummer, medlemsnummer
+
+     response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + maskinnummer + "?")
+     if response == 1:          
+          cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + maskinnummer + ";")
+          db.commit() 
+
+          LbDelagaresMaskiner.delete(LbDelagaresMaskiner.curselection())
+          #hamtaDelagarensMaskiner()
+
+     else:
+          pass
+
+def hamtaDelagarensMaskiner():
+     global medlemsnummer
+     
+     cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+     maskiner = cursor.fetchall()
+     LbDelagaresMaskiner.selection_clear(0, "end")
+     if LbDelagaresMaskiner.index("end") != 0:
+          LbDelagaresMaskiner.delete(0, "end")
+          for x in maskiner:
+               LbDelagaresMaskiner.insert("end", x)
+     else:
+          for x in maskiner:
+               LbDelagaresMaskiner.insert("end", x)   
+     LbDelagaresMaskiner.selection_set(0)
+     maskinnummer = LbDelagaresMaskiner.get(0)
+     maskinnummer = maskinnummer[0]
+
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
@@ -2061,7 +2090,6 @@ tabControl.grid(column=0, row=0)
 
 medlemsnummer = ""
 maskinnummer = ""
-delagarInfo = ""
 
 #skapar textfält och textboxar
 #Label (root, text =" Medlemsnummer ") .grid(row=1, column=0, sticky=W)
@@ -2342,7 +2370,7 @@ btnAndramaskin.grid(column=4, row=22,sticky=E, pady=(20,0))
 btnBytmaskin=Button(frameMaskininfo, text="Byt maskin", command = lambda: nyMaskin("Byt"))
 btnBytmaskin.grid(column=5, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
-btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin")
+btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin", command  = lambda: taBortMaskin())
 btnTabortmaskin.grid(column=5, row=22, sticky=E, pady=(20,0))
 
 
