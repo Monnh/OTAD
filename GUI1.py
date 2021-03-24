@@ -10,12 +10,16 @@ import PIL
 import mysql.connector
 from tkinter import filedialog
 from tkcalendar import DateEntry
-from datetime import datetime
+from datetime import datetime,date
 import os
 
 #funktioner
 
-def miljodeklaration():       #flytta runt objekt
+
+def clickButton():
+     pass
+
+def miljodeklaration():
      global maskinnummer
 
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
@@ -51,17 +55,15 @@ def miljodeklaration():       #flytta runt objekt
      c.drawString(270, 540, str(maskinInfo[10]))
 
      #Eftermonterad avgasreninsutrustning
-     c.drawString(50, 480, str(maskinInfo[14]))
-     c.drawString(120, 480, str(maskinInfo[15]))
-     c.drawString(195, 480, str(maskinInfo[12]))
-     c.drawString(280, 480, str(maskinInfo[11]))
+     c.drawString(50, 482, str(maskinInfo[14]))
+     c.drawString(120, 482, str(maskinInfo[15]))
+     c.drawString(195, 482, str(maskinInfo[12]))
+     c.drawString(280, 482, str(maskinInfo[11]))
 
 
-     #Emissioner
-     c.drawString(337, 480, "-")
-     c.drawString(365, 480, "-")
-     c.drawString(393, 480, "-")
-     c.drawString(420, 480, "-")
+     #Bullernivå
+     c.drawString(340, 482, str(maskinInfo[29]))
+     c.drawString(430, 482, str(maskinInfo[31]))
 
      #Oljor och smörjmedel - Volym, liter
      c.drawString(50, 420, str(maskinInfo[16])) 
@@ -78,31 +80,31 @@ def miljodeklaration():       #flytta runt objekt
 
      #Övrigt
      c.drawString(50, 244, str(maskinInfo[13]))
-     c.drawString(125, 244, str(maskinInfo[29]))
+     c.drawString(125, 244, str(maskinInfo[37]))
      c.drawString(205, 244, str(maskinInfo[25]))
      c.drawString(375, 244, str(maskinInfo[35]))
-     c.drawString(475, 244, str(maskinInfo[37]))
+     c.drawString(470, 244, str(maskinInfo[38]))
      c.drawString(50, 210, str(maskinInfo[33]))
-     c.drawString(125, 210, str(maskinInfo[31]))
      c.drawString(205, 210, str(maskinInfo[34]))
      c.drawString(375, 210, str(maskinInfo[36]))
-     c.drawString(475, 210, str(maskinInfo[38]))
+     c.drawString(470, 210, str(maskinInfo[39]))
 
      #Bränsle
      c.drawString(50, 155, str(maskinInfo[23]))
      c.drawString(125, 155, str( maskinInfo[7]))
-     #c.drawString(210, 155, str(maskinInfo[20]))
-     #c.drawString(330, 155, str(maskinInfo[32]))
 
-     #Försärking
+     #Försärking 
      c.drawString(50, 102, str(maskinInfo[3]))
+
+     #Datum
+     c.drawString(435, 56, str(datetime.date(datetime.now())))
 
      c.save()
 
      packet.seek(0)
      new_pdf = PdfFileReader(packet)
 
-     existing_pdf = PdfFileReader(open("miljodeklaration.pdf", "rb"))
+     existing_pdf = PdfFileReader(open("miljödeklaration.pdf", "rb"))
      output = PdfFileWriter()
 
      page = existing_pdf.getPage(0)
@@ -113,7 +115,7 @@ def miljodeklaration():       #flytta runt objekt
      output.write(outputStream)
      outputStream.close()
 
-def maskinpresentation():     #behöver lägga till funktion för bilder + finslipa tillbehör
+def maskinpresentation():     #behöver lägga till funktion för bilder
      global maskinnummer
 
      cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forarid FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
@@ -580,9 +582,6 @@ def fyllMaskinInfo(self):
 
 
      tabControl.select(delagare)
-
-def clickButton():
-     pass
 
 def fyllMaskinInfoIgen(self):
      global maskinnummer
@@ -1077,13 +1076,14 @@ def nyDelagare(Typ):
 def taBortDelagare():
      global medlemsnummer
 
-     response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort delägare nr. " + medlemsnummer + "? \n Detta tar även bort alla maskiner på detta medlemsnummer.")
+     response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort delägare nr. " + medlemsnummer + "? \nDetta tar även bort alla maskiner på detta medlemsnummer.")
      if response == 1:
           cursor.execute("DELETE FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + ";")
           cursor.execute("DELETE FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + ";" )
           db.commit()
-          medlemsnummer = "113"
-          fyllDelagarInfo()
+          medlemsnummer = ""
+          tomMaskinInfo()
+          tomDelagareInfo()
           fyllListboxDelagare()
 
      else:
@@ -1843,13 +1843,201 @@ def fyllDelagarInfo():
           except:
                pass
 
+def tomMaskinInfo():
+     
+          txtMaskinnummermaskininfo.config(state=NORMAL)
+          txtMaskinnummermaskininfo.delete('1.0', 'end')
+          txtMaskinnummermaskininfo.config(state=DISABLED)
 
+          txtMaskinbeteckning.config(state=NORMAL)
+          txtMaskinbeteckning.delete('1.0', 'end')
+          txtMaskinbeteckning.config(state=DISABLED)
+
+          txtMaskinme_klass.config(state=NORMAL)
+          txtMaskinme_klass.delete('1.0', 'end')
+          txtMaskinme_klass.config(state=DISABLED)
+
+          txtMaskinmotorfabrikat.config(state=NORMAL)
+          txtMaskinmotorfabrikat.delete('1.0', 'end')
+          txtMaskinmotorfabrikat.config(state=DISABLED)
+
+          txtMaskinmotortyp.config(state=NORMAL)
+          txtMaskinmotortyp.delete('1.0', 'end')
+          txtMaskinmotortyp.config(state=DISABLED)
+
+          txtMaskinmotor.config(state=NORMAL)
+          txtMaskinmotor.delete('1.0', 'end')
+          txtMaskinmotor.config(state=DISABLED)
+
+          txtMaskinvaxellada.config(state=NORMAL)
+          txtMaskinvaxellada.delete('1.0', 'end')
+          txtMaskinvaxellada.config(state=DISABLED)
+
+          txtMaskinhydraulsystem.config(state=NORMAL)
+          txtMaskinhydraulsystem.delete('1.0', 'end')
+          txtMaskinhydraulsystem.config(state=DISABLED)
+
+          txtMaskinkylvatska.config(state=NORMAL)
+          txtMaskinkylvatska.delete('1.0', 'end')
+          txtMaskinkylvatska.config(state=DISABLED)
+
+          txtMaskinmotoreffekt.config(state=NORMAL)
+          txtMaskinmotoreffekt.delete('1.0', 'end')
+          txtMaskinmotoreffekt.config(state=DISABLED)
+
+          txtMaskinmotorvarmare.config(state=NORMAL)
+          txtMaskinmotorvarmare.delete('1.0', 'end')
+          txtMaskinmotorvarmare.config(state=DISABLED)
+
+          txtMaskinkatalysator.config(state=NORMAL)
+          txtMaskinkatalysator.delete('1.0', 'end')
+          txtMaskinkatalysator.config(state=DISABLED)
+
+          txtMaskinpartikelfilter.config(state=NORMAL)
+          txtMaskinpartikelfilter.delete('1.0', 'end')
+          txtMaskinpartikelfilter.config(state=DISABLED)
+
+          txtMaskinvattenbaseradlack.config(state=NORMAL)
+          txtMaskinvattenbaseradlack.delete('1.0', 'end')
+          txtMaskinvattenbaseradlack.config(state=DISABLED)
+
+          txtMaskinkylmedia.config(state=NORMAL)
+          txtMaskinkylmedia.delete('1.0', 'end')
+          txtMaskinkylmedia.config(state=DISABLED)
+
+          txtMaskinbullernivautv.config(state=NORMAL)
+          txtMaskinbullernivautv.delete('1.0', 'end')
+          txtMaskinbullernivautv.config(state=DISABLED)
+
+          txtMaskinbullernivainv.config(state=NORMAL)
+          txtMaskinbullernivainv.delete('1.0', 'end')
+          txtMaskinbullernivainv.config(state=DISABLED)
+
+          txtMaskinsmorjfett.config(state=NORMAL)
+          txtMaskinsmorjfett.delete('1.0', 'end')
+          txtMaskinsmorjfett.config(state=DISABLED)
+
+          txtMaskinBatterityp.config(state=NORMAL)
+          txtMaskinBatterityp.delete('1.0', 'end')
+          txtMaskinBatterityp.config(state=DISABLED)
+
+          txtMaskinperiod.config(state=NORMAL)
+          txtMaskinperiod.delete('1.0', 'end')
+          txtMaskinperiod.config(state=DISABLED)
+
+          txtMaskinarsbelopp.config(state=NORMAL)
+          txtMaskinarsbelopp.delete('1.0', 'end')
+          txtMaskinarsbelopp.config(state=DISABLED)
+
+          txtMaskinmiljostatus.config(state=NORMAL)
+          txtMaskinmiljostatus.delete('1.0', 'end')
+          txtMaskinmiljostatus.config(state=DISABLED)
+
+          txtMaskinarsmodell.config(state=NORMAL)
+          txtMaskinarsmodell.delete('1.0', 'end')
+          txtMaskinarsmodell.config(state=DISABLED)
+
+          txtMaskinregistreringsnummer.config(state=NORMAL)
+          txtMaskinregistreringsnummer.delete('1.0', 'end')
+          txtMaskinregistreringsnummer.config(state=DISABLED)
+
+          txtMaskintyp.config(state=NORMAL)
+          txtMaskintyp.delete('1.0', 'end')
+          txtMaskintyp.config(state=DISABLED)
+
+          txtMaskinmotoroljevolym.config(state=NORMAL)
+          txtMaskinmotoroljevolym.delete('1.0', 'end')
+          txtMaskinmotoroljevolym.config(state=DISABLED)
+
+          txtMaskinvaxelladevolym.config(state=NORMAL)
+          txtMaskinvaxelladevolym.delete('1.0', 'end')
+          txtMaskinvaxelladevolym.config(state=DISABLED)
+
+          txtMaskinhydraulsystemvolym.config(state=NORMAL)
+          txtMaskinhydraulsystemvolym.delete('1.0', 'end')
+          txtMaskinhydraulsystemvolym.config(state=DISABLED)
+
+          txtMaskinkylvatskavolym.config(state=NORMAL)
+          txtMaskinkylvatskavolym.delete('1.0', 'end')
+          txtMaskinkylvatskavolym.config(state=DISABLED)
+
+          txtMaskinbransle.config(state=NORMAL)
+          txtMaskinbransle.delete('1.0', 'end')
+          txtMaskinbransle.config(state=DISABLED)
+
+          txtMaskindackfabrikat.config(state=NORMAL)
+          txtMaskindackfabrikat.delete('1.0', 'end')
+          txtMaskindackfabrikat.config(state=DISABLED)
+
+          txtMaskindimension.config(state=NORMAL)
+          txtMaskindimension.delete('1.0', 'end')
+          txtMaskindimension.config(state=DISABLED)
+
+          txtMaskingasolanlaggning.config(state=NORMAL)
+          txtMaskingasolanlaggning.delete('1.0', 'end')
+          txtMaskingasolanlaggning.config(state=DISABLED)
+
+          txtMaskinSaneringsvatska.config(state=NORMAL)
+          txtMaskinSaneringsvatska.delete('1.0', 'end')
+          txtMaskinSaneringsvatska.config(state=DISABLED)
+
+          txtMaskinforare.config(state=NORMAL)
+          txtMaskinforare.delete('1.0', 'end')
+          txtMaskinforare.config(state=DISABLED)
+
+          cbMaskininsatserlagd.state(['!selected'])
+          cbMaskininsatserlagd.state(['disabled'])
+
+          cbMaskinregummerade.state(['!selected'])
+          cbMaskinregummerade.state(['disabled'])
+
+          cbMaskinregummerbara.state(['!selected'])
+          cbMaskinregummerbara.state(['disabled'])
+
+          cbMaskinKollektivforsakring.state(['!selected'])
+          cbMaskinKollektivforsakring.state(['disabled'])
+
+          lbMaskinreferens.delete(0, "end")
+          lbMaskintillbehor.delete(0, "end")
+          LbDelagaresMaskiner.delete(0, "end")
+
+def tomDelagareInfo():
+          
+          txtMedlemsnummerDelagare.delete('1.0', 'end')
+          
+          txtForetag.config(state=NORMAL)
+          txtForetag.delete('1.0', 'end')
+          txtForetag.config(state=DISABLED)
+
+          txtFornamn.config(state=NORMAL)
+          txtFornamn.delete('1.0', 'end')
+          txtFornamn.config(state=DISABLED)
+
+          txtEfternamn.config(state=NORMAL)
+          txtEfternamn.delete('1.0', 'end')
+          txtEfternamn.config(state=DISABLED)
+
+          txtAdress.config(state=NORMAL)
+          txtAdress.delete('1.0', 'end')
+          txtAdress.config(state=DISABLED)
+
+          txtPostnummer.config(state=NORMAL)
+          txtPostnummer.delete('1.0', 'end')
+          txtPostnummer.config(state=DISABLED)
+
+          txtPostadress.config(state=NORMAL)
+          txtPostadress.delete('1.0', 'end')
+          txtPostadress.config(state=DISABLED)
+
+          txtTelefon.config(state=NORMAL)
+          txtTelefon.delete('1.0', 'end')
+          txtTelefon.config(state=DISABLED)   
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
