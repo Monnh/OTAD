@@ -35,6 +35,12 @@ def miljodeklaration():
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
 
+     for item in range(len(maskinInfo)):
+          if maskinInfo[item] == None:
+               maskinInfo[item] = ""
+          else:
+               pass
+
      #Översta delen
      c.drawString(130, 722, str(maskinInfo[4]))
      c.drawString(130, 702, str(delagarInfoLista[2]))
@@ -115,6 +121,7 @@ def miljodeklaration():
      outputStream = open( "miljödeklaration - " + maskinnummer + ".pdf", "wb")
      output.write(outputStream)
      outputStream.close()
+     os.startfile("miljödeklaration - " + maskinnummer + ".pdf" )
 
 def maskinpresentation():     #behöver lägga till funktion för bilder
      global maskinnummer
@@ -141,13 +148,14 @@ def maskinpresentation():     #behöver lägga till funktion för bilder
 
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
-     rad1 =""
+     rad1=""
      rad2=""
      rad3=""
      rad4=""
      rad5=""
      y=1
 
+     c.drawImage("1.jpg", 72, 132, 450, 340)
      c.drawString(133, 710, str(maskinInfo[0])) 
      c.drawString(455, 690, str(maskinInfo[1]))
      c.drawString(455, 670, str(maskinInfo[2]))
@@ -175,9 +183,6 @@ def maskinpresentation():     #behöver lägga till funktion för bilder
                y+=1
                rad1+=s         
 
-          
-          
-
 
      c.drawString(140, 558, str(rad1))
      c.drawString(140, 538, str(rad2))
@@ -203,7 +208,7 @@ def maskinpresentation():     #behöver lägga till funktion för bilder
      output.write(outputStream)
      outputStream.close()
      #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
-     os.startfile("maskinpresentation - "+maskinnummer + ".pdf" )
+     os.startfile("maskinpresentation - " + maskinnummer + ".pdf" )
 
 def fyllMaskinInfo(self):
      global maskinnummer
@@ -596,7 +601,6 @@ def fyllMaskinInfoIgen(self):
      
      maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
      maskinnummer = maskinnummer[0]
-     print(maskinnummer)
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
@@ -2046,7 +2050,6 @@ def tomMaskinInfo():
 
           lbMaskinreferens.delete(0, "end")
           lbMaskintillbehor.delete(0, "end")
-          
 
 def tomDelagareInfo():
           
@@ -2117,7 +2120,7 @@ def hamtaDelagarensMaskiner():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "sennaa66",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2175,11 +2178,11 @@ BtnInstallningar = Button (home, text ="Inställningar", width=16, command = cli
 BtnInstallningar.grid(row = 5, column =5, pady=(8,0))
 
 # skapar en listbox
-LbDelagare = Listbox(home, width = 50, exportselection=0)
+LbDelagare = Listbox(home, width = 50, height = 25, exportselection=0)
 LbDelagare.grid(row = 2, column = 1, columnspan = 2, rowspan = 2, padx=(0,10))
 LbDelagare.bind('<<ListboxSelect>>', fetchMaskiner)
 
-LbMaskiner = Listbox(home, width = 50, exportselection=0)
+LbMaskiner = Listbox(home, width = 50, height = 25, exportselection=0)
 LbMaskiner.grid(row = 2, column = 3, columnspan = 2, rowspan = 2)
 LbMaskiner.bind('<Double-Button>', fyllMaskinInfo)
 
@@ -2225,7 +2228,7 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("c:/filer/OTAD/OTAD/1.jpg")  
+img = Image.open("1.jpg")  
 img = img.resize((225,200), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameOvrigText, image=img2)
