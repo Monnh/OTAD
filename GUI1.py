@@ -1183,7 +1183,7 @@ def nyMaskinFonster(Typ):
           
           try:
                for x in tillbehorAttTaBort:
-                    #cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = " + x +";")     
+                    cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = " + x +";")     
                     print(x)
                #cursor.execute("INSERT INTO tillbehor " +  + WHERE Maskinnummer = " + Typ +";")
 
@@ -1481,7 +1481,7 @@ def nyMaskinFonster(Typ):
           response = messagebox.askyesno("Ta bort tillbehör", "Vill du ta bort " + lbMaskintillbehor.get(lbMaskintillbehor.curselection()) + "?")
           nyMaskin.lift()
           if response == True:
-               tillbehorAttTaBort.append(lbMaskintillbehor.curselection())
+               tillbehorAttTaBort.append(lbMaskintillbehor.get(lbMaskintillbehor.curselection()))
                lbMaskintillbehor.delete(lbMaskintillbehor.curselection())
 
          
