@@ -1178,9 +1178,17 @@ def nyMaskinFonster(Typ):
                #"', Regummerbar = '" + cbMaskinregummerbara.get() +  "', Regummerad = '" + cbMaskinregummerade.get() +
                #"', Maskininsats = '" + cbMaskininsatserlagd.get() + lbMaskinreferens + lbMaskintillbehor
                cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + txtMaskinnummermaskininfo.get('1.0','end') + "', MarkeModell = '" + txtMaskinbeteckning.get('1.0','end') + "', ME_Klass = '" + txtMaskinme_klass.get('1.0','end') + "', Motorfabrikat = '" + txtMaskinmotorfabrikat.get('1.0','end') + "', Motortyp = '" + txtMaskinmotortyp.get('1.0','end') + "', Motorolja = '" + txtMaskinmotor.get('1.0','end') + "', Vaxelladsolja = '" + txtMaskinvaxellada.get('1.0','end') + "', Hydraulolja = '" + txtMaskinhydraulsystem.get('1.0','end') + "', Kylvatska = '" + txtMaskinkylvatska.get('1.0','end') + "', Motoreffekt = '" + txtMaskinmotoreffekt.get('1.0','end') + "', Motorvarmare = '" + txtMaskinmotorvarmare.get('1.0','end') + "', Katalysator = '" + txtMaskinkatalysator.get('1.0','end') + "', Partikelfilter = '" + txtMaskinpartikelfilter.get('1.0','end') + "', Vattenbaseradlack = '" + txtMaskinvattenbaseradlack.get('1.0','end') + "', Kylmedia = '" + txtMaskinkylmedia.get('1.0','end') + "', Bullernivaute = '" + txtMaskinbullernivautv.get('1.0','end') + "', Bullernivainne = '" + txtMaskinbullernivainv.get('1.0','end') + "', Smorjfett = '" + txtMaskinsmorjfett.get('1.0','end') + "', Batterityp = '" + txtMaskinBatterityp.get('1.0','end') + "', Arsbelopp = '" + txtMaskinarsbelopp.get('1.0','end') + "', Miljostatus = '" + txtMaskinmiljostatus.get('1.0','end') + "', Arsmodell = '" + txtMaskinarsmodell.get('1.0','end') + "', Registreringsnummer = '" + txtMaskinregistreringsnummer.get('1.0','end') + "', Maskintyp = '" + txtMaskintyp.get('1.0','end') + "', Motorvolymolja = '" + txtMaskinmotoroljevolym.get('1.0','end') + "', Vaxelladavolym = '" + txtMaskinvaxelladevolym.get('1.0','end') + "', Hydraulvolym = '" + txtMaskinhydraulsystemvolym.get('1.0','end') + "', Kylvatskavolym = '" + txtMaskinkylvatskavolym.get('1.0','end') + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + txtMaskinbransle.get('1.0','end') + "', Dackfabrikat = '" + txtMaskindackfabrikat.get('1.0','end') + "', Dimension = '" + txtMaskindimension.get('1.0','end') + "', Gasol = '" + txtMaskingasolanlaggning.get('1.0','end') + "', Saneringsvatska = '" + txtMaskinSaneringsvatska.get('1.0','end') + "'WHERE Maskinnummer = " + Typ +";")
-               #cursor.execute("UPDATE maskinregister SET Maskininsats = '" + cbMaskininsatserlagd.instate('selected') + "' WHERE Maskinnummer = " + Typ +";")
           except Exception:
                traceback.print_exc()
+          
+          try:
+               for x in tillbehorAttTaBort:
+                    #cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = " + x +";")     
+                    print(x)
+               #cursor.execute("INSERT INTO tillbehor " +  + WHERE Maskinnummer = " + Typ +";")
+
+          except:
+               pass
           db.commit()
           fyllMaskinInfo(Typ)
 
@@ -1383,11 +1391,6 @@ def nyMaskinFonster(Typ):
 
      TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set) 
 
-
-
-
-         
-
      def fileDialog():
  
           global img3
@@ -1471,16 +1474,21 @@ def nyMaskinFonster(Typ):
      txtMaskintillbehor=Text(nyMaskin, width = 20, height=0.1)
      txtMaskintillbehor.grid(column=5, row=15, sticky=W, padx=(10,0))
 
+     tillbehorAttTaBort=[]
 
-     #def addTillbehor():
-     
-     #     txt = txtMaskintillbehor.get('1.0','end')
-     #     lbMaskintillbehor.insert('end',txt)
-     #     txtMaskintillbehor.delete('1.0','end')
+     def taBortTillbehor(self):
+          nyMaskin.lift()
+          response = messagebox.askyesno("Ta bort tillbehör", "Vill du ta bort " + lbMaskintillbehor.get(lbMaskintillbehor.curselection()) + "?")
+          nyMaskin.lift()
+          if response == True:
+               tillbehorAttTaBort.append(lbMaskintillbehor.curselection())
+               lbMaskintillbehor.delete(lbMaskintillbehor.curselection())
+
+         
      
      lbMaskintillbehor = Listbox(nyMaskin, height=4)
-     lbMaskintillbehor.grid(column=4, row=16, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0), pady=(5,5))
-     
+     lbMaskintillbehor.bind('<Double-Button>', taBortTillbehor)
+     lbMaskintillbehor.grid(column=4, row=16, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0), pady=(5,5))  
 
      ScbLbMaskintillbehor = Scrollbar(nyMaskin, orient="vertical")
      ScbLbMaskintillbehor.grid(row = 16, column = 6, sticky = N+S+W, rowspan = 4)
