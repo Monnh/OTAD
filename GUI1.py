@@ -584,12 +584,11 @@ def fyllMaskinInfo(self):
 
 def fyllMaskinInfoIgen(self):
      global maskinnummer
-
-     selectedMaskin = LbMaskiner.get(LbDelagaresMaskiner.curselection())
-     index2 = selectedMaskin.index(" ")
-     stringSelectedMaskin = str(selectedMaskin[0:index2])
-     maskinnummer = "".join(stringSelectedMaskin)
-     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     
+     maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
+     maskinnummer = maskinnummer[0]
+     print(maskinnummer)
+     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
 
@@ -935,7 +934,7 @@ def fyllMaskinInfoIgen(self):
      except:
           pass
      
-     cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
+     cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      tillbehor = cursor.fetchall()
      
      if lbMaskintillbehor.index("end") != 0:
@@ -1997,7 +1996,7 @@ def tomMaskinInfo():
 
           lbMaskinreferens.delete(0, "end")
           lbMaskintillbehor.delete(0, "end")
-          LbDelagaresMaskiner.delete(0, "end")
+          
 
 def tomDelagareInfo():
           
@@ -2034,13 +2033,12 @@ def tomDelagareInfo():
 def taBortMaskin():
      global maskinnummer, medlemsnummer
 
-     response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + maskinnummer + "?")
+     response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + str(maskinnummer) + "?")
      if response == 1:          
-          cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + maskinnummer + ";")
+          cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
           db.commit() 
 
-          LbDelagaresMaskiner.delete(LbDelagaresMaskiner.curselection())
-          #hamtaDelagarensMaskiner()
+          hamtaDelagarensMaskiner()
 
      else:
           pass
@@ -2061,12 +2059,15 @@ def hamtaDelagarensMaskiner():
      LbDelagaresMaskiner.selection_set(0)
      maskinnummer = LbDelagaresMaskiner.get(0)
      maskinnummer = maskinnummer[0]
+     tomMaskinInfo()
+     fyllMaskinInfoIgen(maskinnummer)
+     
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
