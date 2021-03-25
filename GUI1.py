@@ -527,7 +527,7 @@ def fyllMaskinInfo(self):
           pass
 
      try:
-          if maskinInfo[28] == "Ja":
+          if maskinInfo[28] == 1:
                cbMaskininsatserlagd.state(['selected'])
                cbMaskininsatserlagd.state(['disabled'])
           else:
@@ -537,7 +537,7 @@ def fyllMaskinInfo(self):
           pass
      
      try:
-          if maskinInfo[36] == "Ja":
+          if maskinInfo[36] == 1:
                cbMaskinregummerade.state(['selected'])
                cbMaskinregummerade.state(['disabled'])
           else:
@@ -547,7 +547,7 @@ def fyllMaskinInfo(self):
           pass
 
      try:
-          if maskinInfo[35] == "Ja":
+          if maskinInfo[35] == 1:
                cbMaskinregummerbara.state(['selected'])
                cbMaskinregummerbara.state(['disabled'])
           else:
@@ -557,7 +557,7 @@ def fyllMaskinInfo(self):
           pass
 
      try:
-          if maskinInfo[3] == "Förs. Kollektiv Länsförsäkringar":
+          if maskinInfo[3] == 1:
                cbMaskinKollektivforsakring.state(['selected'])
                cbMaskinKollektivforsakring.state(['disabled'])
           else:
@@ -912,7 +912,7 @@ def fyllMaskinInfoIgen(self):
           pass
 
      try:
-          if maskinInfo[28] == "Ja":
+          if maskinInfo[28] == 1:
                cbMaskininsatserlagd.state(['selected'])
                cbMaskininsatserlagd.state(['disabled'])
           else:
@@ -922,7 +922,7 @@ def fyllMaskinInfoIgen(self):
           pass
      
      try:
-          if maskinInfo[36] == "Ja":
+          if maskinInfo[36] == 1:
                cbMaskinregummerade.state(['selected'])
                cbMaskinregummerade.state(['disabled'])
           else:
@@ -932,7 +932,7 @@ def fyllMaskinInfoIgen(self):
           pass
 
      try:
-          if maskinInfo[35] == "Ja":
+          if maskinInfo[35] == 1:
                cbMaskinregummerbara.state(['selected'])
                cbMaskinregummerbara.state(['disabled'])
           else:
@@ -942,7 +942,7 @@ def fyllMaskinInfoIgen(self):
           pass
 
      try:
-          if maskinInfo[3] == "Förs. Kollektiv Länsförsäkringar":
+          if maskinInfo[3] == 1:
                cbMaskinKollektivforsakring.state(['selected'])
                cbMaskinKollektivforsakring.state(['disabled'])
           else:
@@ -1125,6 +1125,50 @@ def nyMaskinFonster(Typ):
                     print("Kunde inte ändra maskin")
 
      def andraMaskin(Typ):
+          
+          if cbMaskinregummerbara.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET regummerbar = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET regummerbar = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          
+          if cbMaskinregummerade.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET regummerad = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET regummerad = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          
+          if cbMaskinKollektivforsakring.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Forsakring = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Forsakring = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          
+          if cbMaskininsatserlagd.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Maskininsats = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Maskininsats = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
           try:
 
                #"', Forarid = (SELECT Forarid FROM Forare where Namn = '" + txtMaskinforare.get()"')'" 
@@ -1134,7 +1178,7 @@ def nyMaskinFonster(Typ):
                #"', Regummerbar = '" + cbMaskinregummerbara.get() +  "', Regummerad = '" + cbMaskinregummerade.get() +
                #"', Maskininsats = '" + cbMaskininsatserlagd.get() + lbMaskinreferens + lbMaskintillbehor
                cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + txtMaskinnummermaskininfo.get('1.0','end') + "', MarkeModell = '" + txtMaskinbeteckning.get('1.0','end') + "', ME_Klass = '" + txtMaskinme_klass.get('1.0','end') + "', Motorfabrikat = '" + txtMaskinmotorfabrikat.get('1.0','end') + "', Motortyp = '" + txtMaskinmotortyp.get('1.0','end') + "', Motorolja = '" + txtMaskinmotor.get('1.0','end') + "', Vaxelladsolja = '" + txtMaskinvaxellada.get('1.0','end') + "', Hydraulolja = '" + txtMaskinhydraulsystem.get('1.0','end') + "', Kylvatska = '" + txtMaskinkylvatska.get('1.0','end') + "', Motoreffekt = '" + txtMaskinmotoreffekt.get('1.0','end') + "', Motorvarmare = '" + txtMaskinmotorvarmare.get('1.0','end') + "', Katalysator = '" + txtMaskinkatalysator.get('1.0','end') + "', Partikelfilter = '" + txtMaskinpartikelfilter.get('1.0','end') + "', Vattenbaseradlack = '" + txtMaskinvattenbaseradlack.get('1.0','end') + "', Kylmedia = '" + txtMaskinkylmedia.get('1.0','end') + "', Bullernivaute = '" + txtMaskinbullernivautv.get('1.0','end') + "', Bullernivainne = '" + txtMaskinbullernivainv.get('1.0','end') + "', Smorjfett = '" + txtMaskinsmorjfett.get('1.0','end') + "', Batterityp = '" + txtMaskinBatterityp.get('1.0','end') + "', Arsbelopp = '" + txtMaskinarsbelopp.get('1.0','end') + "', Miljostatus = '" + txtMaskinmiljostatus.get('1.0','end') + "', Arsmodell = '" + txtMaskinarsmodell.get('1.0','end') + "', Registreringsnummer = '" + txtMaskinregistreringsnummer.get('1.0','end') + "', Maskintyp = '" + txtMaskintyp.get('1.0','end') + "', Motorvolymolja = '" + txtMaskinmotoroljevolym.get('1.0','end') + "', Vaxelladavolym = '" + txtMaskinvaxelladevolym.get('1.0','end') + "', Hydraulvolym = '" + txtMaskinhydraulsystemvolym.get('1.0','end') + "', Kylvatskavolym = '" + txtMaskinkylvatskavolym.get('1.0','end') + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + txtMaskinbransle.get('1.0','end') + "', Dackfabrikat = '" + txtMaskindackfabrikat.get('1.0','end') + "', Dimension = '" + txtMaskindimension.get('1.0','end') + "', Gasol = '" + txtMaskingasolanlaggning.get('1.0','end') + "', Saneringsvatska = '" + txtMaskinSaneringsvatska.get('1.0','end') + "'WHERE Maskinnummer = " + Typ +";")
-               #cursor.execute("UPDATE maskinregister SET Motorolja = '" + txtMaskinmotor.get('1.0','end') + "' WHERE Maskinnummer = " + Typ +";")
+               #cursor.execute("UPDATE maskinregister SET Maskininsats = '" + cbMaskininsatserlagd.instate('selected') + "' WHERE Maskinnummer = " + Typ +";")
           except Exception:
                traceback.print_exc()
           db.commit()
@@ -1741,19 +1785,17 @@ def nyMaskinFonster(Typ):
                pass
 
           try: 
-               if maskinInfo[28] == "Ja":
+               if maskinInfo[28] == 1:
                     cbMaskininsatserlagd.state(['selected'])
                     cbMaskininsatserlagd.state(['!disabled'])
-                    print("Ja")
                else:
                     cbMaskininsatserlagd.state(['!selected'])
                     cbMaskininsatserlagd.state(['!disabled'])
-                    print("Nej")
           except:
                pass
           
           try:
-               if maskinInfo[36] == "Ja":
+               if maskinInfo[36] == 1:
                     cbMaskinregummerade.state(['selected'])
                     cbMaskinregummerade.state(['!disabled'])
                else:
@@ -1763,7 +1805,7 @@ def nyMaskinFonster(Typ):
                pass
 
           try:
-               if maskinInfo[35] == "Ja":
+               if maskinInfo[35] == 1:
                     cbMaskinregummerbara.state(['selected'])
                     cbMaskinregummerbara.state(['!disabled'])
                else:
@@ -1773,7 +1815,7 @@ def nyMaskinFonster(Typ):
                pass
 
           try:
-               if maskinInfo[3] == "Förs. Kollektiv Länsförsäkringar":
+               if maskinInfo[3] == 1:
                     cbMaskinKollektivforsakring.state(['selected'])
                     cbMaskinKollektivforsakring.state(['!disabled'])
                else:
