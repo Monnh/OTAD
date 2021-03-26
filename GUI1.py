@@ -904,10 +904,10 @@ def fyllMaskinInfoIgen(self):
           if lbMaskinreferens.index("end") != 0:
                lbMaskinreferens.delete(0, "end")
                for x in referenser:
-                    lbMaskinreferens.insert("end", x)
+                    lbMaskinreferens.insert("end", x[0])
           else:
                for x in referenser:
-                    lbMaskinreferens.insert("end", x)
+                    lbMaskinreferens.insert("end", x[0])
      except:
           pass
 
@@ -957,10 +957,10 @@ def fyllMaskinInfoIgen(self):
      if lbMaskintillbehor.index("end") != 0:
           lbMaskintillbehor.delete(0, "end")
           for x in tillbehor:
-               lbMaskintillbehor.insert("end", x)
+               lbMaskintillbehor.insert("end", x[0])
      else:
           for x in tillbehor:
-               lbMaskintillbehor.insert("end", x)
+               lbMaskintillbehor.insert("end", x[0])
      
 def nyDelagare(Typ):
      global medlemsnummer
@@ -1183,12 +1183,20 @@ def nyMaskinFonster(Typ):
           
           try:
                for x in tillbehorAttTaBort:
-                    cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = " + x +";")     
-                    print(x)
+                    cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")     
+                    
                #cursor.execute("INSERT INTO tillbehor " +  + WHERE Maskinnummer = " + Typ +";")
 
-          except:
-               pass
+          except Exception:
+               traceback.print_exc()
+
+          try:
+               for x in tillbehorAttLaggaTill:
+                    print(x)
+                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + Typ + ");" )
+
+          except Exception:
+               traceback.print_exc()
           db.commit()
           fyllMaskinInfo(Typ)
 
@@ -1475,6 +1483,7 @@ def nyMaskinFonster(Typ):
      txtMaskintillbehor.grid(column=5, row=15, sticky=W, padx=(10,0))
 
      tillbehorAttTaBort=[]
+     tillbehorAttLaggaTill=[]
 
      def taBortTillbehor(self):
           nyMaskin.lift()
@@ -1482,6 +1491,10 @@ def nyMaskinFonster(Typ):
           nyMaskin.lift()
           if response == True:
                tillbehorAttTaBort.append(lbMaskintillbehor.get(lbMaskintillbehor.curselection()))
+               try:
+                    tillbehorAttLaggaTill.remove(lbMaskintillbehor.get(lbMaskintillbehor.curselection()))
+               except:
+                    pass
                lbMaskintillbehor.delete(lbMaskintillbehor.curselection())
 
          
@@ -1500,7 +1513,7 @@ def nyMaskinFonster(Typ):
      scbLbReferenser.config(command=lbMaskinreferens.yview)
      lbMaskinreferens.config(yscrollcommand=scbLbReferenser.set)
      
-     txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
+     txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), tillbehorAttLaggaTill.append(txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
      txtMaskinreferens.bind('<Return>', lambda x: (lbMaskinreferens.insert('end', txtMaskinreferens.get('1.0', 'end')), txtMaskinreferens.delete('1.0','end')))
      #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
 
@@ -1832,7 +1845,7 @@ def nyMaskinFonster(Typ):
           except:
                pass
 
-          cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
+          cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
           tillbehor = cursor.fetchall()
      
           if lbMaskintillbehor.index("end") != 0:
