@@ -1811,16 +1811,31 @@ def nyMaskinFonster(Typ):
 def fyllListboxDelagare():
 
      cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn FROM foretagsregister")
+     delagareLista = []
      delagareLista = cursor.fetchall()
      LbDelagare.delete(0, 'end')
-     for x in delagareLista:
-          LbDelagare.insert("end", x)
+     for item in delagareLista:
+         for item in delagareLista:
+               item = list(item)
+               if item[1] == None:
+                    item[1] = ""
+               if item[2] == None:
+                    item[2] = ""
+               s=""
+               s += str(item[0])
+               s+= " "
+               s+=str(item[1])
+               s+= " "
+               s+=str(item[2])                              
+               
+               LbDelagare.insert("end", s)
 
 def fetchMaskiner(self):
      global medlemsnummer
 
      selectedDelagare = LbDelagare.get(LbDelagare.curselection())
-     stringSelectedDelagare = str(selectedDelagare[0])
+     indexSpace = selectedDelagare.index(" ")
+     stringSelectedDelagare = str(selectedDelagare[0:indexSpace])
      delagare = "".join(stringSelectedDelagare)
      medlemsnummer = delagare
      cursor.execute('SELECT Maskinnummer, MarkeModell, Arsmodell FROM maskinregister WHERE Medlemsnummer = ' + delagare + ';')
@@ -2090,9 +2105,7 @@ def taBortMaskin():
      if response == 1:          
           cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
           db.commit() 
-
           hamtaDelagarensMaskiner()
-
      else:
           pass
 
@@ -2115,6 +2128,13 @@ def hamtaDelagarensMaskiner():
      tomMaskinInfo()
      fyllMaskinInfoIgen(maskinnummer)
      
+def hamtaDelagare(medlemsnr):
+     global medlemsnummer
+
+     medlemsnummer = medlemsnr
+
+     fyllDelagarInfo()
+     hamtaDelagarensMaskiner()
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
@@ -2146,22 +2166,19 @@ medlemsnummer = ""
 maskinnummer = ""
 
 #skapar textfält och textboxar
-#Label (root, text =" Medlemsnummer ") .grid(row=1, column=0, sticky=W)
 EntMedlemsnummer = Entry(home, width=20, text = "Medlemsnummer") 
-EntMedlemsnummer.grid(row=1, column=1, sticky = "w", pady = 10)
+EntMedlemsnummer.grid(row=1, column=1, pady = 10)
 EntMedlemsnummer.insert(0,"Medlemsnummer")
 EntMedlemsnummer.bind("<FocusIn>", lambda args: EntMedlemsnummer.delete('0', 'end'))
+
+EntMaskinnummer = Entry(home, width=20, text ="Maskinnummer") 
+EntMaskinnummer.grid(row=1, column=3)
+EntMaskinnummer.insert(0, "Maskinnummer")
+EntMaskinnummer.bind("<FocusIn>", lambda args: EntMaskinnummer.delete('0', 'end'))
 
 BtnMedlemsnummerSok = Button(home, text = "Sök", width = 5, height = 1) 
 BtnMedlemsnummerSok.grid (row = 1, column = 2, sticky ="w")
 
-#Label (root, text =" Maskinnummer ") .grid(row=1, column=2, sticky=W)
-EntMaskinnummer = Entry(home, width=20, text ="Maskinnummer") 
-EntMaskinnummer.grid(row=1, column=3, sticky = "w")
-EntMaskinnummer.insert(0, "Maskinnummer")
-EntMaskinnummer.bind("<FocusIn>", lambda args: EntMaskinnummer.delete('0', 'end'))
-
-#skapar en knapp
 BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: clickButton()) 
 BtnMaskinnummerSok.grid(row=1, column=4, sticky ="w")
 
@@ -2169,17 +2186,17 @@ BtnNyDelagare = Button (home, text ="Ny delägare", command = lambda: nyDelagare
 BtnNyDelagare.grid(row = 2, column = 5, padx= 10, sticky="n")
 
 BtnRapport = Button (home, text = "Rapport", width = 9, command = clickButton)
-BtnRapport.grid(row = 2, column =5)
+BtnRapport.grid(row = 2, column =5, sticky = N, pady=(50, 50))
 
 BtnUppdateraForsakring = Button (home, text="Uppdatera försäkring", command = clickButton)
-BtnUppdateraForsakring.grid(row = 4, column = 5)
+BtnUppdateraForsakring.grid(row = 2, column = 5, sticky = N, pady=(100, 50))
 
-BtnInstallningar = Button (home, text ="Inställningar", width=16, command = clickButton)
-BtnInstallningar.grid(row = 5, column =5, pady=(8,0))
+BtnInstallningar = Button (home, text ="Inställningar", command = clickButton)
+BtnInstallningar.grid(row = 2, column =5, stick = N, pady=(150, 50))
 
 # skapar en listbox
 LbDelagare = Listbox(home, width = 50, height = 25, exportselection=0)
-LbDelagare.grid(row = 2, column = 1, columnspan = 2, rowspan = 2, padx=(0,10))
+LbDelagare.grid(row = 2, column = 1, columnspan = 2, rowspan = 2, padx=(5,10))
 LbDelagare.bind('<<ListboxSelect>>', fetchMaskiner)
 
 LbMaskiner = Listbox(home, width = 50, height = 25, exportselection=0)
@@ -2239,7 +2256,12 @@ img_label.grid(row=0, column=0, sticky = NW)
 lblMedlemsnummer = Label(frameDelagare, text = "Medlemsnr.")
 lblMedlemsnummer.grid(row = 1, column = 0, sticky=W, pady=(0,8))
 txtMedlemsnummerDelagare = Text(frameDelagare, width = 5, height=0.1)
-txtMedlemsnummerDelagare.grid(row = 1, column =1, sticky = W )
+txtMedlemsnummerDelagare.grid(row = 1, column =1, sticky = W)
+
+entSokMedlem = Entry(frameDelagare, width = 5)
+entSokMedlem.grid(row = 1, column =1, sticky=E, padx=(40, 40))
+btnSokMedlem = Button(frameDelagare, text = "Sök", command= lambda: hamtaDelagare(entSokMedlem.get()))
+btnSokMedlem.grid(row =1, column = 1, sticky=E)
 
 lblForetag = Label(frameDelagare, text = "Företag")
 lblForetag.grid(row = 2, column = 0, sticky=W, pady=(0,8))
@@ -2567,10 +2589,24 @@ lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 
 cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn FROM foretagsregister")
 delagareLista = cursor.fetchall()
+delagareLista = list(delagareLista)
 
 if LbDelagare.index("end") == 0:
-     for x in delagareLista:
-          LbDelagare.insert("end", x)
+     for item in delagareLista:
+          item = list(item)
+          if item[1] == None:
+               item[1] = ""
+          if item[2] == None:
+               item[2] = ""
+
+          s=""
+          s += str(item[0])
+          s+= " "
+          s+=str(item[1])
+          s+= " "
+          s+=str(item[2])                              
+          
+          LbDelagare.insert("end", s)
 
 # kör fönstret
 root.mainloop()
