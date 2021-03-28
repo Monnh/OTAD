@@ -2136,6 +2136,53 @@ def hamtaDelagare(medlemsnr):
      fyllDelagarInfo()
      hamtaDelagarensMaskiner()
 
+def historikFonster():
+
+     historikFonster = Toplevel(root)
+
+     historikFonster.title("Historik")
+
+     historikFonster.geometry("475x280")
+
+     def hamtaHistorik():
+
+          cursor.execute('SELECT Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik')
+          result = cursor.fetchall()
+          
+          count = 0
+          
+          #LbHistorik.delete(0, "end")
+          for x in result:                           
+               LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4]))
+               count += 1
+          #else:
+          #     for x in result:                   
+          #          LbHistorik.insert("end", x)
+
+
+     LbHistorik = ttk.Treeview(historikFonster)
+     LbHistorik.grid(row=1, column=1, padx=(10,0), pady=(10,0))
+     LbHistorik['columns'] = ("Maskinnummer", "Beteckning", "Reg.nr", "ME-klass", "Datum")
+     LbHistorik.column('#0', width=0)
+     LbHistorik.column("Maskinnummer", anchor=W, width=65)
+     LbHistorik.column("Beteckning", anchor=W, width=125)
+     LbHistorik.column("Reg.nr", anchor=W, width=75)
+     LbHistorik.column("ME-klass", anchor=W, width=75)
+     LbHistorik.column("Datum", anchor=W, width=100)
+
+     LbHistorik.heading('#0', text="")
+     LbHistorik.heading("Maskinnummer", text="Maskinnr.", anchor=W)
+     LbHistorik.heading("Beteckning", text="Beteckning", anchor=W)
+     LbHistorik.heading("Reg.nr", text="Reg.nr", anchor=W)
+     LbHistorik.heading("ME-klass", text="ME-klass", anchor=W)
+     LbHistorik.heading("Datum", text="Datum", anchor=W)
+
+     btnTaBortHistorik = Button(historikFonster, text="Ta bort")
+     btnTaBortHistorik.grid(row=2, column=1, sticky=E, pady=(5,0))
+
+     hamtaHistorik()
+
+
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
@@ -2182,13 +2229,13 @@ BtnMedlemsnummerSok.grid (row = 1, column = 2, sticky ="w")
 BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: clickButton()) 
 BtnMaskinnummerSok.grid(row=1, column=4, sticky ="w")
 
-BtnNyDelagare = Button (home, text ="Ny delägare", command = lambda: nyDelagare("Ny"))
+BtnNyDelagare = Button (home, text ="Ny delägare", height = 1, command = lambda: nyDelagare("Ny"))
 BtnNyDelagare.grid(row = 2, column = 5, padx= 10, sticky="n")
 
-BtnRapport = Button (home, text = "Rapport", width = 9, command = clickButton)
+BtnRapport = Button (home, text = "Rapport", width = 9, height = 1, command = clickButton)
 BtnRapport.grid(row = 2, column =5, sticky = N, pady=(50, 50))
 
-BtnUppdateraForsakring = Button (home, text="Uppdatera försäkring", command = clickButton)
+BtnUppdateraForsakring = Button (home, text="Uppdatera försäkring", height = 1, command = clickButton)
 BtnUppdateraForsakring.grid(row = 2, column = 5, sticky = N, pady=(100, 50))
 
 BtnInstallningar = Button (home, text ="Inställningar", command = clickButton)
@@ -2434,7 +2481,7 @@ btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
 btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration())
 btnMiljodeklaration.grid(column=1, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
-btnHistorik=Button(frameMaskininfo, text="Historik")
+btnHistorik=Button(frameMaskininfo, text="Historik", command = lambda: historikFonster())
 btnHistorik.grid(column=6, row=0, sticky=W, padx=(10,10))
 
 btnLaggtillmaskin=Button(frameMaskininfo, text="Lägg till ny", command = lambda: nyMaskinFonster("Ny"))
@@ -2586,7 +2633,6 @@ ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
 
 lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 
-
 cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn FROM foretagsregister")
 delagareLista = cursor.fetchall()
 delagareLista = list(delagareLista)
@@ -2607,6 +2653,7 @@ if LbDelagare.index("end") == 0:
           s+=str(item[2])                              
           
           LbDelagare.insert("end", s)
+
 
 # kör fönstret
 root.mainloop()
