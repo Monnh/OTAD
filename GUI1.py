@@ -302,34 +302,42 @@ def fyllMaskinInfo(self):
           pass
 
      try:
-          txtMaskinmotorvarmare.config(state=NORMAL)
-          txtMaskinmotorvarmare.delete('1.0', 'end')
-          txtMaskinmotorvarmare.insert('end', maskinInfo[12])
-          txtMaskinmotorvarmare.config(state=DISABLED)
+          if maskinInfo[12] == 1:
+               cbMaskinmotorvarmare.state(['selected'])
+               cbMaskinmotorvarmare.state(['disabled'])
+          else:
+               cbMaskinmotorvarmare.state(['!selected'])
+               cbMaskinmotorvarmare.state(['disabled'])
      except:
           pass
 
      try:
-          txtMaskinkatalysator.config(state=NORMAL)
-          txtMaskinkatalysator.delete('1.0', 'end')
-          txtMaskinkatalysator.insert('end', maskinInfo[14])
-          txtMaskinkatalysator.config(state=DISABLED)
+          if maskinInfo[14] == 1:
+               cbMaskinkatalysator.state(['selected'])
+               cbMaskinkatalysator.state(['disabled'])
+          else:
+               cbMaskinkatalysator.state(['!selected'])
+               cbMaskinkatalysator.state(['disabled'])
      except:
           pass
 
      try:
-          txtMaskinpartikelfilter.config(state=NORMAL)
-          txtMaskinpartikelfilter.delete('1.0', 'end')
-          txtMaskinpartikelfilter.insert('end', maskinInfo[15])
-          txtMaskinpartikelfilter.config(state=DISABLED)
+          if maskinInfo[15] == 1:
+               cbMaskinpartikelfilter.state(['selected'])
+               cbMaskinpartikelfilter.state(['disabled'])
+          else:
+               cbMaskinpartikelfilter.state(['!selected'])
+               cbMaskinpartikelfilter.state(['disabled'])
      except:
           pass
 
      try:
-          txtMaskinvattenbaseradlack.config(state=NORMAL)
-          txtMaskinvattenbaseradlack.delete('1.0', 'end')
-          txtMaskinvattenbaseradlack.insert('end', maskinInfo[11])
-          txtMaskinvattenbaseradlack.config(state=DISABLED)
+          if maskinInfo[11] == 1:
+               cbMaskinvattenbaseradlack.state(['selected'])
+               cbMaskinvattenbaseradlack.state(['disabled'])
+          else:
+               cbMaskinvattenbaseradlack.state(['!selected'])
+               cbMaskinvattenbaseradlack.state(['disabled'])
      except:
           pass
 
@@ -486,18 +494,22 @@ def fyllMaskinInfo(self):
           pass
 
      try:
-          txtMaskingasolanlaggning.config(state=NORMAL)
-          txtMaskingasolanlaggning.delete('1.0', 'end')
-          txtMaskingasolanlaggning.insert('end', maskinInfo[37])
-          txtMaskingasolanlaggning.config(state=DISABLED)
+          if maskinInfo[37] == 1:
+               cbMaskingasolanlaggning.state(['selected'])
+               cbMaskingasolanlaggning.state(['disabled'])
+          else:
+               cbMaskingasolanlaggning.state(['!selected'])
+               cbMaskingasolanlaggning.state(['disabled'])
      except:
           pass
 
      try:
-          txtMaskinSaneringsvatska.config(state=NORMAL)
-          txtMaskinSaneringsvatska.delete('1.0', 'end')
-          txtMaskinSaneringsvatska.insert('end', maskinInfo[22])
-          txtMaskinSaneringsvatska.config(state=DISABLED)
+          if maskinInfo[22] == 1:
+               cbMaskinSaneringsvatska.state(['selected'])
+               cbMaskinSaneringsvatska.state(['disabled'])
+          else:
+               cbMaskinSaneringsvatska.state(['!selected'])
+               cbMaskinSaneringsvatska.state(['disabled'])
      except:
           pass
 
@@ -686,34 +698,42 @@ def fyllMaskinInfoIgen(self):
           pass
 
      try:
-          txtMaskinmotorvarmare.config(state=NORMAL)
-          txtMaskinmotorvarmare.delete('1.0', 'end')
-          txtMaskinmotorvarmare.insert('end', maskinInfo[12])
-          txtMaskinmotorvarmare.config(state=DISABLED)
+          if maskinInfo[12] == 1:
+               cbMaskinmotorvarmare.state(['selected'])
+               cbMaskinmotorvarmare.state(['disabled'])
+          else:
+               cbMaskinmotorvarmare.state(['!selected'])
+               cbMaskinmotorvarmare.state(['disabled'])
      except:
           pass
 
      try:
-          txtMaskinkatalysator.config(state=NORMAL)
-          txtMaskinkatalysator.delete('1.0', 'end')
-          txtMaskinkatalysator.insert('end', maskinInfo[14])
-          txtMaskinkatalysator.config(state=DISABLED)
+          if maskinInfo[14] == 1:
+               cbMaskinkatalysator.state(['selected'])
+               cbMaskinkatalysator.state(['disabled'])
+          else:
+               cbMaskinkatalysator.state(['!selected'])
+               cbMaskinkatalysator.state(['disabled'])
      except:
           pass
 
      try:
-          txtMaskinpartikelfilter.config(state=NORMAL)
-          txtMaskinpartikelfilter.delete('1.0', 'end')
-          txtMaskinpartikelfilter.insert('end', maskinInfo[15])
-          txtMaskinpartikelfilter.config(state=DISABLED)
+          if maskinInfo[15] == 1:
+               cbMaskinpartikelfilter.state(['selected'])
+               cbMaskinpartikelfilter.state(['disabled'])
+          else:
+               cbMaskinpartikelfilter.state(['!selected'])
+               cbMaskinpartikelfilter.state(['disabled'])
      except:
           pass
 
      try:
-          txtMaskinvattenbaseradlack.config(state=NORMAL)
-          txtMaskinvattenbaseradlack.delete('1.0', 'end')
-          txtMaskinvattenbaseradlack.insert('end', maskinInfo[11])
-          txtMaskinvattenbaseradlack.config(state=DISABLED)
+          if maskinInfo[11] == 1:
+               cbMaskinvattenbaseradlack.state(['selected'])
+               cbMaskinvattenbaseradlack.state(['disabled'])
+          else:
+               cbMaskinvattenbaseradlack.state(['!selected'])
+               cbMaskinvattenbaseradlack.state(['disabled'])
      except:
           pass
 
@@ -870,18 +890,22 @@ def fyllMaskinInfoIgen(self):
           pass
 
      try:
-          txtMaskingasolanlaggning.config(state=NORMAL)
-          txtMaskingasolanlaggning.delete('1.0', 'end')
-          txtMaskingasolanlaggning.insert('end', maskinInfo[37])
-          txtMaskingasolanlaggning.config(state=DISABLED)
+          if maskinInfo[37] == 1:
+               cbMaskingasolanlaggning.state(['selected'])
+               cbMaskingasolanlaggning.state(['disabled'])
+          else:
+               cbMaskingasolanlaggning.state(['!selected'])
+               cbMaskingasolanlaggning.state(['disabled'])
      except:
           pass
 
      try:
-          txtMaskinSaneringsvatska.config(state=NORMAL)
-          txtMaskinSaneringsvatska.delete('1.0', 'end')
-          txtMaskinSaneringsvatska.insert('end', maskinInfo[22])
-          txtMaskinSaneringsvatska.config(state=DISABLED)
+          if maskinInfo[22] == 1:
+               cbMaskinSaneringsvatska.state(['selected'])
+               cbMaskinSaneringsvatska.state(['disabled'])
+          else:
+               cbMaskinSaneringsvatska.state(['!selected'])
+               cbMaskinSaneringsvatska.state(['disabled'])
      except:
           pass
 
@@ -1113,11 +1137,11 @@ def nyMaskinFonster(Typ):
      def sparaMaskin(Typ):
           if Typ=="Byt":
                #sparaHistoriken
-               #sparaNyMaskin
+               #andraMaskin()
                print("NyMaskin Byt")
                pass
           elif Typ=="Ny":
-               #sparaNyMaskin
+               #andraMaskin(Typ)
                print("nyMaskin Ny")
                pass
           else:
@@ -1173,15 +1197,76 @@ def nyMaskinFonster(Typ):
                     cursor.execute("UPDATE maskinregister SET Maskininsats = 0 WHERE Maskinnummer = " + Typ +";")
                except:
                     pass
+
+          if cbMaskinmotorvarmare.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Motorvarmare = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Motorvarmare = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+
+          if cbMaskinkatalysator.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Katalysator = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Katalysator = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+
+          if cbMaskinpartikelfilter.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Partikelfilter = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Partikelfilter = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+
+          if cbMaskinvattenbaseradlack.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Vattenbaseradlack = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Vattenbaseradlack = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+
+          if cbMaskingasolanlaggning.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Gasol = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Gasol = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+
+          if cbMaskinSaneringsvatska.instate(['selected']) == True:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Saneringsvatska = 1 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("UPDATE maskinregister SET Saneringsvatska = 0 WHERE Maskinnummer = " + Typ +";")
+               except:
+                    pass
+
           try:
 
-               #"', Forarid = (SELECT Forarid FROM Forare where Namn = '" + txtMaskinforare.get()"')'" 
-               #"', Forsakring = '" + cbMaskinKollektivforsakring.get() 
-               #+ "', Period = '" + deMaskinperiod1.get() 
-               #spara bild
-               #"', Regummerbar = '" + cbMaskinregummerbara.get() +  "', Regummerad = '" + cbMaskinregummerade.get() +
-               #"', Maskininsats = '" + cbMaskininsatserlagd.get() + lbMaskinreferens + lbMaskintillbehor
-               cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + txtMaskinnummermaskininfo.get('1.0','end') + "', MarkeModell = '" + txtMaskinbeteckning.get('1.0','end') + "', ME_Klass = '" + txtMaskinme_klass.get('1.0','end') + "', Motorfabrikat = '" + txtMaskinmotorfabrikat.get('1.0','end') + "', Motortyp = '" + txtMaskinmotortyp.get('1.0','end') + "', Motorolja = '" + txtMaskinmotor.get('1.0','end') + "', Vaxelladsolja = '" + txtMaskinvaxellada.get('1.0','end') + "', Hydraulolja = '" + txtMaskinhydraulsystem.get('1.0','end') + "', Kylvatska = '" + txtMaskinkylvatska.get('1.0','end') + "', Motoreffekt = '" + txtMaskinmotoreffekt.get('1.0','end') + "', Motorvarmare = '" + txtMaskinmotorvarmare.get('1.0','end') + "', Katalysator = '" + txtMaskinkatalysator.get('1.0','end') + "', Partikelfilter = '" + txtMaskinpartikelfilter.get('1.0','end') + "', Vattenbaseradlack = '" + txtMaskinvattenbaseradlack.get('1.0','end') + "', Kylmedia = '" + txtMaskinkylmedia.get('1.0','end') + "', Bullernivaute = '" + txtMaskinbullernivautv.get('1.0','end') + "', Bullernivainne = '" + txtMaskinbullernivainv.get('1.0','end') + "', Smorjfett = '" + txtMaskinsmorjfett.get('1.0','end') + "', Batterityp = '" + txtMaskinBatterityp.get('1.0','end') + "', Arsbelopp = '" + txtMaskinarsbelopp.get('1.0','end') + "', Miljostatus = '" + txtMaskinmiljostatus.get('1.0','end') + "', Arsmodell = '" + txtMaskinarsmodell.get('1.0','end') + "', Registreringsnummer = '" + txtMaskinregistreringsnummer.get('1.0','end') + "', Maskintyp = '" + txtMaskintyp.get('1.0','end') + "', Motorvolymolja = '" + txtMaskinmotoroljevolym.get('1.0','end') + "', Vaxelladavolym = '" + txtMaskinvaxelladevolym.get('1.0','end') + "', Hydraulvolym = '" + txtMaskinhydraulsystemvolym.get('1.0','end') + "', Kylvatskavolym = '" + txtMaskinkylvatskavolym.get('1.0','end') + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + txtMaskinbransle.get('1.0','end') + "', Dackfabrikat = '" + txtMaskindackfabrikat.get('1.0','end') + "', Dimension = '" + txtMaskindimension.get('1.0','end') + "', Gasol = '" + txtMaskingasolanlaggning.get('1.0','end') + "', Saneringsvatska = '" + txtMaskinSaneringsvatska.get('1.0','end') + "'WHERE Maskinnummer = " + Typ +";")
+               cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + txtMaskinnummermaskininfo.get('1.0','end') + "', MarkeModell = '" + txtMaskinbeteckning.get('1.0','end') + "', ME_Klass = '" + txtMaskinme_klass.get('1.0','end') + "', Motorfabrikat = '" + txtMaskinmotorfabrikat.get('1.0','end') + "', Motortyp = '" + txtMaskinmotortyp.get('1.0','end') + "', Motorolja = '" + txtMaskinmotor.get('1.0','end') + "', Vaxelladsolja = '" + txtMaskinvaxellada.get('1.0','end') + "', Hydraulolja = '" + txtMaskinhydraulsystem.get('1.0','end') + "', Kylvatska = '" + txtMaskinkylvatska.get('1.0','end') + "', Motoreffekt = '" + txtMaskinmotoreffekt.get('1.0','end') + "', Kylmedia = '" + txtMaskinkylmedia.get('1.0','end') + "', Bullernivaute = '" + txtMaskinbullernivautv.get('1.0','end') + "', Bullernivainne = '" + txtMaskinbullernivainv.get('1.0','end') + "', Smorjfett = '" + txtMaskinsmorjfett.get('1.0','end') + "', Batterityp = '" + txtMaskinBatterityp.get('1.0','end') + "', Arsbelopp = '" + txtMaskinarsbelopp.get('1.0','end') + "', Miljostatus = '" + txtMaskinmiljostatus.get('1.0','end') + "', Arsmodell = '" + txtMaskinarsmodell.get('1.0','end') + "', Registreringsnummer = '" + txtMaskinregistreringsnummer.get('1.0','end') + "', Maskintyp = '" + txtMaskintyp.get('1.0','end') + "', Motorvolymolja = '" + txtMaskinmotoroljevolym.get('1.0','end') + "', Vaxelladavolym = '" + txtMaskinvaxelladevolym.get('1.0','end') + "', Hydraulvolym = '" + txtMaskinhydraulsystemvolym.get('1.0','end') + "', Kylvatskavolym = '" + txtMaskinkylvatskavolym.get('1.0','end') + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + txtMaskinbransle.get('1.0','end') + "', Dackfabrikat = '" + txtMaskindackfabrikat.get('1.0','end') + "', Dimension = '" + txtMaskindimension.get('1.0','end') + "'WHERE Maskinnummer = " + Typ +";")
           except Exception:
                traceback.print_exc()
           
@@ -1189,7 +1274,6 @@ def nyMaskinFonster(Typ):
                for x in tillbehorAttTaBort:
                     cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")     
                     
-               #cursor.execute("INSERT INTO tillbehor " +  + WHERE Maskinnummer = " + Typ +";")
 
           except Exception:
                traceback.print_exc()
@@ -1204,6 +1288,8 @@ def nyMaskinFonster(Typ):
           db.commit()
           fyllMaskinInfo(Typ)
 
+     def bytNyMaskin():
+          
 
      nyMaskin = Toplevel(root)
 
@@ -1275,23 +1361,35 @@ def nyMaskinFonster(Typ):
 
      lblMaskinmotorvarmare = Label(nyMaskin, text="Motorvärmare")
      lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinmotorvarmare=Text(nyMaskin, width = 25, height=0.1)
-     txtMaskinmotorvarmare.grid(column=1, row=10, sticky=W, padx=(10,0))
+     #txtMaskinmotorvarmare=Text(nyMaskin, width = 25, height=0.1)
+     #txtMaskinmotorvarmare.grid(column=1, row=10, sticky=W, padx=(10,0))
+     cbMaskinmotorvarmare = ttk.Checkbutton(nyMaskin)
+     cbMaskinmotorvarmare.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinmotorvarmare.grid(column = 1, row = 10, sticky = W, padx=(5,0))
 
      lblMaskinkatalysator = Label(nyMaskin, text="Katalysator")
      lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinkatalysator=Text(nyMaskin, width = 25, height=0.1)
-     txtMaskinkatalysator.grid(column=1,row=11, sticky=W, padx=(10,0))
+     #txtMaskinkatalysator=Text(nyMaskin, width = 25, height=0.1)
+     #txtMaskinkatalysator.grid(column=1,row=11, sticky=W, padx=(10,0))
+     cbMaskinkatalysator = ttk.Checkbutton(nyMaskin)
+     cbMaskinkatalysator.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinkatalysator.grid(column = 1, row = 11, sticky = W, padx=(5,0))
 
      lblMaskinpartikelfilter = Label(nyMaskin, text="Partikelfilter")
      lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinpartikelfilter=Text(nyMaskin, width = 25, height=0.1)
-     txtMaskinpartikelfilter.grid(column=1,row=12, sticky=W, padx=(10,0))
+     #txtMaskinpartikelfilter=Text(nyMaskin, width = 25, height=0.1)
+     #txtMaskinpartikelfilter.grid(column=1,row=12, sticky=W, padx=(10,0))
+     cbMaskinpartikelfilter = ttk.Checkbutton(nyMaskin)
+     cbMaskinpartikelfilter.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinpartikelfilter.grid(column = 1, row = 12, sticky = W, padx=(5,0))
 
      lblMaskinvattenbaseradlack = Label(nyMaskin, text="Vattenbaserad lack")
      lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0), pady=(0,8))
-     txtMaskinvattenbaseradlack=Text(nyMaskin, width = 25, height=0.1)
-     txtMaskinvattenbaseradlack.grid(column=1, row=13, sticky=W, padx=(10,0))
+     #txtMaskinvattenbaseradlack=Text(nyMaskin, width = 25, height=0.1)
+     #txtMaskinvattenbaseradlack.grid(column=1, row=13, sticky=W, padx=(10,0))
+     cbMaskinvattenbaseradlack = ttk.Checkbutton(nyMaskin)
+     cbMaskinvattenbaseradlack.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinvattenbaseradlack.grid(column = 1, row = 13, sticky = W, padx=(5,0))
 
      lblMaskinkylmedia = Label(nyMaskin, text="Kylmedia")
      lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(0,8))
@@ -1453,13 +1551,19 @@ def nyMaskinFonster(Typ):
 
      lblMaskingasolanlaggning = Label(nyMaskin, text="Gasolanläggning")
      lblMaskingasolanlaggning.grid(column=4, row=5, sticky = W, padx=(10,0))
-     txtMaskingasolanlaggning=Text(nyMaskin, width = 20, height=0.1)
-     txtMaskingasolanlaggning.grid(column=5, row=5, sticky=W, padx=(10,0))
+     #txtMaskingasolanlaggning=Text(nyMaskin, width = 20, height=0.1)
+     #txtMaskingasolanlaggning.grid(column=5, row=5, sticky=W, padx=(10,0))
+     cbMaskingasolanlaggning = ttk.Checkbutton(nyMaskin)
+     cbMaskingasolanlaggning.state(['!alternate', '!selected', '!disabled'])
+     cbMaskingasolanlaggning.grid(column = 5, row = 5, sticky = W, padx=(5,0))
 
      lblMaskinSaneringsvatska = Label(nyMaskin, text="Saneringsvätska")
      lblMaskinSaneringsvatska.grid(column=4, row=6, sticky = W, padx=(10,0))
-     txtMaskinSaneringsvatska=Text(nyMaskin, width = 20, height=0.1)
-     txtMaskinSaneringsvatska.grid(column=5, row=6, sticky=W, padx=(10,0))
+     #txtMaskinSaneringsvatska=Text(nyMaskin, width = 20, height=0.1)
+     #txtMaskinSaneringsvatska.grid(column=5, row=6, sticky=W, padx=(10,0))
+     cbMaskinSaneringsvatska = ttk.Checkbutton(nyMaskin)
+     cbMaskinSaneringsvatska.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinSaneringsvatska.grid(column = 5, row = 6, sticky = W, padx=(5,0))
 
      #Checkbox
      lblMaskininsattserlagd = Label(nyMaskin, text="Maskininsats erlagd")
@@ -1521,7 +1625,7 @@ def nyMaskinFonster(Typ):
      txtMaskinreferens.bind('<Return>', lambda x: (lbMaskinreferens.insert('end', txtMaskinreferens.get('1.0', 'end')), txtMaskinreferens.delete('1.0','end')))
      #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
 
-     if Typ !="Ny" or Typ!="Byt":
+     if Typ !="Ny" and Typ!="Byt":
           try:
                cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + Typ + ';')
                maskinInfo = cursor.fetchone()
@@ -1608,30 +1712,42 @@ def nyMaskinFonster(Typ):
                pass
 
           try:
-               txtMaskinmotorvarmare.config(state=NORMAL)
-               txtMaskinmotorvarmare.delete('1.0', 'end')
-               txtMaskinmotorvarmare.insert('end', maskinInfo[12])
+               if maskinInfo[12] == 1:
+                    cbMaskinmotorvarmare.state(['selected'])
+                    cbMaskinmotorvarmare.state(['!disabled'])
+               else:
+                    cbMaskinmotorvarmare.state(['!selected'])
+                    cbMaskinmotorvarmare.state(['!disabled'])
           except:
                pass
 
           try:
-               txtMaskinkatalysator.config(state=NORMAL)
-               txtMaskinkatalysator.delete('1.0', 'end')
-               txtMaskinkatalysator.insert('end', maskinInfo[14])
+               if maskinInfo[14] == 1:
+                    cbMaskinkatalysator.state(['selected'])
+                    cbMaskinkatalysator.state(['!disabled'])
+               else:
+                    cbMaskinkatalysator.state(['!selected'])
+                    cbMaskinkatalysator.state(['!disabled'])
           except:
                pass
 
           try:
-               txtMaskinpartikelfilter.config(state=NORMAL)
-               txtMaskinpartikelfilter.delete('1.0', 'end')
-               txtMaskinpartikelfilter.insert('end', maskinInfo[15])
+               if maskinInfo[15] == 1:
+                    cbMaskinpartikelfilter.state(['selected'])
+                    cbMaskinpartikelfilter.state(['!disabled'])
+               else:
+                    cbMaskinpartikelfilter.state(['!selected'])
+                    cbMaskinpartikelfilter.state(['!disabled'])
           except:
                pass
 
           try:
-               txtMaskinvattenbaseradlack.config(state=NORMAL)
-               txtMaskinvattenbaseradlack.delete('1.0', 'end')
-               txtMaskinvattenbaseradlack.insert('end', maskinInfo[11])
+               if maskinInfo[11] == 1:
+                    cbMaskinvattenbaseradlack.state(['selected'])
+                    cbMaskinvattenbaseradlack.state(['!disabled'])
+               else:
+                    cbMaskinvattenbaseradlack.state(['!selected'])
+                    cbMaskinvattenbaseradlack.state(['!disabled'])
           except:
                pass
 
@@ -1766,16 +1882,22 @@ def nyMaskinFonster(Typ):
                pass
 
           try:
-               txtMaskingasolanlaggning.config(state=NORMAL)
-               txtMaskingasolanlaggning.delete('1.0', 'end')
-               txtMaskingasolanlaggning.insert('end', maskinInfo[37])
+               if maskinInfo[37] == 1:
+                    cbMaskingasolanlaggning.state(['selected'])
+                    cbMaskingasolanlaggning.state(['!disabled'])
+               else:
+                    cbMaskingasolanlaggning.state(['!selected'])
+                    cbMaskingasolanlaggning.state(['!disabled'])
           except:
                pass
 
           try:
-               txtMaskinSaneringsvatska.config(state=NORMAL)
-               txtMaskinSaneringsvatska.delete('1.0', 'end')
-               txtMaskinSaneringsvatska.insert('end', maskinInfo[22])
+               if maskinInfo[22] == 1:
+                    cbMaskinSaneringsvatska.state(['selected'])
+                    cbMaskinSaneringsvatska.state(['!disabled'])
+               else:
+                    cbMaskinSaneringsvatska.state(['!selected'])
+                    cbMaskinSaneringsvatska.state(['!disabled'])
           except:
                pass
 
@@ -2250,7 +2372,7 @@ def historikFonster():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2355,7 +2477,7 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("1.jpg")  
+img = Image.open("c:/filer/OTAD/OTAD/1.jpg")  
 img = img.resize((225,200), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameOvrigText, image=img2)
@@ -2476,23 +2598,35 @@ txtMaskinmotoreffekt.grid(column=1, row=9, sticky=W, padx=(10,0))
 
 lblMaskinmotorvarmare = Label(frameMaskininfo, text="Motorvärmare")
 lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(0,8))
-txtMaskinmotorvarmare=Text(frameMaskininfo, width = 25, height=0.1)
-txtMaskinmotorvarmare.grid(column=1, row=10, sticky=W, padx=(10,0))
+#txtMaskinmotorvarmare=Text(frameMaskininfo, width = 25, height=0.1)
+#txtMaskinmotorvarmare.grid(column=1, row=10, sticky=W, padx=(10,0))
+cbMaskinmotorvarmare = ttk.Checkbutton(frameMaskininfo)
+cbMaskinmotorvarmare.state(['!alternate', '!selected', 'disabled'])
+cbMaskinmotorvarmare.grid(column = 1, row = 10, sticky = W, padx=(5,0))
 
 lblMaskinkatalysator = Label(frameMaskininfo, text="Katalysator")
 lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(0,8))
-txtMaskinkatalysator=Text(frameMaskininfo, width = 25, height=0.1)
-txtMaskinkatalysator.grid(column=1,row=11, sticky=W, padx=(10,0))
+#txtMaskinkatalysator=Text(frameMaskininfo, width = 25, height=0.1)
+#txtMaskinkatalysator.grid(column=1,row=11, sticky=W, padx=(10,0))
+cbMaskinkatalysator = ttk.Checkbutton(frameMaskininfo)
+cbMaskinkatalysator.state(['!alternate', '!selected', 'disabled'])
+cbMaskinkatalysator.grid(column = 1, row = 11, sticky = W, padx=(5,0))
 
 lblMaskinpartikelfilter = Label(frameMaskininfo, text="Partikelfilter")
 lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(0,8))
-txtMaskinpartikelfilter=Text(frameMaskininfo, width = 25, height=0.1)
-txtMaskinpartikelfilter.grid(column=1,row=12, sticky=W, padx=(10,0))
+#txtMaskinpartikelfilter=Text(frameMaskininfo, width = 25, height=0.1)
+#txtMaskinpartikelfilter.grid(column=1,row=12, sticky=W, padx=(10,0))
+cbMaskinpartikelfilter = ttk.Checkbutton(frameMaskininfo)
+cbMaskinpartikelfilter.state(['!alternate', '!selected', 'disabled'])
+cbMaskinpartikelfilter.grid(column = 1, row = 12, sticky = W, padx=(5,0))
 
 lblMaskinvattenbaseradlack = Label(frameMaskininfo, text="Vattenbaserad lack")
 lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0), pady=(0,8))
-txtMaskinvattenbaseradlack=Text(frameMaskininfo, width = 25, height=0.1)
-txtMaskinvattenbaseradlack.grid(column=1, row=13, sticky=W, padx=(10,0))
+#txtMaskinvattenbaseradlack=Text(frameMaskininfo, width = 25, height=0.1)
+#txtMaskinvattenbaseradlack.grid(column=1, row=13, sticky=W, padx=(10,0))
+cbMaskinvattenbaseradlack = ttk.Checkbutton(frameMaskininfo)
+cbMaskinvattenbaseradlack.state(['!alternate', '!selected', 'disabled'])
+cbMaskinvattenbaseradlack.grid(column = 1, row = 13, sticky = W, padx=(5,0))
 
 lblMaskinkylmedia = Label(frameMaskininfo, text="Kylmedia")
 lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(0,8))
@@ -2649,13 +2783,19 @@ cbMaskinregummerade.grid(column = 5, row = 4, sticky = W, padx=(5,0))
 
 lblMaskingasolanlaggning = Label(frameMaskininfo, text="Gasolanläggning")
 lblMaskingasolanlaggning.grid(column=4, row=5, sticky = W, padx=(10,0))
-txtMaskingasolanlaggning=Text(frameMaskininfo, width = 20, height=0.1)
-txtMaskingasolanlaggning.grid(column=5, row=5, sticky=W, padx=(10,0))
+#txtMaskingasolanlaggning=Text(frameMaskininfo, width = 20, height=0.1)
+#txtMaskingasolanlaggning.grid(column=5, row=5, sticky=W, padx=(10,0))
+cbMaskingasolanlaggning = ttk.Checkbutton(frameMaskininfo)
+cbMaskingasolanlaggning.state(['!alternate', '!selected', 'disabled'])
+cbMaskingasolanlaggning.grid(column = 5, row = 5, sticky = W, padx=(5,0))
 
 lblMaskinSaneringsvatska = Label(frameMaskininfo, text="Saneringsvätska")
 lblMaskinSaneringsvatska.grid(column=4, row=6, sticky = W, padx=(10,0))
-txtMaskinSaneringsvatska=Text(frameMaskininfo, width = 20, height=0.1)
-txtMaskinSaneringsvatska.grid(column=5, row=6, sticky=W, padx=(10,0))
+#txtMaskinSaneringsvatska=Text(frameMaskininfo, width = 20, height=0.1)
+#txtMaskinSaneringsvatska.grid(column=5, row=6, sticky=W, padx=(10,0))
+cbMaskinSaneringsvatska = ttk.Checkbutton(frameMaskininfo)
+cbMaskinSaneringsvatska.state(['!alternate', '!selected', 'disabled'])
+cbMaskinSaneringsvatska.grid(column = 5, row = 6, sticky = W, padx=(5,0))
 
 #Checkbox
 lblMaskininsattserlagd = Label(frameMaskininfo, text="Maskininsats erlagd")
