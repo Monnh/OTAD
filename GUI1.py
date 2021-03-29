@@ -1112,7 +1112,7 @@ def nyMaskinFonster(Typ):
 
      def sparaMaskin(Typ):
           if Typ=="Byt":
-               #sparaHistoriken
+               sparaHistorik(maskinnummer)
                #sparaNyMaskin
                print("NyMaskin Byt")
                pass
@@ -1521,7 +1521,16 @@ def nyMaskinFonster(Typ):
      txtMaskinreferens.bind('<Return>', lambda x: (lbMaskinreferens.insert('end', txtMaskinreferens.get('1.0', 'end')), txtMaskinreferens.delete('1.0','end')))
      #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
 
-     if Typ !="Ny" or Typ!="Byt":
+     if Typ == "Byt":
+          try:
+               txtMaskinnummermaskininfo.config(state=NORMAL)
+               txtMaskinnummermaskininfo.delete('1.0', 'end')
+               txtMaskinnummermaskininfo.insert('end', maskinnummer)
+               txtMaskinnummermaskininfo.config(state=DISABLED)
+          except:
+               pass
+
+     if Typ != "Ny" and Typ != "Byt":
           try:
                cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + Typ + ';')
                maskinInfo = cursor.fetchone()
@@ -2213,14 +2222,11 @@ def historikFonster():
           result = cursor.fetchall()
           
           count = 0
-          
-          #LbHistorik.delete(0, "end")
+
           for x in result:                           
                LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4]))
                count += 1
-          #else:
-          #     for x in result:                   
-          #          LbHistorik.insert("end", x)
+
 
 
      LbHistorik = ttk.Treeview(historikFonster)
@@ -2245,12 +2251,36 @@ def historikFonster():
 
      hamtaHistorik()
 
+def sparaHistorik(maskinnummer):
+
+     cursor.execute("SELECT MarkeModell, Registreringsnummer, ME_Klass FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
+     maskinHistorik = cursor.fetchone()
+     maskinHistorik = list(maskinHistorik)
+
+     beteckning = ""
+     regnr = ""
+     me_klass = None
+
+     maskinnummer = int(maskinnummer)
+     beteckning = maskinHistorik[0]
+     regnr = maskinHistorik[1]
+     datum = datetime.date(datetime.now())
+     if maskinHistorik[2] is not None:
+          me_klass = str(maskinHistorik[2])
+     else: 
+          pass
+
+     if me_klass is None:
+          cursor.execute("INSERT INTO historik (Maskinnummer, Beteckning, Datum, Registreringsnummer) VALUES (%s, %s, %s, %s)", (maskinnummer, beteckning, datum, regnr))
+     else:
+          cursor.execute("INSERT INTO historik (Maskinnummer, Beteckning, Datum, Registreringsnummer, ME_klass) VALUES (%s, %s, %s, %s, %s)", (maskinnummer, beteckning, datum, regnr, me_klass))
+     db.commit()
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
