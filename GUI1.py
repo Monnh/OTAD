@@ -2250,7 +2250,7 @@ def historikFonster():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "",
      database = "tschakt"
 )
 cursor = db.cursor()
