@@ -1112,10 +1112,12 @@ def nyMaskinFonster(Typ):
 
      def sparaMaskin(Typ):
           if Typ=="Byt":
-               sparaHistorik(maskinnummer)
-               #sparaNyMaskin
-               print("NyMaskin Byt")
-               pass
+               response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
+               if response == 1:
+                    sparaHistorik(maskinnummer)
+                    #sparaNyMaskin
+               else:
+                    pass
           elif Typ=="Ny":
                #sparaNyMaskin
                print("nyMaskin Ny")
@@ -2234,7 +2236,7 @@ def historikFonster():
      LbHistorik['columns'] = ("Maskinnummer", "Beteckning", "Reg.nr", "ME-klass", "Datum")
      LbHistorik.column('#0', width=0)
      LbHistorik.column("Maskinnummer", anchor=W, width=65)
-     LbHistorik.column("Beteckning", anchor=W, width=125)
+     LbHistorik.column("Beteckning", anchor=W, width=135)
      LbHistorik.column("Reg.nr", anchor=W, width=75)
      LbHistorik.column("ME-klass", anchor=W, width=75)
      LbHistorik.column("Datum", anchor=W, width=100)
