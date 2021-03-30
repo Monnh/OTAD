@@ -1221,7 +1221,7 @@ def nyMaskinFonster(Typ):
                varCbMaskininsatserlagd = True
 
           try:
-               cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Morotvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Forarid, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (maskinnummer, txtMaskinbeteckning.get('1.0','end'), txtMaskinme_klass.get('1.0','end'), varCbKollektivForsakring, medlemsnummer, txtMaskinarsbelopp.get('1.0','end'), deMaskinperiod1.get_date().strftime('%Y-%m-%d'),txtMaskinmotorfabrikat.get('1.0','end'), txtMaskinmotortyp.get('1.0','end'), txtMaskinmotoreffekt.get('1.0','end'), varCbVattenbaseradlack, varCbMotorvarmare, txtMaskinkylmedia.get('1.0','end'), varCbKatalysator, varCbPartikelfilter, txtMaskinmotor.get('1.0','end'), txtMaskinmotoroljevolym.get('1.0','end'), txtMaskinvaxellada.get('1.0','end'), txtMaskinvaxelladevolym.get('1.0','end'), txtMaskinhydraulsystem.get('1.0','end'), txtMaskinhydraulsystemvolym.get('1.0','end'), varCbSaneringsvatska, txtMaskinbransle.get('1.0','end'), txtMaskinsmorjfett.get('1.0','end'), txtMaskindackfabrikat.get('1.0','end'), txtMaskinregistreringsnummer.get('1.0','end'), txtMaskintyp.get('1.0','end'), varCbMaskininsatserlagd, txtMaskinbullernivautv.get('1.0','end'), txtMaskinmiljostatus.get('1.0','end'), txtMaskinbullernivainv.get('1.0','end'), txtMaskinkylvatskavolym.get('1.0','end'), txtMaskinkylvatska.get('1.0','end'), txtMaskindimension.get('1.0','end'), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, txtMaskinBatterityp.get('1.0','end'), txtMaskinbatteriantal.get('1.0','end'), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+               cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Morotvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Forarid, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (maskinnummer, entMaskinbeteckning.get(0,'end'), entMaskinme_klass.get(0,'end'), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(0,'end'), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(0,'end'), entMaskinmotortyp.get(0,'end'), entMaskinmotoreffekt.get(0,'end'), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(0,'end'), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(0,'end'), entMaskinmotoroljevolym.get(0,'end'), entMaskinvaxellada.get(0,'end'), entMaskinvaxelladevolym.get(0,'end'), entMaskinhydraulsystem.get(0,'end'), entMaskinhydraulsystemvolym.get(0,'end'), varCbSaneringsvatska, entMaskinbransle.get(0,'end'), entMaskinsmorjfett.get(0,'end'), entMaskindackfabrikat.get(0,'end'), entMaskinregistreringsnummer.get(0,'end'), entMaskintyp.get(0,'end'), varCbMaskininsatserlagd, entMaskinbullernivautv.get(0,'end'), entMaskinmiljostatus.get(0,'end'), entMaskinbullernivainv.get(0,'end'), entMaskinkylvatskavolym.get(0,'end'), entMaskinkylvatska.get(0 ,'end'), entMaskindimension.get(0,'end'), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(0,'end'), entMaskinbatteriantal.get(0,'end'), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
           except:
                pass
 
@@ -1348,7 +1348,6 @@ def nyMaskinFonster(Typ):
                     pass
 
           try:
-               #SIMON 
                cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + entMaskinme_klass.get() + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + entMaskinmotoreffekt.get() + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + entMaskinarsbelopp.get() + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + entMaskinarsmodell.get() + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "'WHERE Maskinnummer = " + Typ +";")
           except Exception:
                traceback.print_exc()
@@ -2075,21 +2074,21 @@ def fyllListboxDelagare():
      delagareLista = []
      delagareLista = cursor.fetchall()
      LbDelagare.delete(0, 'end')
+
      for item in delagareLista:
-         for item in delagareLista:
-               item = list(item)
-               if item[1] == None:
-                    item[1] = ""
-               if item[2] == None:
-                    item[2] = ""
-               s=""
-               s += str(item[0])
-               s+= " "
-               s+=str(item[1])
-               s+= " "
-               s+=str(item[2])                              
+          item = list(item)
+          if item[1] == None:
+               item[1] = ""
+          if item[2] == None:
+               item[2] = ""
+          s=""
+          s += str(item[0])
+          s+= " "
+          s+=str(item[1])
+          s+= " "
+          s+=str(item[2])                              
                
-               LbDelagare.insert("end", s)
+          LbDelagare.insert("end", s)
 
 def fetchMaskiner(self):
      global medlemsnummer
@@ -2105,75 +2104,108 @@ def fetchMaskiner(self):
      if LbMaskiner.index("end") != 0:
           LbMaskiner.delete(0, "end")
           for x in result:
+               x = list(x)
+               if x[1] == None:
+                    x[1] = ""
+               if x[2] == None:
+                    x[2] = ""
+               
                s=""
                s += str(x[0])
                s+= " "
                s+=str(x[1])
-               s+= ", "
+               s+= " "
                s+=str(x[2])
                       
                LbMaskiner.insert("end",s )
+
      else:
           for x in result:
+               x = list(x)
+               if x[1] == None:
+                    x[1] = ""
+               if x[2] == None:
+                    x[2] = ""
+               
                s=""
                s += str(x[0])
                s+= " "
                s+=str(x[1])
-               s+= ", "
+               s+= " "
                s+=str(x[2])                              
                LbMaskiner.insert("end",s )
 
      fyllDelagarInfo()
 
+def fyllDelagarInfoMedNummer(self):
+     global medlemsnummer
+
+     selectedDelagare = LbDelagare.get(LbDelagare.curselection())
+     indexSpace = selectedDelagare.index(" ")
+     stringSelectedDelagare = str(selectedDelagare[0:indexSpace])
+     medlemsnummer = "".join(stringSelectedDelagare)
+
+     tomMaskinInfo()
+     fyllDelagarInfo
+     try:
+          hamtaDelagarensMaskiner()
+     except:
+          pass
+     try:
+          fyllMaskinInfoIgen(maskinnummer)
+     except:
+          pass
+     tabControl.select(delagare)
+
 def fyllDelagarInfo():
-          global medlemsnummer
+     global medlemsnummer
 
-          cursor.execute('SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = ' + medlemsnummer + ';')
-          delagarInfo = cursor.fetchone()
-          delagarInfo = list(delagarInfo)
+     cursor.execute('SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = ' + medlemsnummer + ';')
+     delagarInfo = cursor.fetchone()
+     delagarInfo = list(delagarInfo)
 
-          #sätter delägaresidans info
+     #sätter delägaresidans info
 
-          txtMedlemsnummerDelagare.delete('1.0', 'end')
-          txtMedlemsnummerDelagare.insert('end', delagarInfo[0])
-          
-          txtForetag.config(state=NORMAL)
-          txtForetag.delete('1.0', 'end')
-          txtForetag.insert('end', delagarInfo[1])
-          txtForetag.config(state=DISABLED)
+     txtMedlemsnummerDelagare.delete('1.0', 'end')
+     txtMedlemsnummerDelagare.insert('end', delagarInfo[0])
+     
+     txtForetag.config(state=NORMAL)
+     txtForetag.delete('1.0', 'end')
+     txtForetag.insert('end', delagarInfo[1])
+     txtForetag.config(state=DISABLED)
 
-          txtFornamn.config(state=NORMAL)
-          txtFornamn.delete('1.0', 'end')
-          txtFornamn.insert('end', delagarInfo[2])
-          txtFornamn.config(state=DISABLED)
+     txtFornamn.config(state=NORMAL)
+     txtFornamn.delete('1.0', 'end')
+     txtFornamn.insert('end', delagarInfo[2])
+     txtFornamn.config(state=DISABLED)
 
-          txtEfternamn.config(state=NORMAL)
-          txtEfternamn.delete('1.0', 'end')
-          txtEfternamn.insert('end', delagarInfo[3])
-          txtEfternamn.config(state=DISABLED)
+     txtEfternamn.config(state=NORMAL)
+     txtEfternamn.delete('1.0', 'end')
+     txtEfternamn.insert('end', delagarInfo[3])
+     txtEfternamn.config(state=DISABLED)
 
-          txtAdress.config(state=NORMAL)
-          txtAdress.delete('1.0', 'end')
-          txtAdress.insert('end', delagarInfo[4])
-          txtAdress.config(state=DISABLED)
+     txtAdress.config(state=NORMAL)
+     txtAdress.delete('1.0', 'end')
+     txtAdress.insert('end', delagarInfo[4])
+     txtAdress.config(state=DISABLED)
 
-          txtPostnummer.config(state=NORMAL)
-          txtPostnummer.delete('1.0', 'end')
-          txtPostnummer.insert('end', delagarInfo[5])
-          txtPostnummer.config(state=DISABLED)
+     txtPostnummer.config(state=NORMAL)
+     txtPostnummer.delete('1.0', 'end')
+     txtPostnummer.insert('end', delagarInfo[5])
+     txtPostnummer.config(state=DISABLED)
 
-          txtPostadress.config(state=NORMAL)
-          txtPostadress.delete('1.0', 'end')
-          txtPostadress.insert('end', delagarInfo[6])
-          txtPostadress.config(state=DISABLED)
+     txtPostadress.config(state=NORMAL)
+     txtPostadress.delete('1.0', 'end')
+     txtPostadress.insert('end', delagarInfo[6])
+     txtPostadress.config(state=DISABLED)
 
-          try:
-               txtTelefon.config(state=NORMAL)
-               txtTelefon.delete('1.0', 'end')
-               txtTelefon.insert('end', delagarInfo[7])
-               txtTelefon.config(state=DISABLED)
-          except:
-               pass
+     try:
+          txtTelefon.config(state=NORMAL)
+          txtTelefon.delete('1.0', 'end')
+          txtTelefon.insert('end', delagarInfo[7])
+          txtTelefon.config(state=DISABLED)
+     except:
+          pass
 
 def tomMaskinInfo():
      
@@ -2325,6 +2357,7 @@ def tomMaskinInfo():
 
           lbMaskinreferens.delete(0, "end")
           lbMaskintillbehor.delete(0, "end")
+          LbDelagaresMaskiner.delete(0, "end")
 
 def tomDelagareInfo():
           
@@ -2365,13 +2398,15 @@ def taBortMaskin():
      if response == 1:          
           cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
           db.commit() 
+          tomMaskinInfo()
           hamtaDelagarensMaskiner()
+          fyllMaskinInfoIgen(maskinnummer)
      else:
           pass
 
 def hamtaDelagarensMaskiner():
      global medlemsnummer
-     
+
      cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
      maskiner = cursor.fetchall()
      LbDelagaresMaskiner.selection_clear(0, "end")
@@ -2385,8 +2420,7 @@ def hamtaDelagarensMaskiner():
      LbDelagaresMaskiner.selection_set(0)
      maskinnummer = LbDelagaresMaskiner.get(0)
      maskinnummer = maskinnummer[0]
-     tomMaskinInfo()
-     fyllMaskinInfoIgen(maskinnummer)
+     maskinnummer = str(maskinnummer)
      
 def hamtaDelagare(medlemsnr):
      global medlemsnummer
@@ -2515,7 +2549,7 @@ EntMaskinnummer.grid(row=1, column=3, padx=(50,0), pady=(50,0))
 EntMaskinnummer.insert(0, "Maskinnummer")
 EntMaskinnummer.bind("<FocusIn>", lambda args: EntMaskinnummer.delete('0', 'end'))
 
-BtnMedlemsnummerSok = Button(home, text = "Sök", width = 5, height = 1) 
+BtnMedlemsnummerSok = Button(home, text = "Sök", width = 5, height = 1, command= lambda: hamtaDelagare(EntMedlemsnummer.get()))
 BtnMedlemsnummerSok.grid (row = 1, column = 2, sticky ="w", pady=(50,0))
 
 BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: clickButton()) 
@@ -2525,11 +2559,12 @@ BtnNyDelagare = Button (home, text ="Ny delägare", height = 1, command = lambda
 BtnNyDelagare.grid(row = 2, column = 5, padx= 10, sticky="n")
 
 # skapar en listbox
-LbDelagare = Listbox(home, width = 50, height = 30, exportselection=0)
+LbDelagare = Listbox(home, width = 60, height = 30, exportselection=0)
 LbDelagare.grid(row = 2, column = 1, columnspan = 2, rowspan = 2, padx=(300,0), pady=(10,0))
 LbDelagare.bind('<<ListboxSelect>>', fetchMaskiner)
+LbDelagare.bind('<Double-Button>', fyllDelagarInfoMedNummer)
 
-LbMaskiner = Listbox(home, width = 50, height = 30, exportselection=0)
+LbMaskiner = Listbox(home, width = 60, height = 30, exportselection=0)
 LbMaskiner.grid(row = 2, column = 3, columnspan = 2, rowspan = 2, padx=(20,0), pady=(10,0))
 LbMaskiner.bind('<Double-Button>', fyllMaskinInfo)
 
@@ -2749,14 +2784,15 @@ entMaskinsmorjfett.config(state=DISABLED)
 
 lblMaskinBatterityp = Label(frameMaskininfo, text="Batterityp")
 lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
-entMaskinBatterityp=Entry(frameMaskininfo, width = 32)
+entMaskinBatterityp=Entry(frameMaskininfo, width = 20)
 entMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
 entMaskinBatterityp.config(state=DISABLED)
 
 lblMaskinBatteriantal = Label(frameMaskininfo, text="Antal")
-lblMaskinBatteriantal.grid(column=1, row=18, sticky=E, padx=(0,50))
-txtBatteriantal = Text(frameMaskininfo, width=5, height=0.1)
-txtBatteriantal.grid(column=1, row=18, sticky=E)
+lblMaskinBatteriantal.grid(column=1, row=18, sticky=E, padx=(0,35))
+entMaskinBatteriantal = Entry(frameMaskininfo, width=5)
+entMaskinBatteriantal.grid(column=1, row=18, sticky=E)
+entMaskinBatteriantal.config(state=DISABLED)
 
 #checkbox
 lblMaskinKollektivforsakring = Label(frameMaskininfo, text="Kollektiv försäkring")
@@ -2956,7 +2992,7 @@ ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
 
 lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 
-cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn FROM foretagsregister")
+cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
 delagareLista = cursor.fetchall()
 delagareLista = list(delagareLista)
 
@@ -2967,14 +3003,17 @@ if LbDelagare.index("end") == 0:
                item[1] = ""
           if item[2] == None:
                item[2] = ""
+          if item[3] == None:
+               item[3] = ""
 
           s=""
           s += str(item[0])
-          s+= " "
+          s+= " - "
           s+=str(item[1])
           s+= " "
           s+=str(item[2])                              
-
+          s+= " - "
+          s+=str(item[3])
 
           LbDelagare.insert("end", s)
 
