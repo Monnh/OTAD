@@ -388,6 +388,14 @@ def fyllMaskinInfo(self):
           except:
                pass
 
+     if maskinInfo[7] is not None:
+          try:
+               deMaskinperiod1.set_date(maskinInfo[7])
+               deMaskinperiod2.set_date(maskinInfo[42])
+           
+          except Exception:
+               traceback.print_exc()
+
      try:
           entMaskinarsbelopp.config(state=NORMAL)
           entMaskinarsbelopp.delete(0, 'end')
@@ -604,7 +612,6 @@ def fyllMaskinInfo(self):
           for x in maskiner:
                LbDelagaresMaskiner.insert("end", x)    
 
-
      tabControl.select(delagare)
 
 def fyllMaskinInfoIgen(self):
@@ -775,6 +782,16 @@ def fyllMaskinInfoIgen(self):
           entMaskinBatterityp.config(state=DISABLED)
      except:
           entMaskinBatterityp.config(state=DISABLED)
+
+     if maskinInfo[7] is not None:
+          try:
+               deMaskinperiod1.set_date(maskinInfo[7])
+               deMaskinperiod2.set_date(maskinInfo[42])
+          except:
+               pass
+
+     deMaskinperiod1.delete(0, END)
+     deMaskinperiod2.delete(0, END)
 
      if maskinInfo[7] is not None:
           try:
@@ -1137,11 +1154,12 @@ def nyMaskinFonster(Typ):
                response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
                if response == 1:
                     sparaHistorik(maskinnummer)
-                    #sparaNyMaskin
+                    rensaMaskin()
+                    bytOchNyMaskin()
                else:
                     pass
           elif Typ=="Ny":
-               #andraMaskin(Typ)
+               bytOchNyMaskin()
                print("nyMaskin Ny")
                pass
           else:
@@ -1151,6 +1169,70 @@ def nyMaskinFonster(Typ):
                     nyMaskin.destroy()
                except:
                     print("Kunde inte ändra maskin")
+
+     def rensaMaskin():
+          try:
+               cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + maskinnummer + ";")
+          except:
+               pass         
+
+     def bytOchNyMaskin():
+          
+          varCbMotorvarmare = False
+          varCbKatalysator = False
+          varCbPartikelfilter = False
+          varCbVattenbaseradlack = False
+          varCbKollektivForsakring = False
+          varCbRegummerbara = False
+          varCbRegummerade = False
+          varCbGasolanlaggning = False
+          varCbSaneringsvatska = False
+          varCbMaskininsatserlagd = False
+          
+          if cbMaskinmotorvarmare.instate(['selected']) == True:
+               varCbMotorvarmare = True
+
+          if cbMaskinkatalysator.instate(['selected']) == True:
+               varCbKatalysator = True
+
+          if cbMaskinpartikelfilter.instate(['selected']) == True:
+               varCbPartikelfilter = True
+
+          if cbMaskinvattenbaseradlack.instate(['selected']) == True:
+               varCbVattenbaseradlack = True
+
+          if cbMaskinKollektivforsakring.instate(['selected']) == True:
+               varCbKollektivForsakring = True
+
+          if cbMaskinregummerbara.instate(['selected']) == True:
+               varCbRegummerbara = True
+
+          if cbMaskinregummerade.instate(['selected']) == True:
+               varCbRegummerade = True
+
+          if cbMaskingasolanlaggning.instate(['selected']) == True:
+               varCbGasolanlaggning = True
+
+          if cbMaskinSaneringsvatska.instate(['selected']) == True:
+               varCbSaneringsvatska = True
+
+          if cbMaskininsatserlagd.instate(['selected']) == True:
+               varCbMaskininsatserlagd = True
+
+          try:
+               cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Morotvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Forarid, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (maskinnummer, txtMaskinbeteckning.get('1.0','end'), txtMaskinme_klass.get('1.0','end'), varCbKollektivForsakring, medlemsnummer, txtMaskinarsbelopp.get('1.0','end'), deMaskinperiod1.get_date().strftime('%Y-%m-%d'),txtMaskinmotorfabrikat.get('1.0','end'), txtMaskinmotortyp.get('1.0','end'), txtMaskinmotoreffekt.get('1.0','end'), varCbVattenbaseradlack, varCbMotorvarmare, txtMaskinkylmedia.get('1.0','end'), varCbKatalysator, varCbPartikelfilter, txtMaskinmotor.get('1.0','end'), txtMaskinmotoroljevolym.get('1.0','end'), txtMaskinvaxellada.get('1.0','end'), txtMaskinvaxelladevolym.get('1.0','end'), txtMaskinhydraulsystem.get('1.0','end'), txtMaskinhydraulsystemvolym.get('1.0','end'), varCbSaneringsvatska, txtMaskinbransle.get('1.0','end'), txtMaskinsmorjfett.get('1.0','end'), txtMaskindackfabrikat.get('1.0','end'), txtMaskinregistreringsnummer.get('1.0','end'), txtMaskintyp.get('1.0','end'), varCbMaskininsatserlagd, txtMaskinbullernivautv.get('1.0','end'), txtMaskinmiljostatus.get('1.0','end'), txtMaskinbullernivainv.get('1.0','end'), txtMaskinkylvatskavolym.get('1.0','end'), txtMaskinkylvatska.get('1.0','end'), txtMaskindimension.get('1.0','end'), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, txtMaskinBatterityp.get('1.0','end'), txtMaskinbatteriantal.get('1.0','end'), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+          except:
+               pass
+
+          try:
+               cursor.execute("INSERT INTO maskinregister (Period_start) = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
+
+          try:
+               cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
 
      def andraMaskin(Typ):
           
@@ -1270,6 +1352,16 @@ def nyMaskinFonster(Typ):
           except Exception:
                traceback.print_exc()
           
+          try:
+               cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
+
+          try:
+               cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
+
           try:
                for x in tillbehorAttTaBort:
                     cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")     
@@ -2659,6 +2751,11 @@ lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
 entMaskinBatterityp=Entry(frameMaskininfo, width = 32)
 entMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
 entMaskinBatterityp.config(state=DISABLED)
+
+lblMaskinBatteriantal = Label(frameMaskininfo, text="Antal")
+lblMaskinBatteriantal.grid(column=1, row=18, sticky=E, padx=(0,50))
+txtBatteriantal = Text(frameMaskininfo, width=5, height=0.1)
+txtBatteriantal.grid(column=1, row=18, sticky=E)
 
 #checkbox
 lblMaskinKollektivforsakring = Label(frameMaskininfo, text="Kollektiv försäkring")
