@@ -23,7 +23,7 @@ def clickButton():
 def miljodeklaration():
      global maskinnummer
 
-     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
      
@@ -118,10 +118,10 @@ def miljodeklaration():
      page.mergePage(new_pdf.getPage(0))
      output.addPage(page)
 
-     outputStream = open( "miljödeklaration - " + maskinnummer + ".pdf", "wb")
+     outputStream = open( "miljödeklaration - " + str(maskinnummer) + ".pdf", "wb")
      output.write(outputStream)
      outputStream.close()
-     os.startfile("miljödeklaration - " + maskinnummer + ".pdf" )
+     os.startfile("miljödeklaration - " + str(maskinnummer) + ".pdf" )
 
 def maskinpresentation():     #behöver lägga till funktion för bilder
      global maskinnummer
@@ -619,6 +619,7 @@ def fyllMaskinInfoIgen(self):
      
      maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
      maskinnummer = maskinnummer[0]
+     maskinnummer = str(maskinnummer)
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
@@ -930,10 +931,10 @@ def fyllMaskinInfoIgen(self):
           forarnamn = cursor.fetchone()
 
      try:
-          txtMaskinforare.config(state=NORMAL)
-          txtMaskinforare.delete('1.0', 'end')
-          txtMaskinforare.insert('end', forarnamn[0])
-          txtMaskinforare.config(state=DISABLED)
+          entMaskinforare.config(state=NORMAL)
+          entMaskinforare.delete(0, 'end')
+          entMaskinforare.insert(0, forarnamn[0])
+          entMaskinforare.config(state=DISABLED)
      except:
           pass
 
