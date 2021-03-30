@@ -1224,12 +1224,19 @@ def nyMaskinFonster(Typ):
           if cbMaskininsatserlagd.instate(['selected']) == True:
                varCbMaskininsatserlagd = True
 
-          try:
-               cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Morotvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Forarid, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (maskinnummer, entMaskinbeteckning.get(0,'end'), entMaskinme_klass.get(0,'end'), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(0,'end'), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(0,'end'), entMaskinmotortyp.get(0,'end'), entMaskinmotoreffekt.get(0,'end'), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(0,'end'), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(0,'end'), entMaskinmotoroljevolym.get(0,'end'), entMaskinvaxellada.get(0,'end'), entMaskinvaxelladevolym.get(0,'end'), entMaskinhydraulsystem.get(0,'end'), entMaskinhydraulsystemvolym.get(0,'end'), varCbSaneringsvatska, entMaskinbransle.get(0,'end'), entMaskinsmorjfett.get(0,'end'), entMaskindackfabrikat.get(0,'end'), entMaskinregistreringsnummer.get(0,'end'), entMaskintyp.get(0,'end'), varCbMaskininsatserlagd, entMaskinbullernivautv.get(0,'end'), entMaskinmiljostatus.get(0,'end'), entMaskinbullernivainv.get(0,'end'), entMaskinkylvatskavolym.get(0,'end'), entMaskinkylvatska.get(0 ,'end'), entMaskindimension.get(0,'end'), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(0,'end'), entMaskinbatteriantal.get(0,'end'), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
-          except:
-               pass
+          if cbMaskinnummer.instate(['selected']) == True:
+               try:
+                    cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Morotvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Forarid, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (maskinnummer, entMaskinbeteckning.get(0,'end'), entMaskinme_klass.get(0,'end'), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(0,'end'), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(0,'end'), entMaskinmotortyp.get(0,'end'), entMaskinmotoreffekt.get(0,'end'), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(0,'end'), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(0,'end'), entMaskinmotoroljevolym.get(0,'end'), entMaskinvaxellada.get(0,'end'), entMaskinvaxelladevolym.get(0,'end'), entMaskinhydraulsystem.get(0,'end'), entMaskinhydraulsystemvolym.get(0,'end'), varCbSaneringsvatska, entMaskinbransle.get(0,'end'), entMaskinsmorjfett.get(0,'end'), entMaskindackfabrikat.get(0,'end'), entMaskinregistreringsnummer.get(0,'end'), entMaskintyp.get(0,'end'), varCbMaskininsatserlagd, entMaskinbullernivautv.get(0,'end'), entMaskinmiljostatus.get(0,'end'), entMaskinbullernivainv.get(0,'end'), entMaskinkylvatskavolym.get(0,'end'), entMaskinkylvatska.get(0 ,'end'), entMaskindimension.get(0,'end'), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(0,'end'), entMaskinbatteriantal.get(0,'end'), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+               except:
+                    pass
+          else:
+               try:
+                    cursor.execute("INSERT INTO maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Morotvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Forarid, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinbeteckning.get(0,'end'), entMaskinme_klass.get(0,'end'), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(0,'end'), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(0,'end'), entMaskinmotortyp.get(0,'end'), entMaskinmotoreffekt.get(0,'end'), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(0,'end'), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(0,'end'), entMaskinmotoroljevolym.get(0,'end'), entMaskinvaxellada.get(0,'end'), entMaskinvaxelladevolym.get(0,'end'), entMaskinhydraulsystem.get(0,'end'), entMaskinhydraulsystemvolym.get(0,'end'), varCbSaneringsvatska, entMaskinbransle.get(0,'end'), entMaskinsmorjfett.get(0,'end'), entMaskindackfabrikat.get(0,'end'), entMaskinregistreringsnummer.get(0,'end'), entMaskintyp.get(0,'end'), varCbMaskininsatserlagd, entMaskinbullernivautv.get(0,'end'), entMaskinmiljostatus.get(0,'end'), entMaskinbullernivainv.get(0,'end'), entMaskinkylvatskavolym.get(0,'end'), entMaskinkylvatska.get(0 ,'end'), entMaskindimension.get(0,'end'), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(0,'end'), entMaskinbatteriantal.get(0,'end'), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+               except:
+                    pass
 
           try:
+               ###TYP är ny/byt   ^^^^^^ testa imorgon när detta är fixat
                cursor.execute("INSERT INTO maskinregister (Period_start) = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
           except Exception:
                traceback.print_exc()
@@ -2122,9 +2129,11 @@ def fyllDelagarInfo():
 
      #sätter delägaresidans info
 
+     txtMedlemsnummerDelagare.config(state=NORMAL)
      txtMedlemsnummerDelagare.delete('1.0', 'end')
      txtMedlemsnummerDelagare.insert('end', delagarInfo[0])
-     
+     txtMedlemsnummerDelagare.config(state=DISABLED)
+
      txtForetag.config(state=NORMAL)
      txtForetag.delete('1.0', 'end')
      txtForetag.insert('end', delagarInfo[1])
@@ -2383,6 +2392,7 @@ def hamtaDelagare(medlemsnr):
 
      medlemsnummer = medlemsnr
 
+     tomMaskinInfo()
      fyllDelagarInfo()
      hamtaDelagarensMaskiner()
 
@@ -2469,7 +2479,7 @@ def sparaHistorik(maskinnummer):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2587,6 +2597,7 @@ lblMedlemsnummer = Label(frameDelagare, text = "Medlemsnr.")
 lblMedlemsnummer.grid(row = 1, column = 0, sticky=W, pady=(0,8))
 txtMedlemsnummerDelagare = Text(frameDelagare, width = 5, height=0.1)
 txtMedlemsnummerDelagare.grid(row = 1, column =1, sticky = W)
+txtMedlemsnummerDelagare.config(state=DISABLED)
 
 entSokMedlem = Entry(frameDelagare, width = 5)
 entSokMedlem.grid(row = 1, column =1, sticky=E, padx=(40, 50))
@@ -2597,36 +2608,43 @@ lblForetag = Label(frameDelagare, text = "Företag")
 lblForetag.grid(row = 2, column = 0, sticky=W, pady=(0,8))
 txtForetag = Text(frameDelagare, width = 25, height=0.1)
 txtForetag.grid(row = 2, column =1, sticky = W)
+txtForetag.config(state=DISABLED)
 
 lblFornamn = Label(frameDelagare, text = "Förnamn")
 lblFornamn.grid(row = 3, column = 0, sticky=W, pady=(0,8))
 txtFornamn = Text(frameDelagare, width = 25, height=0.1)
 txtFornamn.grid(row = 3, column =1, sticky = W)
+txtFornamn.config(state=DISABLED)
 
 lblEfternamn = Label(frameDelagare, text = "Efternamn")
 lblEfternamn.grid(row = 4, column = 0, sticky=W, pady=(0,8))
 txtEfternamn = Text(frameDelagare, width = 25, height=0.1)
 txtEfternamn.grid(row = 4, column =1, sticky = W)
+txtEfternamn.config(state=DISABLED)
 
 lblAdress = Label(frameDelagare, text = "Adress")
 lblAdress.grid(row = 5, column = 0, sticky=W, pady=(0,8))
 txtAdress = Text(frameDelagare, width = 25, height=0.1)
 txtAdress.grid(row = 5, column =1, sticky = W)
+txtAdress.config(state=DISABLED)
 
 lblPostnummer = Label(frameDelagare, text = "Postnummer")
 lblPostnummer.grid(row = 6, column = 0, sticky=W, pady=(0,8))
 txtPostnummer = Text(frameDelagare, width = 25, height=0.1)
 txtPostnummer.grid(row = 6, column =1, sticky = W)
+txtPostnummer.config(state=DISABLED)
 
 lblPostadress = Label(frameDelagare, text = "Ort")
 lblPostadress.grid(row = 7, column = 0, sticky=W, pady=(0,8))
 txtPostadress = Text(frameDelagare, width = 25, height=0.1)
 txtPostadress.grid(row = 7, column =1, sticky = W)
+txtPostadress.config(state=DISABLED)
 
 lblTelefon = Label(frameDelagare, text = "Telefon")
 lblTelefon.grid(row = 8, column = 0, sticky=W, pady=(0,8))
 txtTelefon = Text(frameDelagare, width = 25, height=0.1)
 txtTelefon.grid(row = 8, column =1, sticky = W, padx=(0,4))
+txtTelefon.config(state=DISABLED)
 
 btnAndraDelagare = Button(frameDelagare, text ="Ändra", command = lambda: nyDelagare("Ändra"))
 btnAndraDelagare.grid(row=9, column=1, sticky=W, padx=(55,0), pady=(0,5))
