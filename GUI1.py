@@ -1381,6 +1381,8 @@ def nyMaskinFonster(Typ):
           fyllMaskinInfo(Typ)
           
 
+
+
      nyMaskin = Toplevel(root)
 
      if Typ=="Ny":
@@ -1396,6 +1398,22 @@ def nyMaskinFonster(Typ):
      lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(7,8))
      entMaskinnummermaskininfo = Entry(nyMaskin, width = 5)
      entMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(7,0))
+
+     if Typ=="Ny":
+          lblMaskinnummerVal = Label(nyMaskin, text = "Autogen eller ej?")
+          lblMaskinnummerVal.grid(column = 1, row = 0, sticky = E, padx=(0,23))
+          cbMaskinnummer = ttk.Checkbutton(nyMaskin, command = lambda: autogenEllerEj())
+          cbMaskinnummer.state(['!alternate', '!selected', '!disabled'])
+          cbMaskinnummer.grid(column = 1, row = 0, sticky = E, padx=(5,0))
+
+          def autogenEllerEj():
+               if cbMaskinnummer.instate(['selected']) == True:
+                    entMaskinnummermaskininfo.config(state=DISABLED)
+               else:
+                    entMaskinnummermaskininfo.config(state=NORMAL)
+     else:
+          pass
+
 
      lblMaskinbeteckning = Label(nyMaskin, text="Beteckning")
      lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(0,8))
@@ -2449,6 +2467,10 @@ def historikFonster():
                LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4]))
                count += 1
 
+          if len(result) == 0:
+               btnTaBortHistorik["state"] = DISABLED
+          else:
+               btnTaBortHistorik["state"] = NORMAL
 
 
      LbHistorik = ttk.Treeview(historikFonster)
@@ -2470,6 +2492,8 @@ def historikFonster():
 
      btnTaBortHistorik = Button(historikFonster, text="Ta bort")
      btnTaBortHistorik.grid(row=2, column=1, sticky=E, pady=(5,0))
+
+     
 
      hamtaHistorik()
 
