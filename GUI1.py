@@ -382,12 +382,20 @@ def fyllMaskinInfo(self):
           pass
 
      try:
-          txtMaskinperiod.config(state=NORMAL)
-          txtMaskinperiod.delete('1.0', 'end')
-          txtMaskinperiod.insert('end', maskinInfo[7])
-          txtMaskinperiod.config(state=DISABLED)
+          txtBatteriantal.config(state=NORMAL)
+          txtBatteriantal.delete('1.0', 'end')
+          txtBatteriantal.insert('end', maskinInfo[39])
+          txtBatteriantal.config(state=DISABLED)
      except:
           pass
+
+     if maskinInfo[7] is not None:
+          try:
+               deMaskinperiod1.set_date(maskinInfo[7])
+               deMaskinperiod2.set_date(maskinInfo[42])
+           
+          except Exception:
+               traceback.print_exc()
 
      try:
           txtMaskinarsbelopp.config(state=NORMAL)
@@ -605,7 +613,6 @@ def fyllMaskinInfo(self):
           for x in maskiner:
                LbDelagaresMaskiner.insert("end", x)    
 
-
      tabControl.select(delagare)
 
 def fyllMaskinInfoIgen(self):
@@ -778,12 +785,22 @@ def fyllMaskinInfoIgen(self):
           pass
 
      try:
-          txtMaskinperiod.config(state=NORMAL)
-          txtMaskinperiod.delete('1.0', 'end')
-          txtMaskinperiod.insert('end', maskinInfo[7])
-          txtMaskinperiod.config(state=DISABLED)
+          txtBatteriantal.config(state=NORMAL)
+          txtBatteriantal.delete('1.0', 'end')
+          txtBatteriantal.insert('end', maskinInfo[39])
+          txtBatteriantal.config(state=DISABLED)
      except:
           pass
+
+     deMaskinperiod1.delete(0, END)
+     deMaskinperiod2.delete(0, END)
+
+     if maskinInfo[7] is not None:
+          try:
+               deMaskinperiod1.set_date(maskinInfo[7])
+               deMaskinperiod2.set_date(maskinInfo[42])
+          except:
+               pass
 
      try:
           txtMaskinarsbelopp.config(state=NORMAL)
@@ -1139,11 +1156,12 @@ def nyMaskinFonster(Typ):
                response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
                if response == 1:
                     sparaHistorik(maskinnummer)
-                    #sparaNyMaskin
+                    rensaMaskin()
+                    bytOchNyMaskin()
                else:
                     pass
           elif Typ=="Ny":
-               #andraMaskin(Typ)
+               bytOchNyMaskin()
                print("nyMaskin Ny")
                pass
           else:
@@ -1153,6 +1171,70 @@ def nyMaskinFonster(Typ):
                     nyMaskin.destroy()
                except:
                     print("Kunde inte ändra maskin")
+
+     def rensaMaskin():
+          try:
+               cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + maskinnummer + ";")
+          except:
+               pass         
+
+     def bytOchNyMaskin():
+          
+          varCbMotorvarmare = False
+          varCbKatalysator = False
+          varCbPartikelfilter = False
+          varCbVattenbaseradlack = False
+          varCbKollektivForsakring = False
+          varCbRegummerbara = False
+          varCbRegummerade = False
+          varCbGasolanlaggning = False
+          varCbSaneringsvatska = False
+          varCbMaskininsatserlagd = False
+          
+          if cbMaskinmotorvarmare.instate(['selected']) == True:
+               varCbMotorvarmare = True
+
+          if cbMaskinkatalysator.instate(['selected']) == True:
+               varCbKatalysator = True
+
+          if cbMaskinpartikelfilter.instate(['selected']) == True:
+               varCbPartikelfilter = True
+
+          if cbMaskinvattenbaseradlack.instate(['selected']) == True:
+               varCbVattenbaseradlack = True
+
+          if cbMaskinKollektivforsakring.instate(['selected']) == True:
+               varCbKollektivForsakring = True
+
+          if cbMaskinregummerbara.instate(['selected']) == True:
+               varCbRegummerbara = True
+
+          if cbMaskinregummerade.instate(['selected']) == True:
+               varCbRegummerade = True
+
+          if cbMaskingasolanlaggning.instate(['selected']) == True:
+               varCbGasolanlaggning = True
+
+          if cbMaskinSaneringsvatska.instate(['selected']) == True:
+               varCbSaneringsvatska = True
+
+          if cbMaskininsatserlagd.instate(['selected']) == True:
+               varCbMaskininsatserlagd = True
+
+          try:
+               cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Morotvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Forarid, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (maskinnummer, txtMaskinbeteckning.get('1.0','end'), txtMaskinme_klass.get('1.0','end'), varCbKollektivForsakring, medlemsnummer, txtMaskinarsbelopp.get('1.0','end'), deMaskinperiod1.get_date().strftime('%Y-%m-%d'),txtMaskinmotorfabrikat.get('1.0','end'), txtMaskinmotortyp.get('1.0','end'), txtMaskinmotoreffekt.get('1.0','end'), varCbVattenbaseradlack, varCbMotorvarmare, txtMaskinkylmedia.get('1.0','end'), varCbKatalysator, varCbPartikelfilter, txtMaskinmotor.get('1.0','end'), txtMaskinmotoroljevolym.get('1.0','end'), txtMaskinvaxellada.get('1.0','end'), txtMaskinvaxelladevolym.get('1.0','end'), txtMaskinhydraulsystem.get('1.0','end'), txtMaskinhydraulsystemvolym.get('1.0','end'), varCbSaneringsvatska, txtMaskinbransle.get('1.0','end'), txtMaskinsmorjfett.get('1.0','end'), txtMaskindackfabrikat.get('1.0','end'), txtMaskinregistreringsnummer.get('1.0','end'), txtMaskintyp.get('1.0','end'), varCbMaskininsatserlagd, txtMaskinbullernivautv.get('1.0','end'), txtMaskinmiljostatus.get('1.0','end'), txtMaskinbullernivainv.get('1.0','end'), txtMaskinkylvatskavolym.get('1.0','end'), txtMaskinkylvatska.get('1.0','end'), txtMaskindimension.get('1.0','end'), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, txtMaskinBatterityp.get('1.0','end'), txtMaskinbatteriantal.get('1.0','end'), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+          except:
+               pass
+
+          try:
+               cursor.execute("INSERT INTO maskinregister (Period_start) = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
+
+          try:
+               cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
 
      def andraMaskin(Typ):
           
@@ -1268,10 +1350,20 @@ def nyMaskinFonster(Typ):
 
           try:
 
-               cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + txtMaskinnummermaskininfo.get('1.0','end') + "', MarkeModell = '" + txtMaskinbeteckning.get('1.0','end') + "', ME_Klass = '" + txtMaskinme_klass.get('1.0','end') + "', Motorfabrikat = '" + txtMaskinmotorfabrikat.get('1.0','end') + "', Motortyp = '" + txtMaskinmotortyp.get('1.0','end') + "', Motorolja = '" + txtMaskinmotor.get('1.0','end') + "', Vaxelladsolja = '" + txtMaskinvaxellada.get('1.0','end') + "', Hydraulolja = '" + txtMaskinhydraulsystem.get('1.0','end') + "', Kylvatska = '" + txtMaskinkylvatska.get('1.0','end') + "', Motoreffekt = '" + txtMaskinmotoreffekt.get('1.0','end') + "', Kylmedia = '" + txtMaskinkylmedia.get('1.0','end') + "', Bullernivaute = '" + txtMaskinbullernivautv.get('1.0','end') + "', Bullernivainne = '" + txtMaskinbullernivainv.get('1.0','end') + "', Smorjfett = '" + txtMaskinsmorjfett.get('1.0','end') + "', Batterityp = '" + txtMaskinBatterityp.get('1.0','end') + "', Arsbelopp = '" + txtMaskinarsbelopp.get('1.0','end') + "', Miljostatus = '" + txtMaskinmiljostatus.get('1.0','end') + "', Arsmodell = '" + txtMaskinarsmodell.get('1.0','end') + "', Registreringsnummer = '" + txtMaskinregistreringsnummer.get('1.0','end') + "', Maskintyp = '" + txtMaskintyp.get('1.0','end') + "', Motorvolymolja = '" + txtMaskinmotoroljevolym.get('1.0','end') + "', Vaxelladavolym = '" + txtMaskinvaxelladevolym.get('1.0','end') + "', Hydraulvolym = '" + txtMaskinhydraulsystemvolym.get('1.0','end') + "', Kylvatskavolym = '" + txtMaskinkylvatskavolym.get('1.0','end') + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + txtMaskinbransle.get('1.0','end') + "', Dackfabrikat = '" + txtMaskindackfabrikat.get('1.0','end') + "', Dimension = '" + txtMaskindimension.get('1.0','end') + "'WHERE Maskinnummer = " + Typ +";")
+               cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + txtMaskinnummermaskininfo.get('1.0','end') + "', MarkeModell = '" + txtMaskinbeteckning.get('1.0','end') + "', ME_Klass = '" + txtMaskinme_klass.get('1.0','end') + "', Motorfabrikat = '" + txtMaskinmotorfabrikat.get('1.0','end') + "', Motortyp = '" + txtMaskinmotortyp.get('1.0','end') + "', Motorolja = '" + txtMaskinmotor.get('1.0','end') + "', Vaxelladsolja = '" + txtMaskinvaxellada.get('1.0','end') + "', Hydraulolja = '" + txtMaskinhydraulsystem.get('1.0','end') + "', Kylvatska = '" + txtMaskinkylvatska.get('1.0','end') + "', Motoreffekt = '" + txtMaskinmotoreffekt.get('1.0','end') + "', Kylmedia = '" + txtMaskinkylmedia.get('1.0','end') + "', Bullernivaute = '" + txtMaskinbullernivautv.get('1.0','end') + "', Bullernivainne = '" + txtMaskinbullernivainv.get('1.0','end') + "', Smorjfett = '" + txtMaskinsmorjfett.get('1.0','end') + "', Batterityp = '" + txtMaskinBatterityp.get('1.0','end') + "', Arsbelopp = '" + txtMaskinarsbelopp.get('1.0','end') + "', Miljostatus = '" + txtMaskinmiljostatus.get('1.0','end') + "', Arsmodell = '" + txtMaskinarsmodell.get('1.0','end-1c') + "', Registreringsnummer = '" + txtMaskinregistreringsnummer.get('1.0','end') + "', Maskintyp = '" + txtMaskintyp.get('1.0','end') + "', Motorvolymolja = '" + txtMaskinmotoroljevolym.get('1.0','end') + "', Vaxelladavolym = '" + txtMaskinvaxelladevolym.get('1.0','end') + "', Hydraulvolym = '" + txtMaskinhydraulsystemvolym.get('1.0','end') + "', Kylvatskavolym = '" + txtMaskinkylvatskavolym.get('1.0','end') + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + txtMaskinbransle.get('1.0','end') + "', Dackfabrikat = '" + txtMaskindackfabrikat.get('1.0','end') + "', Batteriantal = '" + txtBatteriantal.get('1.0','end') + "', Dimension = '" + txtMaskindimension.get('1.0','end') + "'WHERE Maskinnummer = " + Typ +";")
           except Exception:
                traceback.print_exc()
           
+          try:
+               cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
+
+          try:
+               cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          except Exception:
+               traceback.print_exc()
+
           try:
                for x in tillbehorAttTaBort:
                     cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")     
@@ -1290,719 +1382,708 @@ def nyMaskinFonster(Typ):
           db.commit()
           fyllMaskinInfo(Typ)
 
-     def bytNyMaskin():
+
+
+     nyMaskin = Toplevel(root)
+
+     if Typ=="Ny":
+          nyMaskin.title("Lägg till ny maskin")
+     elif Typ=="Byt":
+          nyMaskin.title("Byt maskin")
+     else:
+          nyMaskin.title("Ändra maskin")
+
+     nyMaskin.geometry("975x680")
+
+     lblMaskinnummermaskininfo = Label(nyMaskin, text= "Maskinnummer")
+     lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(7,8))
+     txtMaskinnummermaskininfo = Text(nyMaskin, width = 5, height=0.1)
+     txtMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(7,0))
+
+     lblMaskinbeteckning = Label(nyMaskin, text="Beteckning")
+     lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinbeteckning = Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinbeteckning.grid(column=1, row=1, sticky = W, padx=(10,0))
+
+
+     lblMaskinme_klass = Label(nyMaskin, text="ME-Klass")
+     lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinme_klass = Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0))
+
+
+     lblMaskinmotorfabrikat = Label(nyMaskin, text="Motorfabrikat")
+     lblMaskinmotorfabrikat.grid(column=0, row=3, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinmotorfabrikat = Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinmotorfabrikat.grid(column=1, row=3, sticky=W, padx=(10,0))
+
+
+     lblMaskinmotortyp = Label(nyMaskin, text="Motortyp")
+     lblMaskinmotortyp.grid(column=0, row=4, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinmotortyp=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinmotortyp.grid(column=1, row=4, sticky=W, padx=(10,0))
+
+
+     lblMaskinmotor = Label(nyMaskin, text="Motor")
+     lblMaskinmotor.grid(column=0, row=5, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinmotor = Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinmotor.grid(column=1, row=5, sticky=W, padx=(10,0))
+
+
+     lblMaskinvaxellada = Label(nyMaskin, text="Växellåda")
+     lblMaskinvaxellada.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinvaxellada=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinvaxellada.grid(column=1, row=6, sticky=W, padx=(10,0))
+
+     lblMaskinhydraulsystem = Label(nyMaskin, text="Hydraulsystem")
+     lblMaskinhydraulsystem.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinhydraulsystem=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinhydraulsystem.grid(column=1, row=7, sticky=W, padx=(10,0))
+
+
+     lblMaskinkylvatska = Label(nyMaskin, text="Kylvätska")
+     lblMaskinkylvatska.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinkylvatska=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinkylvatska.grid(column=1, row=8, sticky=W, padx=(10,0))
+
+
+     lblMaskinmotoreffekt = Label(nyMaskin, text="Motoreffekt/KW")
+     lblMaskinmotoreffekt.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinmotoreffekt=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinmotoreffekt.grid(column=1, row=9, sticky=W, padx=(10,0))
+
+     lblMaskinmotorvarmare = Label(nyMaskin, text="Motorvärmare")
+     lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(0,8))
+     cbMaskinmotorvarmare = ttk.Checkbutton(nyMaskin)
+     cbMaskinmotorvarmare.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinmotorvarmare.grid(column = 1, row = 10, sticky = W, padx=(5,0))
+
+     lblMaskinkatalysator = Label(nyMaskin, text="Katalysator")
+     lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(0,8))
+     cbMaskinkatalysator = ttk.Checkbutton(nyMaskin)
+     cbMaskinkatalysator.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinkatalysator.grid(column = 1, row = 11, sticky = W, padx=(5,0))
+
+     lblMaskinpartikelfilter = Label(nyMaskin, text="Partikelfilter")
+     lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(0,8))
+     cbMaskinpartikelfilter = ttk.Checkbutton(nyMaskin)
+     cbMaskinpartikelfilter.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinpartikelfilter.grid(column = 1, row = 12, sticky = W, padx=(5,0))
+
+     lblMaskinvattenbaseradlack = Label(nyMaskin, text="Vattenbaserad lack")
+     lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0), pady=(0,8))
+     cbMaskinvattenbaseradlack = ttk.Checkbutton(nyMaskin)
+     cbMaskinvattenbaseradlack.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinvattenbaseradlack.grid(column = 1, row = 13, sticky = W, padx=(5,0))
+
+     lblMaskinkylmedia = Label(nyMaskin, text="Kylmedia")
+     lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinkylmedia=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinkylmedia.grid(column=1, row=14, sticky=W, padx=(10,0))
+
+     lblMaskinbullernivautv = Label(nyMaskin, text="Bullernivå utvändigt")
+     lblMaskinbullernivautv.grid(column=0, row=15, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinbullernivautv=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinbullernivautv.grid(column=1, row=15, sticky=W, padx=(10,0))
+
+     lblMaskinbullernivainv = Label(nyMaskin, text="Bullernivå invändigt")
+     lblMaskinbullernivainv.grid(column=0, row=16, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinbullernivainv=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinbullernivainv.grid(column=1, row=16, sticky=W, padx=(10,0))
+
+     lblMaskinsmorjfett = Label(nyMaskin, text="Smörjfett")
+     lblMaskinsmorjfett.grid(column=0, row=17, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinsmorjfett=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinsmorjfett.grid(column=1, row=17, sticky=W, padx=(10,0))
+
+     lblMaskinBatterityp = Label(nyMaskin, text="Batterityp")
+     lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinBatterityp=Text(nyMaskin, width = 13, height=0.1)
+     txtMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
+
+     lblMaskinBatteriantal = Label(nyMaskin, text="Antal")
+     lblMaskinBatteriantal.grid(column=1, row=18, sticky=E, padx=(0,50))
+     txtBatteriantal = Text(nyMaskin, width=5, height=0.1)
+     txtBatteriantal.grid(column=1, row=18, sticky=E)
+
+     #checkbox
+     lblMaskinKollektivforsakring = Label(nyMaskin, text="Kollektiv försäkring")
+     lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0), pady=(0,8))
+     cbMaskinKollektivforsakring = ttk.Checkbutton(nyMaskin)
+     cbMaskinKollektivforsakring.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinKollektivforsakring.grid(column = 1, row = 19, sticky = W, padx=(5,0))
+
+     lblMaskinperiod = Label(nyMaskin, text="Period")
+     lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0), pady=(0,8))
+
+     #Date entry
+     deMaskinperiod1 = DateEntry(nyMaskin, values="Text", date_pattern="yyyy-mm-dd")
+     deMaskinperiod1.delete(0, 'end')
+     deMaskinperiod1.grid(column=1, row=20, sticky=W, padx=(10,0))
+
+     deMaskinperiod2 = DateEntry(nyMaskin, values="Text", date_pattern="yyyy-mm-dd")
+     deMaskinperiod2.delete(0, 'end')
+     deMaskinperiod2.grid(column=1, row=20, sticky=E)
+
+     lblMaskinarsbelopp = Label(nyMaskin, text="Årsbelopp")
+     lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
+     txtMaskinarsbelopp=Text(nyMaskin, width = 25, height=0.1)
+     txtMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
+
+     #Buttons
+
+     btnSparaNyMaskin=Button(nyMaskin, text="Spara", command = lambda: sparaMaskin(Typ))
+     btnSparaNyMaskin.grid(column=5, row=21, sticky=E, padx=(0,55))
+     btnAvbrytNyMaskin=Button(nyMaskin, text="Avbryt", command = lambda: nyMaskin.destroy())
+     btnAvbrytNyMaskin.grid(column=5, row=21,sticky=E)
+
+     #--------------------
+
+     lblMaskinmiljostatus = Label(nyMaskin, text="Miljöstatus")
+     lblMaskinmiljostatus.grid(column=2, row=0, sticky = W, padx=(10,0), pady=(7,0))
+     txtMaskinmiljostatus=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinmiljostatus.grid(column=3, row=0, sticky=W, padx=(10,0), pady=(7,0))
+
+     lblMaskinarsmodell = Label(nyMaskin, text="Årsmodell")
+     lblMaskinarsmodell.grid(column=2, row=1, sticky = W, padx=(10,0))
+     txtMaskinarsmodell=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinarsmodell.grid(column=3, row=1, sticky=W, padx=(10,0))
+
+     lblMaskinregistreringsnummer = Label(nyMaskin, text="Reg. nr/Ser. nr")
+     lblMaskinregistreringsnummer.grid(column=2, row=2, sticky = W, padx=(10,0))
+     txtMaskinregistreringsnummer=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinregistreringsnummer.grid(column=3, row=2, sticky=W, padx=(10,0))
+
+     lblMaskintyp = Label(nyMaskin, text="Maskintyp")
+     lblMaskintyp.grid(column=2, row=3, sticky = W, padx=(10,0))
+     txtMaskintyp=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskintyp.grid(column=3, row=3, sticky=W, padx=(10,0))
+
+     lblMaskinmotoroljevolym  = Label(nyMaskin, text="Motorolja volym/liter")
+     lblMaskinmotoroljevolym.grid(column=2, row=5, sticky = W, padx=(10,0))
+     txtMaskinmotoroljevolym=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinmotoroljevolym.grid(column=3, row=5, sticky=W, padx=(10,0))
+
+     lblMaskinvaxelladevolym = Label(nyMaskin, text="Växellåda volym/liter")
+     lblMaskinvaxelladevolym.grid(column=2, row=6, sticky = W, padx=(10,0))
+     txtMaskinvaxelladevolym=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinvaxelladevolym.grid(column=3, row=6, sticky=W, padx=(10,0))
+
+     lblMaskinhydraulsystemvolym = Label(nyMaskin, text="Hydraul volym/liter")
+     lblMaskinhydraulsystemvolym.grid(column=2, row=7, sticky = W, padx=(10,0))
+     txtMaskinhydraulsystemvolym=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinhydraulsystemvolym.grid(column=3, row=7, sticky=W, padx=(10,0))
+
+     lblMaskinkylvatskavolym = Label(nyMaskin, text="Kylvätska volym/liter")
+     lblMaskinkylvatskavolym.grid(column=2, row=8, sticky = W, padx=(10,0))
+     txtMaskinkylvatskavolym=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
+
+     lblOvrigtext = Label(nyMaskin, text="Övrig Text")
+     lblOvrigtext.grid(column=2, row=9, sticky = W, padx=(10,0))
+     TxtOvrigtext = Text(nyMaskin, width = 20, height=3)
+     TxtOvrigtext.grid(row=10, column=2, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,15))
+
+     #Scrollbar
+     ScbTxtOvrigText = Scrollbar(nyMaskin, orient="vertical")
+     ScbTxtOvrigText.grid(row = 10, column = 3, sticky = N+S+E, rowspan = 4)
+     ScbTxtOvrigText.config(command =TxtOvrigtext.yview)
+
+     TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set) 
+
+     def fileDialog():
+
+          global img3
+          filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
+          txtSokvag = Text(nyMaskin, width = 20, height=0.1)
+          txtSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
+          txtSokvag.insert('end', filename)
+          nyMaskin.lift()
+          imgNyBild = Image.open(filename)  
+          imgNyBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
+          img3 = ImageTk.PhotoImage(imgNyBild)
+          img_NyBild = Label(nyMaskin, image=img3) 
+          img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
           
+     btnNyBild = Button(nyMaskin, text="Lägg till bild", command= fileDialog)
+     btnNyBild.grid(column=2, row=21, sticky=W, padx=(10,0))
 
-          nyMaskin = Toplevel(root)
+     #------------------------
 
-          if Typ=="Ny":
-               nyMaskin.title("Lägg till ny maskin")
-          elif Typ=="Byt":
-               nyMaskin.title("Byt maskin")
-          else:
-               nyMaskin.title("Ändra maskin")
+     lblMaskinbransle = Label(nyMaskin, text="Bränsle")
+     lblMaskinbransle.grid(column=4, row=0, sticky = W, padx=(10,0), pady=(7,0))
+     txtMaskinbransle=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinbransle.grid(column=5, row=0, sticky=W, padx=(10,0), pady=(7,0))
 
-          nyMaskin.geometry("975x680")
+     lblMaskindackfabrikat = Label(nyMaskin, text="Däckfabrikat")
+     lblMaskindackfabrikat.grid(column=4, row=1, sticky = W, padx=(10,0))
+     txtMaskindackfabrikat=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskindackfabrikat.grid(column=5, row=1, sticky=W, padx=(10,0))
 
-          lblMaskinnummermaskininfo = Label(nyMaskin, text= "Maskinnummer")
-          lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(7,8))
-          txtMaskinnummermaskininfo = Text(nyMaskin, width = 5, height=0.1)
-          txtMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(7,0))
+     lblMaskindimension = Label(nyMaskin, text="Dimension/typ")
+     lblMaskindimension.grid(column=4, row=2, sticky = W, padx=(10,0))
+     txtMaskindimension=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskindimension.grid(column=5, row=2, sticky=W, padx=(10,0))
 
-          lblMaskinbeteckning = Label(nyMaskin, text="Beteckning")
-          lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinbeteckning = Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinbeteckning.grid(column=1, row=1, sticky = W, padx=(10,0))
+     #Checkbox
+     lblMaskinregummerbara = Label(nyMaskin, text="Regummerbara")
+     lblMaskinregummerbara.grid(column=4, row=3, sticky = W, padx=(10,0))
+     cbMaskinregummerbara = ttk.Checkbutton(nyMaskin)
+     cbMaskinregummerbara.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinregummerbara.grid(column = 5, row = 3, sticky = W, padx=(5,0))
 
+     #Checkbox
+     lblMaskinregummerade = Label(nyMaskin, text="Regummerade")
+     lblMaskinregummerade.grid(column=4, row=4, sticky = W, padx=(10,0))
+     cbMaskinregummerade = ttk.Checkbutton(nyMaskin)
+     cbMaskinregummerade.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinregummerade.grid(column = 5, row = 4, sticky = W, padx=(5,0))
 
-          lblMaskinme_klass = Label(nyMaskin, text="ME-Klass")
-          lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinme_klass = Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0))
+     lblMaskingasolanlaggning = Label(nyMaskin, text="Gasolanläggning")
+     lblMaskingasolanlaggning.grid(column=4, row=5, sticky = W, padx=(10,0))
+     cbMaskingasolanlaggning = ttk.Checkbutton(nyMaskin)
+     cbMaskingasolanlaggning.state(['!alternate', '!selected', '!disabled'])
+     cbMaskingasolanlaggning.grid(column = 5, row = 5, sticky = W, padx=(5,0))
 
+     lblMaskinSaneringsvatska = Label(nyMaskin, text="Saneringsvätska")
+     lblMaskinSaneringsvatska.grid(column=4, row=6, sticky = W, padx=(10,0))
+     cbMaskinSaneringsvatska = ttk.Checkbutton(nyMaskin)
+     cbMaskinSaneringsvatska.state(['!alternate', '!selected', '!disabled'])
+     cbMaskinSaneringsvatska.grid(column = 5, row = 6, sticky = W, padx=(5,0))
 
-          lblMaskinmotorfabrikat = Label(nyMaskin, text="Motorfabrikat")
-          lblMaskinmotorfabrikat.grid(column=0, row=3, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinmotorfabrikat = Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinmotorfabrikat.grid(column=1, row=3, sticky=W, padx=(10,0))
+     #Checkbox
+     lblMaskininsattserlagd = Label(nyMaskin, text="Maskininsats erlagd")
+     lblMaskininsattserlagd.grid(column=4, row=7, sticky = W, padx=(10,0))
+     cbMaskininsatserlagd = ttk.Checkbutton(nyMaskin)
+     cbMaskininsatserlagd.state(['!alternate', '!selected', '!disabled'])
+     cbMaskininsatserlagd.grid(column = 5, row = 7, sticky = W, padx=(5,0))
 
+     lblMaskinforare = Label(nyMaskin, text="Förare")
+     lblMaskinforare.grid(column=4, row=8, sticky = W, padx=(10,0))
+     txtMaskinforare=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinforare.grid(column=5, row=8, sticky=W, padx=(10,0))
 
-          lblMaskinmotortyp = Label(nyMaskin, text="Motortyp")
-          lblMaskinmotortyp.grid(column=0, row=4, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinmotortyp=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinmotortyp.grid(column=1, row=4, sticky=W, padx=(10,0))
+     lblMaskinreferens = Label(nyMaskin, text="Referensjobb")
+     lblMaskinreferens.grid(column=4, row=9, sticky = W, padx=(10,0))
+     txtMaskinreferens=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskinreferens.grid(column=5, row=9, sticky=W, padx=(10,0))
 
-
-          lblMaskinmotor = Label(nyMaskin, text="Motor")
-          lblMaskinmotor.grid(column=0, row=5, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinmotor = Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinmotor.grid(column=1, row=5, sticky=W, padx=(10,0))
-
-
-          lblMaskinvaxellada = Label(nyMaskin, text="Växellåda")
-          lblMaskinvaxellada.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinvaxellada=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinvaxellada.grid(column=1, row=6, sticky=W, padx=(10,0))
-
-          lblMaskinhydraulsystem = Label(nyMaskin, text="Hydraulsystem")
-          lblMaskinhydraulsystem.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinhydraulsystem=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinhydraulsystem.grid(column=1, row=7, sticky=W, padx=(10,0))
-
-
-          lblMaskinkylvatska = Label(nyMaskin, text="Kylvätska")
-          lblMaskinkylvatska.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinkylvatska=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinkylvatska.grid(column=1, row=8, sticky=W, padx=(10,0))
-
-
-          lblMaskinmotoreffekt = Label(nyMaskin, text="Motoreffekt/KW")
-          lblMaskinmotoreffekt.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinmotoreffekt=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinmotoreffekt.grid(column=1, row=9, sticky=W, padx=(10,0))
-
-          lblMaskinmotorvarmare = Label(nyMaskin, text="Motorvärmare")
-          lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(0,8))
-          #txtMaskinmotorvarmare=Text(nyMaskin, width = 25, height=0.1)
-          #txtMaskinmotorvarmare.grid(column=1, row=10, sticky=W, padx=(10,0))
-          cbMaskinmotorvarmare = ttk.Checkbutton(nyMaskin)
-          cbMaskinmotorvarmare.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinmotorvarmare.grid(column = 1, row = 10, sticky = W, padx=(5,0))
-
-          lblMaskinkatalysator = Label(nyMaskin, text="Katalysator")
-          lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(0,8))
-          #txtMaskinkatalysator=Text(nyMaskin, width = 25, height=0.1)
-          #txtMaskinkatalysator.grid(column=1,row=11, sticky=W, padx=(10,0))
-          cbMaskinkatalysator = ttk.Checkbutton(nyMaskin)
-          cbMaskinkatalysator.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinkatalysator.grid(column = 1, row = 11, sticky = W, padx=(5,0))
-
-          lblMaskinpartikelfilter = Label(nyMaskin, text="Partikelfilter")
-          lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(0,8))
-          #txtMaskinpartikelfilter=Text(nyMaskin, width = 25, height=0.1)
-          #txtMaskinpartikelfilter.grid(column=1,row=12, sticky=W, padx=(10,0))
-          cbMaskinpartikelfilter = ttk.Checkbutton(nyMaskin)
-          cbMaskinpartikelfilter.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinpartikelfilter.grid(column = 1, row = 12, sticky = W, padx=(5,0))
-
-          lblMaskinvattenbaseradlack = Label(nyMaskin, text="Vattenbaserad lack")
-          lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0), pady=(0,8))
-          #txtMaskinvattenbaseradlack=Text(nyMaskin, width = 25, height=0.1)
-          #txtMaskinvattenbaseradlack.grid(column=1, row=13, sticky=W, padx=(10,0))
-          cbMaskinvattenbaseradlack = ttk.Checkbutton(nyMaskin)
-          cbMaskinvattenbaseradlack.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinvattenbaseradlack.grid(column = 1, row = 13, sticky = W, padx=(5,0))
-
-          lblMaskinkylmedia = Label(nyMaskin, text="Kylmedia")
-          lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinkylmedia=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinkylmedia.grid(column=1, row=14, sticky=W, padx=(10,0))
-
-          lblMaskinbullernivautv = Label(nyMaskin, text="Bullernivå utvändigt")
-          lblMaskinbullernivautv.grid(column=0, row=15, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinbullernivautv=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinbullernivautv.grid(column=1, row=15, sticky=W, padx=(10,0))
-
-          lblMaskinbullernivainv = Label(nyMaskin, text="Bullernivå invändigt")
-          lblMaskinbullernivainv.grid(column=0, row=16, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinbullernivainv=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinbullernivainv.grid(column=1, row=16, sticky=W, padx=(10,0))
-
-          lblMaskinsmorjfett = Label(nyMaskin, text="Smörjfett")
-          lblMaskinsmorjfett.grid(column=0, row=17, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinsmorjfett=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinsmorjfett.grid(column=1, row=17, sticky=W, padx=(10,0))
-
-          lblMaskinBatterityp = Label(nyMaskin, text="Batterityp")
-          lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinBatterityp=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
-
-          #checkbox
-          lblMaskinKollektivforsakring = Label(nyMaskin, text="Kollektiv försäkring")
-          lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0), pady=(0,8))
-          cbMaskinKollektivforsakring = ttk.Checkbutton(nyMaskin)
-          cbMaskinKollektivforsakring.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinKollektivforsakring.grid(column = 1, row = 19, sticky = W, padx=(5,0))
-
-          lblMaskinperiod = Label(nyMaskin, text="Period")
-          lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0), pady=(0,8))
-
-          #Date entry
-          deMaskinperiod1 = DateEntry(nyMaskin, values="Text", date_pattern="yyyy-mm-dd")
-          deMaskinperiod1.delete(0, 'end')
-          deMaskinperiod1.grid(column=1, row=20, sticky=W, padx=(10,0))
-
-          deMaskinperiod2 = DateEntry(nyMaskin, values="Text", date_pattern="yyyy-mm-dd")
-          deMaskinperiod2.delete(0, 'end')
-          deMaskinperiod2.grid(column=1, row=20, sticky=E)
-
-          lblMaskinarsbelopp = Label(nyMaskin, text="Årsbelopp")
-          lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
-          txtMaskinarsbelopp=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
-
-          #Buttons
-
-          btnSparaNyMaskin=Button(nyMaskin, text="Spara", command = lambda: sparaMaskin(Typ))
-          btnSparaNyMaskin.grid(column=5, row=21, sticky=E, padx=(0,55))
-          btnAvbrytNyMaskin=Button(nyMaskin, text="Avbryt", command = lambda: nyMaskin.destroy())
-          btnAvbrytNyMaskin.grid(column=5, row=21,sticky=E)
-
-          #--------------------
-
-          lblMaskinmiljostatus = Label(nyMaskin, text="Miljöstatus")
-          lblMaskinmiljostatus.grid(column=2, row=0, sticky = W, padx=(10,0), pady=(7,0))
-          txtMaskinmiljostatus=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinmiljostatus.grid(column=3, row=0, sticky=W, padx=(10,0), pady=(7,0))
-
-          lblMaskinarsmodell = Label(nyMaskin, text="Årsmodell")
-          lblMaskinarsmodell.grid(column=2, row=1, sticky = W, padx=(10,0))
-          txtMaskinarsmodell=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinarsmodell.grid(column=3, row=1, sticky=W, padx=(10,0))
-
-          lblMaskinregistreringsnummer = Label(nyMaskin, text="Reg. nr/Ser. nr")
-          lblMaskinregistreringsnummer.grid(column=2, row=2, sticky = W, padx=(10,0))
-          txtMaskinregistreringsnummer=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinregistreringsnummer.grid(column=3, row=2, sticky=W, padx=(10,0))
-
-          lblMaskintyp = Label(nyMaskin, text="Maskintyp")
-          lblMaskintyp.grid(column=2, row=3, sticky = W, padx=(10,0))
-          txtMaskintyp=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskintyp.grid(column=3, row=3, sticky=W, padx=(10,0))
-
-          lblMaskinmotoroljevolym  = Label(nyMaskin, text="Motorolja volym/liter")
-          lblMaskinmotoroljevolym.grid(column=2, row=5, sticky = W, padx=(10,0))
-          txtMaskinmotoroljevolym=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinmotoroljevolym.grid(column=3, row=5, sticky=W, padx=(10,0))
-
-          lblMaskinvaxelladevolym = Label(nyMaskin, text="Växellåda volym/liter")
-          lblMaskinvaxelladevolym.grid(column=2, row=6, sticky = W, padx=(10,0))
-          txtMaskinvaxelladevolym=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinvaxelladevolym.grid(column=3, row=6, sticky=W, padx=(10,0))
-
-          lblMaskinhydraulsystemvolym = Label(nyMaskin, text="Hydraul volym/liter")
-          lblMaskinhydraulsystemvolym.grid(column=2, row=7, sticky = W, padx=(10,0))
-          txtMaskinhydraulsystemvolym=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinhydraulsystemvolym.grid(column=3, row=7, sticky=W, padx=(10,0))
-
-          lblMaskinkylvatskavolym = Label(nyMaskin, text="Kylvätska volym/liter")
-          lblMaskinkylvatskavolym.grid(column=2, row=8, sticky = W, padx=(10,0))
-          txtMaskinkylvatskavolym=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
-
-          lblOvrigtext = Label(nyMaskin, text="Övrig Text")
-          lblOvrigtext.grid(column=2, row=9, sticky = W, padx=(10,0))
-          TxtOvrigtext = Text(nyMaskin, width = 20, height=3)
-          TxtOvrigtext.grid(row=10, column=2, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,15))
-
-          #Scrollbar
-          ScbTxtOvrigText = Scrollbar(nyMaskin, orient="vertical")
-          ScbTxtOvrigText.grid(row = 10, column = 3, sticky = N+S+E, rowspan = 4)
-          ScbTxtOvrigText.config(command =TxtOvrigtext.yview)
-
-          TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set) 
-
-          def fileDialog():
+     lbMaskinreferens = Listbox(nyMaskin, height=4)
+     lbMaskinreferens.grid(column=4, row=10, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0))
      
-               global img3
-               filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
-               txtSokvag = Text(nyMaskin, width = 20, height=0.1)
-               txtSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
-               txtSokvag.insert('end', filename)
-               nyMaskin.lift()
-               imgNyBild = Image.open(filename)  
-               imgNyBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
-               img3 = ImageTk.PhotoImage(imgNyBild)
-               img_NyBild = Label(nyMaskin, image=img3) 
-               img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
-               
-          btnNyBild = Button(nyMaskin, text="Lägg till bild", command= fileDialog)
-          btnNyBild.grid(column=2, row=21, sticky=W, padx=(10,0))
+     lblMaskintillbehor = Label(nyMaskin, text="Tillbehör")
+     lblMaskintillbehor.grid(column=4, row=15, sticky = W, padx=(10,0))
+     txtMaskintillbehor=Text(nyMaskin, width = 20, height=0.1)
+     txtMaskintillbehor.grid(column=5, row=15, sticky=W, padx=(10,0))
 
-          #------------------------
+     tillbehorAttTaBort=[]
+     tillbehorAttLaggaTill=[]
 
-          lblMaskinbransle = Label(nyMaskin, text="Bränsle")
-          lblMaskinbransle.grid(column=4, row=0, sticky = W, padx=(10,0), pady=(7,0))
-          txtMaskinbransle=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinbransle.grid(column=5, row=0, sticky=W, padx=(10,0), pady=(7,0))
+     def taBortTillbehor(self):
+          nyMaskin.lift()
+          response = messagebox.askyesno("Ta bort tillbehör", "Vill du ta bort " + lbMaskintillbehor.get(lbMaskintillbehor.curselection()) + "?")
+          nyMaskin.lift()
+          if response == True:
+               tillbehorAttTaBort.append(lbMaskintillbehor.get(lbMaskintillbehor.curselection()))
+               try:
+                    tillbehorAttLaggaTill.remove(lbMaskintillbehor.get(lbMaskintillbehor.curselection()))
+               except:
+                    pass
+               lbMaskintillbehor.delete(lbMaskintillbehor.curselection())
 
-          lblMaskindackfabrikat = Label(nyMaskin, text="Däckfabrikat")
-          lblMaskindackfabrikat.grid(column=4, row=1, sticky = W, padx=(10,0))
-          txtMaskindackfabrikat=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskindackfabrikat.grid(column=5, row=1, sticky=W, padx=(10,0))
+     
+     
+     lbMaskintillbehor = Listbox(nyMaskin, height=4)
+     lbMaskintillbehor.bind('<Double-Button>', taBortTillbehor)
+     lbMaskintillbehor.grid(column=4, row=16, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0), pady=(5,5))  
 
-          lblMaskindimension = Label(nyMaskin, text="Dimension/typ")
-          lblMaskindimension.grid(column=4, row=2, sticky = W, padx=(10,0))
-          txtMaskindimension=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskindimension.grid(column=5, row=2, sticky=W, padx=(10,0))
+     ScbLbMaskintillbehor = Scrollbar(nyMaskin, orient="vertical")
+     ScbLbMaskintillbehor.grid(row = 16, column = 6, sticky = N+S+W, rowspan = 4)
+     ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
+     lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 
-          #Checkbox
-          lblMaskinregummerbara = Label(nyMaskin, text="Regummerbara")
-          lblMaskinregummerbara.grid(column=4, row=3, sticky = W, padx=(10,0))
-          cbMaskinregummerbara = ttk.Checkbutton(nyMaskin)
-          cbMaskinregummerbara.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinregummerbara.grid(column = 5, row = 3, sticky = W, padx=(5,0))
+     scbLbReferenser = Scrollbar(nyMaskin, orient="vertical")
+     scbLbReferenser.grid(row = 10, column=6, sticky = N+S+W, rowspan=4)
+     scbLbReferenser.config(command=lbMaskinreferens.yview)
+     lbMaskinreferens.config(yscrollcommand=scbLbReferenser.set)
+     
+     txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), tillbehorAttLaggaTill.append(txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
+     txtMaskinreferens.bind('<Return>', lambda x: (lbMaskinreferens.insert('end', txtMaskinreferens.get('1.0', 'end')), txtMaskinreferens.delete('1.0','end')))
+     #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
 
-          #Checkbox
-          lblMaskinregummerade = Label(nyMaskin, text="Regummerade")
-          lblMaskinregummerade.grid(column=4, row=4, sticky = W, padx=(10,0))
-          cbMaskinregummerade = ttk.Checkbutton(nyMaskin)
-          cbMaskinregummerade.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinregummerade.grid(column = 5, row = 4, sticky = W, padx=(5,0))
+     if Typ == "Byt":
+          try:
+               txtMaskinnummermaskininfo.config(state=NORMAL)
+               txtMaskinnummermaskininfo.delete('1.0', 'end')
+               txtMaskinnummermaskininfo.insert('end', maskinnummer)
+               txtMaskinnummermaskininfo.config(state=DISABLED)
+          except:
+               pass
 
-          lblMaskingasolanlaggning = Label(nyMaskin, text="Gasolanläggning")
-          lblMaskingasolanlaggning.grid(column=4, row=5, sticky = W, padx=(10,0))
-          #txtMaskingasolanlaggning=Text(nyMaskin, width = 20, height=0.1)
-          #txtMaskingasolanlaggning.grid(column=5, row=5, sticky=W, padx=(10,0))
-          cbMaskingasolanlaggning = ttk.Checkbutton(nyMaskin)
-          cbMaskingasolanlaggning.state(['!alternate', '!selected', '!disabled'])
-          cbMaskingasolanlaggning.grid(column = 5, row = 5, sticky = W, padx=(5,0))
-
-          lblMaskinSaneringsvatska = Label(nyMaskin, text="Saneringsvätska")
-          lblMaskinSaneringsvatska.grid(column=4, row=6, sticky = W, padx=(10,0))
-          #txtMaskinSaneringsvatska=Text(nyMaskin, width = 20, height=0.1)
-          #txtMaskinSaneringsvatska.grid(column=5, row=6, sticky=W, padx=(10,0))
-          cbMaskinSaneringsvatska = ttk.Checkbutton(nyMaskin)
-          cbMaskinSaneringsvatska.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinSaneringsvatska.grid(column = 5, row = 6, sticky = W, padx=(5,0))
-
-          #Checkbox
-          lblMaskininsattserlagd = Label(nyMaskin, text="Maskininsats erlagd")
-          lblMaskininsattserlagd.grid(column=4, row=7, sticky = W, padx=(10,0))
-          cbMaskininsatserlagd = ttk.Checkbutton(nyMaskin)
-          cbMaskininsatserlagd.state(['!alternate', '!selected', '!disabled'])
-          cbMaskininsatserlagd.grid(column = 5, row = 7, sticky = W, padx=(5,0))
-
-          lblMaskinforare = Label(nyMaskin, text="Förare")
-          lblMaskinforare.grid(column=4, row=8, sticky = W, padx=(10,0))
-          txtMaskinforare=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinforare.grid(column=5, row=8, sticky=W, padx=(10,0))
-
-          lblMaskinreferens = Label(nyMaskin, text="Referensjobb")
-          lblMaskinreferens.grid(column=4, row=9, sticky = W, padx=(10,0))
-          txtMaskinreferens=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskinreferens.grid(column=5, row=9, sticky=W, padx=(10,0))
-
-          lbMaskinreferens = Listbox(nyMaskin, height=4)
-          lbMaskinreferens.grid(column=4, row=10, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0))
+     if Typ != "Ny" and Typ != "Byt":
+          try:
+               cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + Typ + ';')
+               maskinInfo = cursor.fetchone()
+               maskinInfo = list(maskinInfo)
+          except:
+               pass
           
-          lblMaskintillbehor = Label(nyMaskin, text="Tillbehör")
-          lblMaskintillbehor.grid(column=4, row=15, sticky = W, padx=(10,0))
-          txtMaskintillbehor=Text(nyMaskin, width = 20, height=0.1)
-          txtMaskintillbehor.grid(column=5, row=15, sticky=W, padx=(10,0))
+          try:
+               txtMaskinnummermaskininfo.config(state=NORMAL)
+               txtMaskinnummermaskininfo.delete('1.0', 'end')
+               txtMaskinnummermaskininfo.insert('end', maskinInfo[0])
+          except:
+               pass
 
-          tillbehorAttTaBort=[]
-          tillbehorAttLaggaTill=[]
+          try:
+               txtMaskinbeteckning.config(state=NORMAL)
+               txtMaskinbeteckning.delete('1.0', 'end')
+               txtMaskinbeteckning.insert('end', maskinInfo[1])
+          except:
+               pass
 
-          def taBortTillbehor(self):
-               nyMaskin.lift()
-               response = messagebox.askyesno("Ta bort tillbehör", "Vill du ta bort " + lbMaskintillbehor.get(lbMaskintillbehor.curselection()) + "?")
-               nyMaskin.lift()
-               if response == True:
-                    tillbehorAttTaBort.append(lbMaskintillbehor.get(lbMaskintillbehor.curselection()))
-                    try:
-                         tillbehorAttLaggaTill.remove(lbMaskintillbehor.get(lbMaskintillbehor.curselection()))
-                    except:
-                         pass
-                    lbMaskintillbehor.delete(lbMaskintillbehor.curselection())
-
+          try:
+               txtMaskinme_klass.config(state=NORMAL)
+               txtMaskinme_klass.delete('1.0', 'end')
+               txtMaskinme_klass.insert('end', maskinInfo[2])
+          except:
+               pass
           
+          try:
+               txtMaskinmotorfabrikat.config(state=NORMAL)
+               txtMaskinmotorfabrikat.delete('1.0', 'end')
+               txtMaskinmotorfabrikat.insert('end', maskinInfo[8])
+          except:
+               pass
+
+          try:
+               txtMaskinmotortyp.config(state=NORMAL)
+               txtMaskinmotortyp.delete('1.0', 'end')
+               txtMaskinmotortyp.insert('end', maskinInfo[9])
+          except:
+               pass
+
+          try:
+               txtMaskinmotor.config(state=NORMAL)
+               txtMaskinmotor.delete('1.0', 'end')
+               txtMaskinmotor.insert('end', maskinInfo[16])
+          except:
+               pass
           
-          lbMaskintillbehor = Listbox(nyMaskin, height=4)
-          lbMaskintillbehor.bind('<Double-Button>', taBortTillbehor)
-          lbMaskintillbehor.grid(column=4, row=16, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0), pady=(5,5))  
-
-          ScbLbMaskintillbehor = Scrollbar(nyMaskin, orient="vertical")
-          ScbLbMaskintillbehor.grid(row = 16, column = 6, sticky = N+S+W, rowspan = 4)
-          ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
-          lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
-
-          scbLbReferenser = Scrollbar(nyMaskin, orient="vertical")
-          scbLbReferenser.grid(row = 10, column=6, sticky = N+S+W, rowspan=4)
-          scbLbReferenser.config(command=lbMaskinreferens.yview)
-          lbMaskinreferens.config(yscrollcommand=scbLbReferenser.set)
+          try:
+               txtMaskinvaxellada.config(state=NORMAL)
+               txtMaskinvaxellada.delete('1.0', 'end')
+               txtMaskinvaxellada.insert('end', maskinInfo[18])
+          except:
+               pass
           
-          txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), tillbehorAttLaggaTill.append(txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
-          txtMaskinreferens.bind('<Return>', lambda x: (lbMaskinreferens.insert('end', txtMaskinreferens.get('1.0', 'end')), txtMaskinreferens.delete('1.0','end')))
-          #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
-
-          if Typ == "Byt":
-               try:
-                    txtMaskinnummermaskininfo.config(state=NORMAL)
-                    txtMaskinnummermaskininfo.delete('1.0', 'end')
-                    txtMaskinnummermaskininfo.insert('end', maskinnummer)
-                    txtMaskinnummermaskininfo.config(state=DISABLED)
-               except:
-                    pass
-
-          if Typ != "Ny" and Typ != "Byt":
-               try:
-                    cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + Typ + ';')
-                    maskinInfo = cursor.fetchone()
-                    maskinInfo = list(maskinInfo)
-               except:
-                    pass
-               
-               try:
-                    txtMaskinnummermaskininfo.config(state=NORMAL)
-                    txtMaskinnummermaskininfo.delete('1.0', 'end')
-                    txtMaskinnummermaskininfo.insert('end', maskinInfo[0])
-               except:
-                    pass
-
-               try:
-                    txtMaskinbeteckning.config(state=NORMAL)
-                    txtMaskinbeteckning.delete('1.0', 'end')
-                    txtMaskinbeteckning.insert('end', maskinInfo[1])
-               except:
-                    pass
-
-               try:
-                    txtMaskinme_klass.config(state=NORMAL)
-                    txtMaskinme_klass.delete('1.0', 'end')
-                    txtMaskinme_klass.insert('end', maskinInfo[2])
-               except:
-                    pass
-               
-               try:
-                    txtMaskinmotorfabrikat.config(state=NORMAL)
-                    txtMaskinmotorfabrikat.delete('1.0', 'end')
-                    txtMaskinmotorfabrikat.insert('end', maskinInfo[8])
-               except:
-                    pass
-
-               try:
-                    txtMaskinmotortyp.config(state=NORMAL)
-                    txtMaskinmotortyp.delete('1.0', 'end')
-                    txtMaskinmotortyp.insert('end', maskinInfo[9])
-               except:
-                    pass
-
-               try:
-                    txtMaskinmotor.config(state=NORMAL)
-                    txtMaskinmotor.delete('1.0', 'end')
-                    txtMaskinmotor.insert('end', maskinInfo[16])
-               except:
-                    pass
-               
-               try:
-                    txtMaskinvaxellada.config(state=NORMAL)
-                    txtMaskinvaxellada.delete('1.0', 'end')
-                    txtMaskinvaxellada.insert('end', maskinInfo[18])
-               except:
-                    pass
-               
-               try:
-                    txtMaskinhydraulsystem.config(state=NORMAL)
-                    txtMaskinhydraulsystem.delete('1.0', 'end')
-                    txtMaskinhydraulsystem.insert('end', maskinInfo[20])
-               except:
-                    pass
-               
-               try:
-                    txtMaskinkylvatska.config(state=NORMAL)
-                    txtMaskinkylvatska.delete('1.0', 'end')
-                    txtMaskinkylvatska.insert('end', maskinInfo[33])
-               except:
-                    pass
-               
-               try:
-                    TxtOvrigtext.config(state=NORMAL)
-                    TxtOvrigtext.delete('1.0', 'end')
-                    TxtOvrigtext.insert('end', maskinInfo[41])
-                    TxtOvrigtext.config(state=DISABLED)
-               except:
-                    pass
-
-               try:
-                    txtMaskinmotoreffekt.config(state=NORMAL)
-                    txtMaskinmotoreffekt.delete('1.0', 'end')
-                    txtMaskinmotoreffekt.insert('end', maskinInfo[10])
-               except:
-                    pass
-
-               try:
-                    if maskinInfo[12] == 1:
-                         cbMaskinmotorvarmare.state(['selected'])
-                         cbMaskinmotorvarmare.state(['!disabled'])
-                    else:
-                         cbMaskinmotorvarmare.state(['!selected'])
-                         cbMaskinmotorvarmare.state(['!disabled'])
-               except:
-                    pass
-
-               try:
-                    if maskinInfo[14] == 1:
-                         cbMaskinkatalysator.state(['selected'])
-                         cbMaskinkatalysator.state(['!disabled'])
-                    else:
-                         cbMaskinkatalysator.state(['!selected'])
-                         cbMaskinkatalysator.state(['!disabled'])
-               except:
-                    pass
-
-               try:
-                    if maskinInfo[15] == 1:
-                         cbMaskinpartikelfilter.state(['selected'])
-                         cbMaskinpartikelfilter.state(['!disabled'])
-                    else:
-                         cbMaskinpartikelfilter.state(['!selected'])
-                         cbMaskinpartikelfilter.state(['!disabled'])
-               except:
-                    pass
-
-               try:
-                    if maskinInfo[11] == 1:
-                         cbMaskinvattenbaseradlack.state(['selected'])
-                         cbMaskinvattenbaseradlack.state(['!disabled'])
-                    else:
-                         cbMaskinvattenbaseradlack.state(['!selected'])
-                         cbMaskinvattenbaseradlack.state(['!disabled'])
-               except:
-                    pass
-
-               try:
-                    txtMaskinkylmedia.config(state=NORMAL)
-                    txtMaskinkylmedia.delete('1.0', 'end')
-                    txtMaskinkylmedia.insert('end', maskinInfo[13])
-               except:
-                    pass
-
-               try:
-                    txtMaskinbullernivautv.config(state=NORMAL)
-                    txtMaskinbullernivautv.delete('1.0', 'end')
-                    txtMaskinbullernivautv.insert('end', maskinInfo[29])
-               except:
-                    pass
-
-               try:
-                    txtMaskinbullernivainv.config(state=NORMAL)
-                    txtMaskinbullernivainv.delete('1.0', 'end')
-                    txtMaskinbullernivainv.insert('end', maskinInfo[31])
-               except:
-                    pass
-
-               try:
-                    txtMaskinsmorjfett.config(state=NORMAL)
-                    txtMaskinsmorjfett.delete('1.0', 'end')
-                    txtMaskinsmorjfett.insert('end', maskinInfo[24])
-               except:
-                    pass
-               
-               try:
-                    txtMaskinBatterityp.config(state=NORMAL)
-                    txtMaskinBatterityp.delete('1.0', 'end')
-                    txtMaskinBatterityp.insert('end', maskinInfo[38])
-               except:
-                    pass
-
-               try:
-                    dates = maskinInfo[7].split(" - ")
-                    #deMaskinperiod1.config(state=NORMAL)
-                    #deMaskinperiod1.delete('1.0', 'end')
-                    deMaskinperiod1.set_date(datetime.strptime(dates[0], "%Y-%m-%d"))
-                    deMaskinperiod2.set_date(datetime.strptime(dates[1], "%Y-%m-%d"))
-                    
-                    
-               except:
-                    pass
-
-               try:
-                    txtMaskinarsbelopp.config(state=NORMAL)
-                    txtMaskinarsbelopp.delete('1.0', 'end')
-                    txtMaskinarsbelopp.insert('end', maskinInfo[5])
-               except:
-                    pass
-
-               try:
-                    txtMaskinmiljostatus.config(state=NORMAL)
-                    txtMaskinmiljostatus.delete('1.0', 'end')
-                    txtMaskinmiljostatus.insert('end', maskinInfo[30])
-               except:
-                    pass
-
-               try:
-                    txtMaskinarsmodell.config(state=NORMAL)
-                    txtMaskinarsmodell.delete('1.0', 'end')
-                    txtMaskinarsmodell.insert('end', maskinInfo[6])
-               except:
-                    pass
-
-               try:
-                    txtMaskinregistreringsnummer.config(state=NORMAL)
-                    txtMaskinregistreringsnummer.delete('1.0', 'end')
-                    txtMaskinregistreringsnummer.insert('end', maskinInfo[26])
-               except:
-                    pass
-
-               try:
-                    txtMaskintyp.config(state=NORMAL)
-                    txtMaskintyp.delete('1.0', 'end')
-                    txtMaskintyp.insert('end', maskinInfo[27])
-               except:
-                    pass
-
-               try:
-                    txtMaskinmotoroljevolym.config(state=NORMAL)
-                    txtMaskinmotoroljevolym.delete('1.0', 'end')
-                    txtMaskinmotoroljevolym.insert('end', maskinInfo[17])
-               except:
-                    pass
-
-               try:
-                    txtMaskinvaxelladevolym.config(state=NORMAL)
-                    txtMaskinvaxelladevolym.delete('1.0', 'end')
-                    txtMaskinvaxelladevolym.insert('end', maskinInfo[19])
-               except:
-                    pass
-
-               try:
-                    txtMaskinhydraulsystemvolym.config(state=NORMAL)
-                    txtMaskinhydraulsystemvolym.delete('1.0', 'end')
-                    txtMaskinhydraulsystemvolym.insert('end', maskinInfo[21])
-               except:
-                    pass
-
-               try:
-                    txtMaskinkylvatskavolym.config(state=NORMAL)
-                    txtMaskinkylvatskavolym.delete('1.0', 'end')
-                    txtMaskinkylvatskavolym.insert('end', maskinInfo[32])
-               except:
-                    pass
-
-               try:
-                    txtMaskinbransle.config(state=NORMAL)
-                    txtMaskinbransle.delete('1.0', 'end')
-                    txtMaskinbransle.insert('end', maskinInfo[23])
-               except:
-                    pass
-
-               try:
-                    txtMaskindackfabrikat.config(state=NORMAL)
-                    txtMaskindackfabrikat.delete('1.0', 'end')
-                    txtMaskindackfabrikat.insert('end', maskinInfo[25])
-               except:
-                    pass
-
-               try:
-                    txtMaskindimension.config(state=NORMAL)
-                    txtMaskindimension.delete('1.0', 'end')
-                    txtMaskindimension.insert('end', maskinInfo[34])
-               except:
-                    pass
-
-               try:
-                    if maskinInfo[37] == 1:
-                         cbMaskingasolanlaggning.state(['selected'])
-                         cbMaskingasolanlaggning.state(['!disabled'])
-                    else:
-                         cbMaskingasolanlaggning.state(['!selected'])
-                         cbMaskingasolanlaggning.state(['!disabled'])
-               except:
-                    pass
-
-               try:
-                    if maskinInfo[22] == 1:
-                         cbMaskinSaneringsvatska.state(['selected'])
-                         cbMaskinSaneringsvatska.state(['!disabled'])
-                    else:
-                         cbMaskinSaneringsvatska.state(['!selected'])
-                         cbMaskinSaneringsvatska.state(['!disabled'])
-               except:
-                    pass
-
-               forarnamn=""
-               if maskinInfo[40] != None:
-                    cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
-                    forarnamn = cursor.fetchone()
-
-               try:
-                    txtMaskinforare.config(state=NORMAL)
-                    txtMaskinforare.delete('1.0', 'end')
-                    txtMaskinforare.insert('end', forarnamn[0])
-                    txtMaskinforare.config(state=DISABLED)
-               except:
-                    pass
-               
-               referenser = []     
-               referenser.clear()
-               if maskinInfo[40] != None:
-                    cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
-                    referenser = cursor.fetchall()
-                    
-               try:
-                    if lbMaskinreferens.index("end") != 0:
-                         lbMaskinreferens.delete(0, "end")
-                         for x in referenser:
-                              lbMaskinreferens.insert("end", x[0])
-                    else:
-                         for x in referenser:
-                              lbMaskinreferens.insert("end", x[0])
-               except:
-                    pass
-
-               try: 
-                    if maskinInfo[28] == 1:
-                         cbMaskininsatserlagd.state(['selected'])
-                         cbMaskininsatserlagd.state(['!disabled'])
-                    else:
-                         cbMaskininsatserlagd.state(['!selected'])
-                         cbMaskininsatserlagd.state(['!disabled'])
-               except:
-                    pass
-               
-               try:
-                    if maskinInfo[36] == 1:
-                         cbMaskinregummerade.state(['selected'])
-                         cbMaskinregummerade.state(['!disabled'])
-                    else:
-                         cbMaskinregummerade.state(['!selected'])
-                         cbMaskinregummerade.state(['!disabled'])
-               except:
-                    pass
-
-               try:
-                    if maskinInfo[35] == 1:
-                         cbMaskinregummerbara.state(['selected'])
-                         cbMaskinregummerbara.state(['!disabled'])
-                    else:
-                         cbMaskinregummerbara.state(['!selected'])
-                         cbMaskinregummerbara.state(['!disabled'])
-               except:
-                    pass
-
-               try:
-                    if maskinInfo[3] == 1:
-                         cbMaskinKollektivforsakring.state(['selected'])
-                         cbMaskinKollektivforsakring.state(['!disabled'])
-                    else:
-                         cbMaskinKollektivforsakring.state(['!selected'])
-                         cbMaskinKollektivforsakring.state(['!disabled'])
-               except:
-                    pass
-
-               cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
-               tillbehor = cursor.fetchall()
+          try:
+               txtMaskinhydraulsystem.config(state=NORMAL)
+               txtMaskinhydraulsystem.delete('1.0', 'end')
+               txtMaskinhydraulsystem.insert('end', maskinInfo[20])
+          except:
+               pass
           
-               if lbMaskintillbehor.index("end") != 0:
-                    lbMaskintillbehor.delete(0, "end")
-                    for x in tillbehor:
-                         lbMaskintillbehor.insert("end", x[0])
+          try:
+               txtMaskinkylvatska.config(state=NORMAL)
+               txtMaskinkylvatska.delete('1.0', 'end')
+               txtMaskinkylvatska.insert('end', maskinInfo[33])
+          except:
+               pass
+          
+          try:
+               TxtOvrigtext.config(state=NORMAL)
+               TxtOvrigtext.delete('1.0', 'end')
+               TxtOvrigtext.insert('end', maskinInfo[41])
+               TxtOvrigtext.config(state=DISABLED)
+          except:
+               pass
+
+          try:
+               txtMaskinmotoreffekt.config(state=NORMAL)
+               txtMaskinmotoreffekt.delete('1.0', 'end')
+               txtMaskinmotoreffekt.insert('end', maskinInfo[10])
+          except:
+               pass
+
+          try:
+               if maskinInfo[12] == 1:
+                    cbMaskinmotorvarmare.state(['selected'])
+                    cbMaskinmotorvarmare.state(['!disabled'])
                else:
-                    for x in tillbehor:
-                         lbMaskintillbehor.insert("end", x[0])
-               
-               cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
-               maskiner = cursor.fetchall()
+                    cbMaskinmotorvarmare.state(['!selected'])
+                    cbMaskinmotorvarmare.state(['!disabled'])
+          except:
+               pass
 
-               if LbDelagaresMaskiner.index("end") != 0:
-                    LbDelagaresMaskiner.delete(0, "end")
-                    for x in maskiner:
-                         LbDelagaresMaskiner.insert("end", x)
+          try:
+               if maskinInfo[14] == 1:
+                    cbMaskinkatalysator.state(['selected'])
+                    cbMaskinkatalysator.state(['!disabled'])
                else:
-                    for x in maskiner:
-                         LbDelagaresMaskiner.insert("end", x)    
+                    cbMaskinkatalysator.state(['!selected'])
+                    cbMaskinkatalysator.state(['!disabled'])
+          except:
+               pass
+
+          try:
+               if maskinInfo[15] == 1:
+                    cbMaskinpartikelfilter.state(['selected'])
+                    cbMaskinpartikelfilter.state(['!disabled'])
+               else:
+                    cbMaskinpartikelfilter.state(['!selected'])
+                    cbMaskinpartikelfilter.state(['!disabled'])
+          except:
+               pass
+
+          try:
+               if maskinInfo[11] == 1:
+                    cbMaskinvattenbaseradlack.state(['selected'])
+                    cbMaskinvattenbaseradlack.state(['!disabled'])
+               else:
+                    cbMaskinvattenbaseradlack.state(['!selected'])
+                    cbMaskinvattenbaseradlack.state(['!disabled'])
+          except:
+               pass
+
+          try:
+               txtMaskinkylmedia.config(state=NORMAL)
+               txtMaskinkylmedia.delete('1.0', 'end')
+               txtMaskinkylmedia.insert('end', maskinInfo[13])
+          except:
+               pass
+
+          try:
+               txtMaskinbullernivautv.config(state=NORMAL)
+               txtMaskinbullernivautv.delete('1.0', 'end')
+               txtMaskinbullernivautv.insert('end', maskinInfo[29])
+          except:
+               pass
+
+          try:
+               txtMaskinbullernivainv.config(state=NORMAL)
+               txtMaskinbullernivainv.delete('1.0', 'end')
+               txtMaskinbullernivainv.insert('end', maskinInfo[31])
+          except:
+               pass
+
+          try:
+               txtMaskinsmorjfett.config(state=NORMAL)
+               txtMaskinsmorjfett.delete('1.0', 'end')
+               txtMaskinsmorjfett.insert('end', maskinInfo[24])
+          except:
+               pass
+          
+          try:
+               txtMaskinBatterityp.config(state=NORMAL)
+               txtMaskinBatterityp.delete('1.0', 'end')
+               txtMaskinBatterityp.insert('end', maskinInfo[38])
+          except:
+               pass
+
+          try:
+               deMaskinperiod1.set_date(maskinInfo[7])
+               deMaskinperiod2.set_date(maskinInfo[42])
+               
+               
+          except:
+               pass
+
+          try:
+               txtMaskinarsbelopp.config(state=NORMAL)
+               txtMaskinarsbelopp.delete('1.0', 'end')
+               txtMaskinarsbelopp.insert('end', maskinInfo[5])
+          except:
+               pass
+
+          try:
+               txtMaskinmiljostatus.config(state=NORMAL)
+               txtMaskinmiljostatus.delete('1.0', 'end')
+               txtMaskinmiljostatus.insert('end', maskinInfo[30])
+          except:
+               pass
+
+          try:
+               txtMaskinarsmodell.config(state=NORMAL)
+               txtMaskinarsmodell.delete('1.0', 'end')
+               txtMaskinarsmodell.insert('end', maskinInfo[6])
+          except:
+               pass
+
+          try:
+               txtMaskinregistreringsnummer.config(state=NORMAL)
+               txtMaskinregistreringsnummer.delete('1.0', 'end')
+               txtMaskinregistreringsnummer.insert('end', maskinInfo[26])
+          except:
+               pass
+
+          try:
+               txtMaskintyp.config(state=NORMAL)
+               txtMaskintyp.delete('1.0', 'end')
+               txtMaskintyp.insert('end', maskinInfo[27])
+          except:
+               pass
+
+          try:
+               txtMaskinmotoroljevolym.config(state=NORMAL)
+               txtMaskinmotoroljevolym.delete('1.0', 'end')
+               txtMaskinmotoroljevolym.insert('end', maskinInfo[17])
+          except:
+               pass
+
+          try:
+               txtMaskinvaxelladevolym.config(state=NORMAL)
+               txtMaskinvaxelladevolym.delete('1.0', 'end')
+               txtMaskinvaxelladevolym.insert('end', maskinInfo[19])
+          except:
+               pass
+
+          try:
+               txtMaskinhydraulsystemvolym.config(state=NORMAL)
+               txtMaskinhydraulsystemvolym.delete('1.0', 'end')
+               txtMaskinhydraulsystemvolym.insert('end', maskinInfo[21])
+          except:
+               pass
+
+          try:
+               txtMaskinkylvatskavolym.config(state=NORMAL)
+               txtMaskinkylvatskavolym.delete('1.0', 'end')
+               txtMaskinkylvatskavolym.insert('end', maskinInfo[32])
+          except:
+               pass
+
+          try:
+               txtMaskinbransle.config(state=NORMAL)
+               txtMaskinbransle.delete('1.0', 'end')
+               txtMaskinbransle.insert('end', maskinInfo[23])
+          except:
+               pass
+
+          try:
+               txtMaskindackfabrikat.config(state=NORMAL)
+               txtMaskindackfabrikat.delete('1.0', 'end')
+               txtMaskindackfabrikat.insert('end', maskinInfo[25])
+          except:
+               pass
+
+          try:
+               txtMaskindimension.config(state=NORMAL)
+               txtMaskindimension.delete('1.0', 'end')
+               txtMaskindimension.insert('end', maskinInfo[34])
+          except:
+               pass
+
+          try:
+               if maskinInfo[37] == 1:
+                    cbMaskingasolanlaggning.state(['selected'])
+                    cbMaskingasolanlaggning.state(['!disabled'])
+               else:
+                    cbMaskingasolanlaggning.state(['!selected'])
+                    cbMaskingasolanlaggning.state(['!disabled'])
+          except:
+               pass
+
+          try:
+               if maskinInfo[22] == 1:
+                    cbMaskinSaneringsvatska.state(['selected'])
+                    cbMaskinSaneringsvatska.state(['!disabled'])
+               else:
+                    cbMaskinSaneringsvatska.state(['!selected'])
+                    cbMaskinSaneringsvatska.state(['!disabled'])
+          except:
+               pass
+
+          forarnamn=""
+          if maskinInfo[40] != None:
+               cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+               forarnamn = cursor.fetchone()
+
+          try:
+               txtMaskinforare.config(state=NORMAL)
+               txtMaskinforare.delete('1.0', 'end')
+               txtMaskinforare.insert('end', forarnamn[0])
+               txtMaskinforare.config(state=DISABLED)
+          except:
+               pass
+          
+          referenser = []     
+          referenser.clear()
+          if maskinInfo[40] != None:
+               cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+               referenser = cursor.fetchall()
+               
+          try:
+               if lbMaskinreferens.index("end") != 0:
+                    lbMaskinreferens.delete(0, "end")
+                    for x in referenser:
+                         lbMaskinreferens.insert("end", x[0])
+               else:
+                    for x in referenser:
+                         lbMaskinreferens.insert("end", x[0])
+          except:
+               pass
+
+          try: 
+               if maskinInfo[28] == 1:
+                    cbMaskininsatserlagd.state(['selected'])
+                    cbMaskininsatserlagd.state(['!disabled'])
+               else:
+                    cbMaskininsatserlagd.state(['!selected'])
+                    cbMaskininsatserlagd.state(['!disabled'])
+          except:
+               pass
+          
+          try:
+               if maskinInfo[36] == 1:
+                    cbMaskinregummerade.state(['selected'])
+                    cbMaskinregummerade.state(['!disabled'])
+               else:
+                    cbMaskinregummerade.state(['!selected'])
+                    cbMaskinregummerade.state(['!disabled'])
+          except:
+               pass
+
+          try:
+               if maskinInfo[35] == 1:
+                    cbMaskinregummerbara.state(['selected'])
+                    cbMaskinregummerbara.state(['!disabled'])
+               else:
+                    cbMaskinregummerbara.state(['!selected'])
+                    cbMaskinregummerbara.state(['!disabled'])
+          except:
+               pass
+
+          try:
+               if maskinInfo[3] == 1:
+                    cbMaskinKollektivforsakring.state(['selected'])
+                    cbMaskinKollektivforsakring.state(['!disabled'])
+               else:
+                    cbMaskinKollektivforsakring.state(['!selected'])
+                    cbMaskinKollektivforsakring.state(['!disabled'])
+          except:
+               pass
+
+          cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
+          tillbehor = cursor.fetchall()
+     
+          if lbMaskintillbehor.index("end") != 0:
+               lbMaskintillbehor.delete(0, "end")
+               for x in tillbehor:
+                    lbMaskintillbehor.insert("end", x[0])
+          else:
+               for x in tillbehor:
+                    lbMaskintillbehor.insert("end", x[0])
+          
+          cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+          maskiner = cursor.fetchall()
+
+          if LbDelagaresMaskiner.index("end") != 0:
+               LbDelagaresMaskiner.delete(0, "end")
+               for x in maskiner:
+                    LbDelagaresMaskiner.insert("end", x)
+          else:
+               for x in maskiner:
+                    LbDelagaresMaskiner.insert("end", x)    
 
 def fyllListboxDelagare():
 
@@ -2147,21 +2228,17 @@ def tomMaskinInfo():
           txtMaskinmotoreffekt.delete('1.0', 'end')
           txtMaskinmotoreffekt.config(state=DISABLED)
 
-          txtMaskinmotorvarmare.config(state=NORMAL)
-          txtMaskinmotorvarmare.delete('1.0', 'end')
-          txtMaskinmotorvarmare.config(state=DISABLED)
+          cbMaskinmotorvarmare.state(['!selected'])
+          cbMaskinmotorvarmare.state(['disabled'])          
 
-          txtMaskinkatalysator.config(state=NORMAL)
-          txtMaskinkatalysator.delete('1.0', 'end')
-          txtMaskinkatalysator.config(state=DISABLED)
+          cbMaskinkatalysator.state(['!selected'])
+          cbMaskinkatalysator.state(['disabled'])          
 
-          txtMaskinpartikelfilter.config(state=NORMAL)
-          txtMaskinpartikelfilter.delete('1.0', 'end')
-          txtMaskinpartikelfilter.config(state=DISABLED)
+          cbMaskinpartikelfilter.state(['!selected'])
+          cbMaskinpartikelfilter.state(['disabled'])
 
-          txtMaskinvattenbaseradlack.config(state=NORMAL)
-          txtMaskinvattenbaseradlack.delete('1.0', 'end')
-          txtMaskinvattenbaseradlack.config(state=DISABLED)
+          cbMaskinvattenbaseradlack.state(['!selected'])
+          cbMaskinvattenbaseradlack.state(['disabled'])
 
           txtMaskinkylmedia.config(state=NORMAL)
           txtMaskinkylmedia.delete('1.0', 'end')
@@ -2183,9 +2260,8 @@ def tomMaskinInfo():
           txtMaskinBatterityp.delete('1.0', 'end')
           txtMaskinBatterityp.config(state=DISABLED)
 
-          txtMaskinperiod.config(state=NORMAL)
-          txtMaskinperiod.delete('1.0', 'end')
-          txtMaskinperiod.config(state=DISABLED)
+          deMaskinperiod1.delete(0, END)
+          deMaskinperiod2.delete(0, END)
 
           txtMaskinarsbelopp.config(state=NORMAL)
           txtMaskinarsbelopp.delete('1.0', 'end')
@@ -2235,13 +2311,11 @@ def tomMaskinInfo():
           txtMaskindimension.delete('1.0', 'end')
           txtMaskindimension.config(state=DISABLED)
 
-          txtMaskingasolanlaggning.config(state=NORMAL)
-          txtMaskingasolanlaggning.delete('1.0', 'end')
-          txtMaskingasolanlaggning.config(state=DISABLED)
+          cbMaskingasolanlaggning.state(['!selected'])
+          cbMaskingasolanlaggning.state(['disabled'])
 
-          txtMaskinSaneringsvatska.config(state=NORMAL)
-          txtMaskinSaneringsvatska.delete('1.0', 'end')
-          txtMaskinSaneringsvatska.config(state=DISABLED)
+          cbMaskinSaneringsvatska.state(['!selected'])
+          cbMaskinSaneringsvatska.state(['disabled'])
 
           txtMaskinforare.config(state=NORMAL)
           txtMaskinforare.delete('1.0', 'end')
@@ -2682,8 +2756,13 @@ txtMaskinsmorjfett.grid(column=1, row=17, sticky=W, padx=(10,0))
 
 lblMaskinBatterityp = Label(frameMaskininfo, text="Batterityp")
 lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
-txtMaskinBatterityp=Text(frameMaskininfo, width = 25, height=0.1)
+txtMaskinBatterityp=Text(frameMaskininfo, width = 13, height=0.1)
 txtMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
+
+lblMaskinBatteriantal = Label(frameMaskininfo, text="Antal")
+lblMaskinBatteriantal.grid(column=1, row=18, sticky=E, padx=(0,50))
+txtBatteriantal = Text(frameMaskininfo, width=5, height=0.1)
+txtBatteriantal.grid(column=1, row=18, sticky=E)
 
 #checkbox
 lblMaskinKollektivforsakring = Label(frameMaskininfo, text="Kollektiv försäkring")
@@ -2694,8 +2773,16 @@ cbMaskinKollektivforsakring.grid(column = 1, row = 19, sticky = W, padx=(5,0))
 
 lblMaskinperiod = Label(frameMaskininfo, text="Period")
 lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0), pady=(0,8))
-txtMaskinperiod=Text(frameMaskininfo, width = 25, height=0.1)
-txtMaskinperiod.grid(column=1, row=20, sticky=W, padx=(10,0))
+
+#Date entry
+
+deMaskinperiod1 = DateEntry(frameMaskininfo, values="Text", date_pattern="yyyy-mm-dd")
+deMaskinperiod1.delete(0, 'end')
+deMaskinperiod1.grid(column=1, row=20, sticky=W, padx=(10,0))
+
+deMaskinperiod2 = DateEntry(frameMaskininfo, values="Text", date_pattern="yyyy-mm-dd")
+deMaskinperiod2.delete(0, 'end')
+deMaskinperiod2.grid(column=1, row=20, sticky=E)
 
 lblMaskinarsbelopp = Label(frameMaskininfo, text="Årsbelopp")
 lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
