@@ -2488,6 +2488,52 @@ def sparaHistorik(maskinnummer):
           cursor.execute("INSERT INTO historik (Maskinnummer, Beteckning, Datum, Registreringsnummer, ME_klass, Foretag) VALUES (%s, %s, %s, %s, %s, %s)", (maskinnummer, beteckning, datum, regnr, me_klass, foretag))
      db.commit()
 
+def hamtaForare():
+     
+     cursor.execute("SELECT Namn FROM forare")
+     forarlista = cursor.fetchall()
+     lbForare.delete(0, 'end')
+     for item in forarlista:
+                                   
+          lbForare.insert("end", item[0])
+
+def hamtaReferenser(self):
+
+     forare = lbForare.get(lbForare.curselection())
+     cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid in (SELECT Forarid FROM forare WHERE Namn = '"+ forare +"');")
+     referenser = cursor.fetchall()
+     lbReferenser.delete(0, 'end')
+     for item in referenser:
+                                   
+          lbReferenser.insert("end", item[0])
+
+def laggTillForare(forare):
+     
+     try:
+          cursor.execute("INSERT INTO forare (Namn) VALUES ('"+ forare +"')")
+          db.commit()
+     except:
+          pass
+
+def laggTillReferens(beskrivning):
+     
+     try:
+          forare = lbForare.get(lbForare.curselection())
+          cursor.execute("SELECT Forarid FROM forare WHERE Namn = '"+ forare +"'")
+          forarid = cursor.fetchone()
+          cursor.execute("INSERT INTO referens (Beskrivning, Forarid) VALUES ('" + beskrivning + "', " + str(forarid[0]) +")")
+          db.commit()
+          hamtaReferenser("nothing") ###vad fan är det här!?
+     except Exception:
+          traceback.print_exc()
+
+def taBortReferens():
+     ###borde gå på id istället för beskrvining, fixa. Fixa även globalt förarid + lägg till referensid 
+     referens = lbReferenser.get(lbReferenser.curselection())
+     cursor.execute("DELETE FROM referens WHERE Beskrivning = '"+ referens +"'")
+     db.commit()
+     hamtaReferenser("jesus christ") ###FIXA
+
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
@@ -2507,11 +2553,13 @@ root.geometry("1365x750")
 tabControl = ttk.Notebook(root)
 home = ttk.Frame(tabControl)
 delagare = ttk.Frame(tabControl)
+forare = ttk.Frame(tabControl)
 forsakring = ttk.Frame(tabControl)
 rapporter = ttk.Frame(tabControl)
 installningar = ttk.Frame(tabControl)
 tabControl.add(home, text='Home')
 tabControl.add(delagare, text='Delägare')
+tabControl.add(forare, text="Förare")
 tabControl.add(forsakring, text='Försäkringar')
 tabControl.add(rapporter, text='Rapporter')
 tabControl.add(installningar, text='Inställningar')
@@ -2984,6 +3032,41 @@ ScbLbMaskintillbehor.grid(row = 15, column = 6, sticky = N+W+S, rowspan = 6)
 ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
 
 lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
+
+#Förare
+lblForare = Label(forare, text="Förare i systemet")
+lblForare.grid(column=0, row=0, sticky=N, pady=(80,0), padx=(325,0))
+lbForare = Listbox(forare, width=48, height=25)
+lbForare.grid(column=0, row=0, padx=(350, 0), pady=(100,0))
+lbForare.bind('<<ListboxSelect>>', hamtaReferenser)
+
+lblReferenser = Label(forare, text="Förarens referenser")
+lblReferenser.grid(column=1, row=0, sticky=N, pady=(80,0))
+lbReferenser = Listbox(forare, width=80, height=25)
+lbReferenser.grid(column=1, row=0, padx=(25, 0), pady=(100,0))
+
+entLaggTillForare = Entry(forare, width=32)
+entLaggTillForare.grid(column=0, row=1, padx=(254,0))
+btnLaggTillForare = Button(forare, text="Lägg till förare", command = lambda: laggTillForare(entLaggTillForare.get()))
+btnLaggTillForare.grid(column=0, row=1, sticky=E, pady=(5,0))
+btnTaBortForare = Button(forare, text="Ta bort förare")
+btnTaBortForare.grid(column=0, row=2, sticky=E, pady=(5,0))
+
+entLaggTillReferens = Entry(forare, width=62)
+entLaggTillReferens.grid(column=1, row=1, padx=(0,82))
+btnLaggTillReferens = Button(forare, text="Lägg till referens", command=lambda: laggTillReferens(entLaggTillReferens.get()))
+btnLaggTillReferens.grid(column=1, row=1, sticky=E, pady=(5,0))
+btnTaBortReferens = Button(forare, text="Ta bort referens", command=lambda:taBortReferens())
+btnTaBortReferens.grid(column=1, row=2, sticky=E, pady=(5,0))
+
+
+
+cursor.execute("SELECT Namn FROM forare")
+forarlista = cursor.fetchall()
+if lbForare.index("end") == 0:
+     for item in forarlista:
+          lbForare.insert("end", item[0])
+
 
 cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
 delagareLista = cursor.fetchall()
