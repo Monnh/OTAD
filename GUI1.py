@@ -1319,11 +1319,6 @@ def nyMaskinFonster(Typ):
           for x in tillbehorAttLaggaTill:
                print(x)
                cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + Typ + ");" )
-              
-          
-          
-
-
 
      nyMaskin = Toplevel(root)
 
