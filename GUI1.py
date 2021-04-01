@@ -2489,50 +2489,83 @@ def sparaHistorik(maskinnummer):
      db.commit()
 
 def hamtaForare():
-     
-     cursor.execute("SELECT Namn FROM forare")
+
+     cursor.execute("SELECT Forarid, Namn FROM forare")
      forarlista = cursor.fetchall()
      lbForare.delete(0, 'end')
-     for item in forarlista:
-                                   
-          lbForare.insert("end", item[0])
+     for item in forarlista:         
+          s=""
+          s+= str(item[0])
+          s+=" "
+          s+= str(item[1])
+          lbForare.insert("end", s) 
 
 def hamtaReferenser(self):
-
-     forare = lbForare.get(lbForare.curselection())
-     cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid in (SELECT Forarid FROM forare WHERE Namn = '"+ forare +"');")
+     global forarid
+     
+     selectedForare = lbForare.get(lbForare.curselection())
+     indexSpace = selectedForare.index(" ")
+     stringSelectedForare = str(selectedForare[0:indexSpace])
+     forarid = "".join(stringSelectedForare)
+     cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
      referenser = cursor.fetchall()
      lbReferenser.delete(0, 'end')
-     for item in referenser:
-                                   
+          
+     for item in referenser:                              
           lbReferenser.insert("end", item[0])
 
 def laggTillForare(forare):
      
-     try:
-          cursor.execute("INSERT INTO forare (Namn) VALUES ('"+ forare +"')")
-          db.commit()
-     except:
-          pass
+     cursor.execute("INSERT INTO forare (Namn) VALUES ('"+ forare +"')")
+     hamtaForare()
+     db.commit()
+
+     entLaggTillForare.delete(0, 'end')
+
 
 def laggTillReferens(beskrivning):
+     global forarid     
+
+     cursor.execute("INSERT INTO referens (Beskrivning, Forarid) VALUES ('" + beskrivning + "', " + forarid +")")
+     db.commit()
      
-     try:
-          forare = lbForare.get(lbForare.curselection())
-          cursor.execute("SELECT Forarid FROM forare WHERE Namn = '"+ forare +"'")
-          forarid = cursor.fetchone()
-          cursor.execute("INSERT INTO referens (Beskrivning, Forarid) VALUES ('" + beskrivning + "', " + str(forarid[0]) +")")
-          db.commit()
-          hamtaReferenser("nothing") ###vad fan är det här!?
-     except Exception:
-          traceback.print_exc()
+     entLaggTillReferens.delete(0, 'end')
+
+     cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
+     referenser = cursor.fetchall()
+     lbReferenser.delete(0, 'end')
+          
+     for item in referenser:                              
+          lbReferenser.insert("end", item[0])
+
 
 def taBortReferens():
-     ###borde gå på id istället för beskrvining, fixa. Fixa även globalt förarid + lägg till referensid 
+     global forarid
+
+     #borde gå på id istället för beskrvining, fixa. Fixa även globalt förarid + lägg till referensid 
      referens = lbReferenser.get(lbReferenser.curselection())
      cursor.execute("DELETE FROM referens WHERE Beskrivning = '"+ referens +"'")
      db.commit()
-     hamtaReferenser("jesus christ") ###FIXA
+
+     cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
+     referenser = cursor.fetchall()
+     lbReferenser.delete(0, 'end')
+          
+     for item in referenser:                              
+          lbReferenser.insert("end", item[0])
+     
+
+def taBortForare():
+
+     selectedForare = lbForare.get(lbForare.curselection())
+     indexSpace = selectedForare.index(" ")
+     stringSelectedForare = str(selectedForare[0:indexSpace])
+     forarid = "".join(stringSelectedForare)
+     cursor.execute("DELETE FROM forare WHERE forarid = '"+ forarid +"'")
+     db.commit()
+     hamtaForare()
+
+
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
@@ -2570,6 +2603,7 @@ tabControl.grid(column=0, row=0)
 
 medlemsnummer = ""
 maskinnummer = ""
+forarid = ""
 
 #skapar textfält och textboxar
 EntMedlemsnummer = Entry(home, width=20, text = "Medlemsnummer") 
@@ -3049,7 +3083,7 @@ entLaggTillForare = Entry(forare, width=32)
 entLaggTillForare.grid(column=0, row=1, padx=(254,0))
 btnLaggTillForare = Button(forare, text="Lägg till förare", command = lambda: laggTillForare(entLaggTillForare.get()))
 btnLaggTillForare.grid(column=0, row=1, sticky=E, pady=(5,0))
-btnTaBortForare = Button(forare, text="Ta bort förare")
+btnTaBortForare = Button(forare, text="Ta bort förare", command = lambda: taBortForare())
 btnTaBortForare.grid(column=0, row=2, sticky=E, pady=(5,0))
 
 entLaggTillReferens = Entry(forare, width=62)
@@ -3061,11 +3095,12 @@ btnTaBortReferens.grid(column=1, row=2, sticky=E, pady=(5,0))
 
 
 
-cursor.execute("SELECT Namn FROM forare")
-forarlista = cursor.fetchall()
-if lbForare.index("end") == 0:
-     for item in forarlista:
-          lbForare.insert("end", item[0])
+# cursor.execute("SELECT Namn FROM forare")
+# forarlista = cursor.fetchall()
+# if lbForare.index("end") == 0:
+#      for item in forarlista:
+#           lbForare.insert("end", item[0])
+hamtaForare()
 
 
 cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
