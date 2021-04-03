@@ -2046,7 +2046,7 @@ def nyMaskinFonster(Typ):
 
 def fyllListboxDelagare():
 
-     cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn FROM foretagsregister")
+     cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
      delagareLista = []
      delagareLista = cursor.fetchall()
      LbDelagare.delete(0, 'end')
@@ -2059,10 +2059,15 @@ def fyllListboxDelagare():
                item[2] = ""
           s=""
           s += str(item[0])
-          s+= " "
-          s+=str(item[1])
-          s+= " "
-          s+=str(item[2])                              
+          if item[1] == "":
+               s+= ""
+          else:
+               s+= " - "
+               s+=str(item[1])
+               s+= " "
+               s+=str(item[2])
+          s+=" - "
+          s+=str(item[3])                              
                
           LbDelagare.insert("end", s)
 
@@ -2079,19 +2084,25 @@ def fetchMaskiner(self):
         
      if LbMaskiner.index("end") != 0:
           LbMaskiner.delete(0, "end")
-          for x in result:
-               x = list(x)
-               if x[1] == None:
-                    x[1] = ""
-               if x[2] == None:
-                    x[2] = ""
+          for item in result:
+               item = list(item)
+               if item[1] == None:
+                    item[1] = ""
+               if item[2] == None:
+                    item[2] = ""
                
                s=""
-               s += str(x[0])
-               s+= " "
-               s+=str(x[1])
-               s+= " "
-               s+=str(x[2])
+               s += str(item[0])
+               if item[1] == "":
+                    s+= ""
+               else:
+                    s+= " - "
+                    s+=str(item[1])
+               if item[2] == "":
+                    s+= ""
+               else:
+                    s+= " - "
+                    s+=str(item[2])
                       
                LbMaskiner.insert("end",s )
 
@@ -2105,9 +2116,9 @@ def fetchMaskiner(self):
                
                s=""
                s += str(x[0])
-               s+= " "
+               s+= " - "
                s+=str(x[1])
-               s+= " "
+               s+= " - "
                s+=str(x[2])                              
                LbMaskiner.insert("end",s )
 
@@ -2522,7 +2533,6 @@ def laggTillForare(forare):
 
      entLaggTillForare.delete(0, 'end')
 
-
 def laggTillReferens(beskrivning):
      global forarid     
 
@@ -2537,7 +2547,6 @@ def laggTillReferens(beskrivning):
           
      for item in referenser:                              
           lbReferenser.insert("end", item[0])
-
 
 def taBortReferens():
      global forarid
@@ -2554,7 +2563,6 @@ def taBortReferens():
      for item in referenser:                              
           lbReferenser.insert("end", item[0])
      
-
 def taBortForare():
 
      selectedForare = lbForare.get(lbForare.curselection())
@@ -2565,7 +2573,56 @@ def taBortForare():
      db.commit()
      hamtaForare()
 
+def hamtaDelagareFranEntry():
 
+     cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister WHERE Medlemsnummer LIKE '" + EntMedlemsnummer.get() + "%'")
+     delagareLista = []
+     delagareLista = cursor.fetchall()
+     delagareLista = list(delagareLista)
+     LbDelagare.delete(0, 'end')
+
+     for item in delagareLista:
+          item = list(item)
+          if item[1] == None:
+               item[1] = ""
+          if item[2] == None:
+               item[2] = ""
+          if item[3] == None:
+               item[3] = ""
+
+          s=""
+          s += str(item[0])
+          s+= " - "
+          s+=str(item[1])
+          s+= " "
+          s+=str(item[2])                              
+          s+= " - "
+          s+=str(item[3])                           
+               
+          LbDelagare.insert("end", s)
+
+def hamtaMaskinerFranEntry():
+
+     cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
+     result = cursor.fetchall()
+     result = list(result)
+     LbMaskiner.delete(0, "end")   
+    
+     for x in result:
+          x = list(x)
+          if x[1] == None:
+               x[1] = ""
+          if x[2] == None:
+               x[2] = ""
+          
+          s=""
+          s += str(x[0])
+          s+= " - "
+          s+=str(x[1])
+          s+= " - "
+          s+=str(x[2])
+                    
+          LbMaskiner.insert("end",s )
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
@@ -2607,23 +2664,26 @@ forarid = ""
 
 #skapar textfält och textboxar
 EntMedlemsnummer = Entry(home, width=20, text = "Medlemsnummer") 
-EntMedlemsnummer.grid(row=1, column=1, padx=(300,0), pady=(50,0))
-EntMedlemsnummer.insert(0,"Medlemsnummer")
-EntMedlemsnummer.bind("<FocusIn>", lambda args: EntMedlemsnummer.delete('0', 'end'))
+EntMedlemsnummer.grid(row=1, column=1, padx=(227,0), pady=(50,0))
+EntMedlemsnummer.bind("<KeyRelease>", lambda args: hamtaDelagareFranEntry())
+#EntMedlemsnummer.insert(0,"Medlemsnummer")
+#EntMedlemsnummer.bind("<FocusIn>", lambda args: EntMedlemsnummer.delete('0', 'end'))
+
 
 EntMaskinnummer = Entry(home, width=20, text ="Maskinnummer") 
 EntMaskinnummer.grid(row=1, column=3, padx=(50,0), pady=(50,0))
-EntMaskinnummer.insert(0, "Maskinnummer")
-EntMaskinnummer.bind("<FocusIn>", lambda args: EntMaskinnummer.delete('0', 'end'))
+EntMaskinnummer.bind("<KeyRelease>", lambda args: hamtaMaskinerFranEntry())
+# EntMaskinnummer.insert(0, "Maskinnummer")
+# EntMaskinnummer.bind("<FocusIn>", lambda args: EntMaskinnummer.delete('0', 'end'))
 
-BtnMedlemsnummerSok = Button(home, text = "Sök", width = 5, height = 1, command= lambda: hamtaDelagare(EntMedlemsnummer.get()))
-BtnMedlemsnummerSok.grid (row = 1, column = 2, sticky ="w", pady=(50,0))
+# BtnMedlemsnummerSok = Button(home, text = "Sök", width = 5, height = 1, command= lambda: hamtaDelagare(EntMedlemsnummer.get()))
+# BtnMedlemsnummerSok.grid (row = 1, column = 2, sticky ="w", pady=(50,0))
 
-BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: clickButton()) 
-BtnMaskinnummerSok.grid(row=1, column=4, sticky ="w", pady=(50,0))
+# BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: clickButton()) 
+# BtnMaskinnummerSok.grid(row=1, column=4, sticky ="w", pady=(50,0))
 
 BtnNyDelagare = Button (home, text ="Ny delägare", height = 1, command = lambda: nyDelagare("Ny"))
-BtnNyDelagare.grid(row = 2, column = 5, padx= 10, sticky="n")
+BtnNyDelagare.grid(row = 2, column = 0, padx= 10, sticky="n")
 
 # skapar en listbox
 LbDelagare = Listbox(home, width = 60, height = 30, exportselection=0)
@@ -3095,38 +3155,33 @@ btnTaBortReferens.grid(column=1, row=2, sticky=E, pady=(5,0))
 
 
 
-# cursor.execute("SELECT Namn FROM forare")
-# forarlista = cursor.fetchall()
-# if lbForare.index("end") == 0:
-#      for item in forarlista:
-#           lbForare.insert("end", item[0])
 hamtaForare()
+fyllListboxDelagare()
 
+# cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
+# delagareLista = cursor.fetchall()
+# delagareLista = list(delagareLista)
 
-cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
-delagareLista = cursor.fetchall()
-delagareLista = list(delagareLista)
+# if LbDelagare.index("end") == 0:
+#      for item in delagareLista:
+#           item = list(item)
+#           if item[1] == None:
+#                item[1] = ""
+#           if item[2] == None:
+#                item[2] = ""
+#           if item[3] == None:
+#                item[3] = ""
 
-if LbDelagare.index("end") == 0:
-     for item in delagareLista:
-          item = list(item)
-          if item[1] == None:
-               item[1] = ""
-          if item[2] == None:
-               item[2] = ""
-          if item[3] == None:
-               item[3] = ""
+#           s=""
+#           s += str(item[0])
+#           s+= " - "
+#           s+=str(item[1])
+#           s+= " "
+#           s+=str(item[2])                              
+#           s+= " - "
+#           s+=str(item[3])
 
-          s=""
-          s += str(item[0])
-          s+= " - "
-          s+=str(item[1])
-          s+= " "
-          s+=str(item[2])                              
-          s+= " - "
-          s+=str(item[3])
-
-          LbDelagare.insert("end", s)
+#           LbDelagare.insert("end", s)
 
 
 # kör fönstret
