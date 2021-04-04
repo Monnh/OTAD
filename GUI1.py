@@ -1200,15 +1200,15 @@ def nyMaskinFonster(Typ):
           
 
           varCbMotorvarmare = cbMaskinmotorvarmare.instate(['selected'])
-          varCbKatalysator = cbMaskinkatalysator(['selected'])
-          varCbPartikelfilter = cbMaskinpartikelfilter(['selected'])
-          varCbVattenbaseradlack = cbMaskinvattenbaseradlack(['selected'])
-          varCbKollektivForsakring = cbMaskinKollektivforsakring(['selected'])
-          varCbRegummerbara = cbMaskinregummerbara(['selected'])
-          varCbRegummerade = cbMaskinregummerade(['selected'])
-          varCbGasolanlaggning = cbMaskingasolanlaggning(['selected'])
-          varCbSaneringsvatska = cbMaskinSaneringsvatska(['selected'])
-          varCbMaskininsatserlagd = cbMaskininsatserlagd(['selected'])
+          varCbKatalysator = cbMaskinkatalysator.instate(['selected'])
+          varCbPartikelfilter = cbMaskinpartikelfilter.instate(['selected'])
+          varCbVattenbaseradlack = cbMaskinvattenbaseradlack.instate(['selected'])
+          varCbKollektivForsakring = cbMaskinKollektivforsakring.instate(['selected'])
+          varCbRegummerbara = cbMaskinregummerbara.instate(['selected'])
+          varCbRegummerade = cbMaskinregummerade.instate(['selected'])
+          varCbGasolanlaggning = cbMaskingasolanlaggning.instate(['selected'])
+          varCbSaneringsvatska = cbMaskinSaneringsvatska.instate(['selected'])
+          varCbMaskininsatserlagd = cbMaskininsatserlagd.instate(['selected'])
 
           
           if cbMaskinnummer.instate(['selected']) == True:
