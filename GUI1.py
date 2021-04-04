@@ -1199,46 +1199,17 @@ def nyMaskinFonster(Typ):
      def bytOchNyMaskin():
           
 
-          varCbMotorvarmare = False
-          varCbKatalysator = False
-          varCbPartikelfilter = False
-          varCbVattenbaseradlack = False
-          varCbKollektivForsakring = False
-          varCbRegummerbara = False
-          varCbRegummerade = False
-          varCbGasolanlaggning = False
-          varCbSaneringsvatska = False
-          varCbMaskininsatserlagd = False
-          
-          if cbMaskinmotorvarmare.instate(['selected']) == True:
-               varCbMotorvarmare = True
+          varCbMotorvarmare = cbMaskinmotorvarmare.instate(['selected'])
+          varCbKatalysator = cbMaskinkatalysator(['selected'])
+          varCbPartikelfilter = cbMaskinpartikelfilter(['selected'])
+          varCbVattenbaseradlack = cbMaskinvattenbaseradlack(['selected'])
+          varCbKollektivForsakring = cbMaskinKollektivforsakring(['selected'])
+          varCbRegummerbara = cbMaskinregummerbara(['selected'])
+          varCbRegummerade = cbMaskinregummerade(['selected'])
+          varCbGasolanlaggning = cbMaskingasolanlaggning(['selected'])
+          varCbSaneringsvatska = cbMaskinSaneringsvatska(['selected'])
+          varCbMaskininsatserlagd = cbMaskininsatserlagd(['selected'])
 
-          if cbMaskinkatalysator.instate(['selected']) == True:
-               varCbKatalysator = True
-
-          if cbMaskinpartikelfilter.instate(['selected']) == True:
-               varCbPartikelfilter = True
-
-          if cbMaskinvattenbaseradlack.instate(['selected']) == True:
-               varCbVattenbaseradlack = True
-
-          if cbMaskinKollektivforsakring.instate(['selected']) == True:
-               varCbKollektivForsakring = True
-
-          if cbMaskinregummerbara.instate(['selected']) == True:
-               varCbRegummerbara = True
-
-          if cbMaskinregummerade.instate(['selected']) == True:
-               varCbRegummerade = True
-
-          if cbMaskingasolanlaggning.instate(['selected']) == True:
-               varCbGasolanlaggning = True
-
-          if cbMaskinSaneringsvatska.instate(['selected']) == True:
-               varCbSaneringsvatska = True
-
-          if cbMaskininsatserlagd.instate(['selected']) == True:
-               varCbMaskininsatserlagd = True
           
           if cbMaskinnummer.instate(['selected']) == True:
                try:
