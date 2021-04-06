@@ -1178,9 +1178,9 @@ def nyMaskinFonster(Typ):
                nyMaskin.lift()
                response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
                if response == 1:
-                    try:
-                         sparaHistorik(maskinnummer)                         
+                    try:                        
                          andraMaskin(maskinnummer, True)
+                         sparaHistorik(maskinnummer) 
                          db.commit()                         
                          fyllMaskinInfoIgen("test")
                          nyMaskin.destroy()
@@ -2134,7 +2134,7 @@ def fetchMaskiner(self):
                     s+= " - "
                     s+=str(item[1])
                if item[2] == "":
-                    s+= ""
+                    s+= " "
                else:
                     s+= " - "
                     s+=str(item[2])
@@ -2157,7 +2157,7 @@ def fetchMaskiner(self):
                     s+= " - "
                     s+=str(item[1])
                if item[2] == "":
-                    s+= ""
+                    s+= " "
                else:
                     s+= " - "
                     s+=str(item[2])
@@ -2199,37 +2199,55 @@ def fyllDelagarInfo(medlemsnummer):
      txtMedlemsnummerDelagare.delete('1.0', 'end')
      txtMedlemsnummerDelagare.insert('end', delagarInfo[0])
      txtMedlemsnummerDelagare.config(state=DISABLED)
-
-     txtForetag.config(state=NORMAL)
-     txtForetag.delete('1.0', 'end')
-     txtForetag.insert('end', delagarInfo[1])
-     txtForetag.config(state=DISABLED)
-
-     txtFornamn.config(state=NORMAL)
-     txtFornamn.delete('1.0', 'end')
-     txtFornamn.insert('end', delagarInfo[2])
-     txtFornamn.config(state=DISABLED)
-
-     txtEfternamn.config(state=NORMAL)
-     txtEfternamn.delete('1.0', 'end')
-     txtEfternamn.insert('end', delagarInfo[3])
-     txtEfternamn.config(state=DISABLED)
-
-     txtAdress.config(state=NORMAL)
-     txtAdress.delete('1.0', 'end')
-     txtAdress.insert('end', delagarInfo[4])
-     txtAdress.config(state=DISABLED)
-
-     txtPostnummer.config(state=NORMAL)
-     txtPostnummer.delete('1.0', 'end')
-     txtPostnummer.insert('end', delagarInfo[5])
-     txtPostnummer.config(state=DISABLED)
-
-     txtPostadress.config(state=NORMAL)
-     txtPostadress.delete('1.0', 'end')
-     txtPostadress.insert('end', delagarInfo[6])
-     txtPostadress.config(state=DISABLED)
-
+     
+     try:
+          txtForetag.config(state=NORMAL)
+          txtForetag.delete('1.0', 'end')
+          txtForetag.insert('end', delagarInfo[1])
+          txtForetag.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtFornamn.config(state=NORMAL)
+          txtFornamn.delete('1.0', 'end')
+          txtFornamn.insert('end', delagarInfo[2])
+          txtFornamn.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtEfternamn.config(state=NORMAL)
+          txtEfternamn.delete('1.0', 'end')
+          txtEfternamn.insert('end', delagarInfo[3])
+          txtEfternamn.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtAdress.config(state=NORMAL)
+          txtAdress.delete('1.0', 'end')
+          txtAdress.insert('end', delagarInfo[4])
+          txtAdress.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtPostnummer.config(state=NORMAL)
+          txtPostnummer.delete('1.0', 'end')
+          txtPostnummer.insert('end', delagarInfo[5])
+          txtPostnummer.config(state=DISABLED)
+     except:
+          pass
+     
+     try:
+          txtPostadress.config(state=NORMAL)
+          txtPostadress.delete('1.0', 'end')
+          txtPostadress.insert('end', delagarInfo[6])
+          txtPostadress.config(state=DISABLED)
+     except:
+          pass
+     
      try:
           txtTelefon.config(state=NORMAL)
           txtTelefon.delete('1.0', 'end')
@@ -2489,7 +2507,21 @@ def historikFonster():
                btnTaBortHistorik["state"] = NORMAL
 
      def taBortHistorik():
-          pass
+          maskinnummer=  ""
+          datum = ""
+          for item in LbHistorik.selection():
+               id = LbHistorik.item(item, "values")
+               maskinnummer = id[0]
+               datum = (id[4])
+               LbHistorik.delete(item)
+
+          cursor.execute("SELECT historikid FROM historik WHERE Maskinnummer = " + str(maskinnummer) + " and Datum = '" + datum + "'")
+          historikid = cursor.fetchone()
+          print(historikid[0])
+
+          cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
+          db.commit()
+          
      
      LbHistorik = ttk.Treeview(historikFonster)
      LbHistorik.grid(row=1, column=1, padx=(10,0), pady=(10,0))
@@ -2538,7 +2570,7 @@ def sparaHistorik(maskinnummer):
           me_klass = str(maskinHistorik[2])
      else: 
           pass
-
+     
      if me_klass is None:
           cursor.execute("INSERT INTO historik (Maskinnummer, Beteckning, Datum, Registreringsnummer, Foretag) VALUES (%s, %s, %s, %s, %s)", (maskinnummer, beteckning, datum, regnr, foretag))
      else:
@@ -2696,7 +2728,11 @@ def hamtaMaskinerFranEntry():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
+<<<<<<< HEAD
      password = "sennaa66",
+=======
+     password = "Not1but2",
+>>>>>>> 2ed59c2d7cf5282fbca2b8a17b0840286687ee73
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2707,7 +2743,7 @@ root.title("T-schakts delägarregister")
 root.geometry("1365x750")
 root.resizable(False, False)
  
-#tabs?#
+#tabs
 
 tabControl = ttk.Notebook(root)
 home = ttk.Frame(tabControl)
