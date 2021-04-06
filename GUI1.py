@@ -2728,11 +2728,7 @@ def hamtaMaskinerFranEntry():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-<<<<<<< HEAD
      password = "sennaa66",
-=======
-     password = "Not1but2",
->>>>>>> 2ed59c2d7cf5282fbca2b8a17b0840286687ee73
      database = "tschakt"
 )
 cursor = db.cursor()
