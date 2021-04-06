@@ -221,6 +221,8 @@ def fyllMaskinInfo(self):
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
      
+     medlemsnummer = str(maskinInfo[4])
+
      try:
           entMaskinnummermaskininfo.config(state=NORMAL)
           entMaskinnummermaskininfo.delete(0, 'end')
@@ -600,7 +602,7 @@ def fyllMaskinInfo(self):
      else:
           for x in tillbehor:
                lbMaskintillbehor.insert("end", x[0])
-     
+
      cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
      maskiner = cursor.fetchall()
 
@@ -611,7 +613,8 @@ def fyllMaskinInfo(self):
      else:
           for x in maskiner:
                LbDelagaresMaskiner.insert("end", x)    
-
+     
+     fyllDelagarInfo(medlemsnummer)
      tabControl.select(delagare)
 
 def fyllMaskinInfoIgen(self):
@@ -1020,7 +1023,7 @@ def nyDelagare(Typ):
           if Typ == "Ändra":               
                cursor.execute("UPDATE foretagsregister SET Foretagsnamn = '" + entNyForetag.get() + "', Fornamn = '" + entNyFornamn.get() + "', Efternamn = '" + entNyEfternamn.get() + "', Gatuadress = '" + entNyGatuadress.get() + "', Postnummer = '" + entNyPostnummer.get() + "', Postadress = '" + entNyPostadress.get() + "', Telefon = '" + entNyTelefon.get() + "' WHERE Medlemsnummer = " + medlemsnummer +";")
                db.commit()
-               fyllDelagarInfo()
+               fyllDelagarInfo(medlemsnummer)
                nyDelagare.destroy()
                tabControl.select(delagare)
                fyllListboxDelagare()
@@ -1029,7 +1032,7 @@ def nyDelagare(Typ):
                cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
                db.commit()
                medlemsnummer = entNyMedlemsnummer.get()
-               fyllDelagarInfo()
+               fyllDelagarInfo(medlemsnummer)
                nyDelagare.destroy()
                tabControl.select(delagare)
                fyllListboxDelagare()
@@ -1226,7 +1229,7 @@ def nyMaskinFonster(Typ):
 
           if cbMaskininsatserlagd.instate(['selected']) == True:
                varCbMaskininsatserlagd = True
-
+               
           if cbMaskinnummer.instate(['selected']) == True:
                try:
                     cursor.execute("INSERT INTO maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
@@ -2107,22 +2110,29 @@ def fetchMaskiner(self):
                LbMaskiner.insert("end",s )
 
      else:
-          for x in result:
-               x = list(x)
-               if x[1] == None:
-                    x[1] = ""
-               if x[2] == None:
-                    x[2] = ""
+          for item in result:
+               item = list(item)
+               if item[1] == None:
+                    item[1] = ""
+               if item[2] == None:
+                    item[2] = ""
                
                s=""
-               s += str(x[0])
-               s+= " - "
-               s+=str(x[1])
-               s+= " - "
-               s+=str(x[2])                              
+               s += str(item[0])
+               if item[1] == "":
+                    s+= ""
+               else:
+                    s+= " - "
+                    s+=str(item[1])
+               if item[2] == "":
+                    s+= ""
+               else:
+                    s+= " - "
+                    s+=str(item[2])
+                                               
                LbMaskiner.insert("end",s )
 
-     fyllDelagarInfo()
+     fyllDelagarInfo(medlemsnummer)
 
 def fyllDelagarInfoMedNummer(self):
      global medlemsnummer
@@ -2133,7 +2143,7 @@ def fyllDelagarInfoMedNummer(self):
      medlemsnummer = "".join(stringSelectedDelagare)
 
      tomMaskinInfo()
-     fyllDelagarInfo
+     fyllDelagarInfo(medlemsnummer)
      try:
           hamtaDelagarensMaskiner()
      except:
@@ -2144,8 +2154,8 @@ def fyllDelagarInfoMedNummer(self):
           pass
      tabControl.select(delagare)
 
-def fyllDelagarInfo():
-     global medlemsnummer
+def fyllDelagarInfo(medlemsnummer):
+     #global medlemsnummer
 
      cursor.execute('SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = ' + medlemsnummer + ';')
      delagarInfo = cursor.fetchone()
@@ -2350,8 +2360,10 @@ def tomMaskinInfo():
 
 def tomDelagareInfo():
           
+          txtMedlemsnummerDelagare.config(state=NORMAL)
           txtMedlemsnummerDelagare.delete('1.0', 'end')
-          
+          txtMedlemsnummerDelagare.config(state=DISABLED)
+
           txtForetag.config(state=NORMAL)
           txtForetag.delete('1.0', 'end')
           txtForetag.config(state=DISABLED)
@@ -2417,7 +2429,7 @@ def hamtaDelagare(medlemsnr):
      medlemsnummer = medlemsnr
 
      tomMaskinInfo()
-     fyllDelagarInfo()
+     fyllDelagarInfo(medlemsnummer)
      hamtaDelagarensMaskiner()
 
 def historikFonster():
@@ -2444,7 +2456,9 @@ def historikFonster():
           else:
                btnTaBortHistorik["state"] = NORMAL
 
-
+     def taBortHistorik():
+          pass
+     
      LbHistorik = ttk.Treeview(historikFonster)
      LbHistorik.grid(row=1, column=1, padx=(10,0), pady=(10,0))
      LbHistorik['columns'] = ("Maskinnummer", "Beteckning", "Reg.nr", "ME-klass", "Datum")
@@ -2462,7 +2476,7 @@ def historikFonster():
      LbHistorik.heading("ME-klass", text="ME-klass", anchor=W)
      LbHistorik.heading("Datum", text="Datum", anchor=W)
 
-     btnTaBortHistorik = Button(historikFonster, text="Ta bort")
+     btnTaBortHistorik = Button(historikFonster, text="Ta bort", command=lambda: taBortHistorik())
      btnTaBortHistorik.grid(row=2, column=1, sticky=E, pady=(5,0))
 
      
@@ -2510,6 +2524,7 @@ def hamtaForare():
           s+=" "
           s+= str(item[1])
           lbForare.insert("end", s) 
+          lbForareTest.insert("end", s)
 
 def hamtaReferenser(self):
      global forarid
@@ -2524,6 +2539,20 @@ def hamtaReferenser(self):
           
      for item in referenser:                              
           lbReferenser.insert("end", item[0])
+
+def hamtaReferenserTest(self):
+     global forarid
+     
+     selectedForare = lbForareTest.get(lbForareTest.curselection())
+     indexSpace = selectedForare.index(" ")
+     stringSelectedForare = str(selectedForare[0:indexSpace])
+     forarid = "".join(stringSelectedForare)
+     cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
+     referenser = cursor.fetchall()
+     lbReferenserTest.delete(0, 'end')
+          
+     for item in referenser:                              
+          lbReferenserTest.insert("end", item[0])
 
 def laggTillForare(forare):
      
@@ -2587,17 +2616,17 @@ def hamtaDelagareFranEntry():
                item[1] = ""
           if item[2] == None:
                item[2] = ""
-          if item[3] == None:
-               item[3] = ""
-
           s=""
           s += str(item[0])
-          s+= " - "
-          s+=str(item[1])
-          s+= " "
-          s+=str(item[2])                              
-          s+= " - "
-          s+=str(item[3])                           
+          if item[1] == "":
+               s+= ""
+          else:
+               s+= " - "
+               s+=str(item[1])
+               s+= " "
+               s+=str(item[2])
+          s+=" - "
+          s+=str(item[3])                              
                
           LbDelagare.insert("end", s)
 
@@ -2608,21 +2637,28 @@ def hamtaMaskinerFranEntry():
      result = list(result)
      LbMaskiner.delete(0, "end")   
     
-     for x in result:
-          x = list(x)
-          if x[1] == None:
-               x[1] = ""
-          if x[2] == None:
-               x[2] = ""
+     for item in result:
+          item = list(item)
+          if item[1] == None:
+               item[1] = ""
+          if item[2] == None:
+               item[2] = ""
           
           s=""
-          s += str(x[0])
-          s+= " - "
-          s+=str(x[1])
-          s+= " - "
-          s+=str(x[2])
-                    
-          LbMaskiner.insert("end",s )
+          s += str(item[0])
+          if item[1] == "":
+               s+= ""
+          else:
+               s+= " - "
+               s+=str(item[1])
+          if item[2] == "":
+               s+= ""
+          else:
+               s+= " - "
+               s+=str(item[2])
+                      
+               LbMaskiner.insert("end",s )
+               
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
@@ -2637,6 +2673,7 @@ cursor = db.cursor()
 root = Tk()
 root.title("T-schakts delägarregister")
 root.geometry("1365x750")
+root.resizable(False, False)
  
 #tabs?#
 
@@ -2644,58 +2681,47 @@ tabControl = ttk.Notebook(root)
 home = ttk.Frame(tabControl)
 delagare = ttk.Frame(tabControl)
 forare = ttk.Frame(tabControl)
+forareTest = ttk.Frame(tabControl)
 forsakring = ttk.Frame(tabControl)
 rapporter = ttk.Frame(tabControl)
 installningar = ttk.Frame(tabControl)
 tabControl.add(home, text='Home')
 tabControl.add(delagare, text='Delägare')
 tabControl.add(forare, text="Förare")
+tabControl.add(forareTest, text="FörareTest")
 tabControl.add(forsakring, text='Försäkringar')
 tabControl.add(rapporter, text='Rapporter')
 tabControl.add(installningar, text='Inställningar')
 tabControl.grid(column=0, row=0)
 
 
-#variables
+#Variabler
 
 medlemsnummer = ""
 maskinnummer = ""
 forarid = ""
 
 #skapar textfält och textboxar
-EntMedlemsnummer = Entry(home, width=20, text = "Medlemsnummer") 
-EntMedlemsnummer.grid(row=1, column=1, padx=(227,0), pady=(50,0))
+EntMedlemsnummer = Entry(home, width=5, text = "Medlemsnummer") 
+EntMedlemsnummer.grid(row=1, column=1, pady=(50,0), padx=(50,0), sticky=E)
 EntMedlemsnummer.bind("<KeyRelease>", lambda args: hamtaDelagareFranEntry())
-#EntMedlemsnummer.insert(0,"Medlemsnummer")
-#EntMedlemsnummer.bind("<FocusIn>", lambda args: EntMedlemsnummer.delete('0', 'end'))
 
-
-EntMaskinnummer = Entry(home, width=20, text ="Maskinnummer") 
-EntMaskinnummer.grid(row=1, column=3, padx=(50,0), pady=(50,0))
+EntMaskinnummer = Entry(home, width=5, text ="Maskinnummer") 
+EntMaskinnummer.grid(row=1, column=3, pady=(50,0), padx=(22,0), sticky=W)
 EntMaskinnummer.bind("<KeyRelease>", lambda args: hamtaMaskinerFranEntry())
-# EntMaskinnummer.insert(0, "Maskinnummer")
-# EntMaskinnummer.bind("<FocusIn>", lambda args: EntMaskinnummer.delete('0', 'end'))
 
-# BtnMedlemsnummerSok = Button(home, text = "Sök", width = 5, height = 1, command= lambda: hamtaDelagare(EntMedlemsnummer.get()))
-# BtnMedlemsnummerSok.grid (row = 1, column = 2, sticky ="w", pady=(50,0))
+BtnNyDelagare = Button (home, text ="Lägg till delägare", height = 1, command = lambda: nyDelagare("Ny"))
+BtnNyDelagare.grid(row = 4, column = 2, pady=(5,0))
 
-# BtnMaskinnummerSok = Button (home, text="Sök", width=5, height = 1, command= lambda: clickButton()) 
-# BtnMaskinnummerSok.grid(row=1, column=4, sticky ="w", pady=(50,0))
-
-BtnNyDelagare = Button (home, text ="Ny delägare", height = 1, command = lambda: nyDelagare("Ny"))
-BtnNyDelagare.grid(row = 2, column = 0, padx= 10, sticky="n")
-
-# skapar en listbox
 LbDelagare = Listbox(home, width = 60, height = 30, exportselection=0)
-LbDelagare.grid(row = 2, column = 1, columnspan = 2, rowspan = 2, padx=(300,0), pady=(10,0))
+LbDelagare.grid(row = 2, column = 1, columnspan = 2, rowspan = 2, padx=(300,0), pady=(5,0))
 LbDelagare.bind('<<ListboxSelect>>', fetchMaskiner)
 LbDelagare.bind('<Double-Button>', fyllDelagarInfoMedNummer)
 
 LbMaskiner = Listbox(home, width = 60, height = 30, exportselection=0)
-LbMaskiner.grid(row = 2, column = 3, columnspan = 2, rowspan = 2, padx=(20,0), pady=(10,0))
+LbMaskiner.grid(row = 2, column = 3, columnspan = 2, rowspan = 2, padx=(20,0), pady=(5,0))
 LbMaskiner.bind('<Double-Button>', fyllMaskinInfo)
 
-# skapar en scrollbar
 ScbDelagare = Scrollbar(home, orient="vertical")
 ScbDelagare.grid(row = 2, column = 2, sticky = N+S+E, rowspan = 2, pady=(10,0))
 ScbDelagare.config(command =LbDelagare.yview)
@@ -2706,7 +2732,6 @@ ScbDMaskiner.config(command =LbMaskiner.yview)
 
 LbDelagare.config(yscrollcommand=ScbDelagare.set)
 LbMaskiner.config(yscrollcommand=ScbDMaskiner.set)
-
 
 #frames
 
@@ -3153,36 +3178,35 @@ btnLaggTillReferens.grid(column=1, row=1, sticky=E, pady=(5,0))
 btnTaBortReferens = Button(forare, text="Ta bort referens", command=lambda:taBortReferens())
 btnTaBortReferens.grid(column=1, row=2, sticky=E, pady=(5,0))
 
+#Förare - test
+
+lbForareTest = Listbox(forareTest, width=30, height=15)
+lbForareTest.grid(column=0, row=0, pady=(5,0),padx=(5,0), sticky=W)
+lbForareTest.bind('<<ListboxSelect>>', hamtaReferenserTest)
+
+lbReferenserTest = Listbox(forareTest, width=80, height=6)
+lbReferenserTest.grid(column=1, row=0, pady=(5,0), sticky=N)
+
+entLaggTillForareTest = Entry(forareTest, width=32)
+entLaggTillForareTest.grid(column=0, row=1, padx=(5,0), sticky=W)
+btnLaggTillForareTest = Button(forareTest, text="Lägg till förare", command = lambda: laggTillForare(entLaggTillForareTest.get()))
+btnLaggTillForareTest.grid(column=0, row=1, pady=(5,0), sticky=E)
+btnTaBortForareTest = Button(forareTest, text="Ta bort förare", command = lambda: taBortForare())
+btnTaBortForareTest.grid(column=0, row=2, pady=(5,0), sticky=E)
+
+entLaggTillReferensTest = Entry(forareTest, width=62)
+entLaggTillReferensTest.grid(column=1, row=0, sticky=W)
+btnLaggTillReferensTest = Button(forareTest, text="Lägg till referens", command=lambda: laggTillReferens(entLaggTillReferensTest.get()))
+btnLaggTillReferensTest.grid(column=1, row=0, sticky=E, pady=(2,0))
+btnTaBortReferensTest = Button(forareTest, text="Ta bort referens", command=lambda:taBortReferens())
+btnTaBortReferensTest.grid(column=1, row=0, sticky=E, pady=(60,0))
 
 
+
+#Funktioner som körs på uppstart
 hamtaForare()
 fyllListboxDelagare()
-
-# cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
-# delagareLista = cursor.fetchall()
-# delagareLista = list(delagareLista)
-
-# if LbDelagare.index("end") == 0:
-#      for item in delagareLista:
-#           item = list(item)
-#           if item[1] == None:
-#                item[1] = ""
-#           if item[2] == None:
-#                item[2] = ""
-#           if item[3] == None:
-#                item[3] = ""
-
-#           s=""
-#           s += str(item[0])
-#           s+= " - "
-#           s+=str(item[1])
-#           s+= " "
-#           s+=str(item[2])                              
-#           s+= " - "
-#           s+=str(item[3])
-
-#           LbDelagare.insert("end", s)
-
+hamtaMaskinerFranEntry()
 
 # kör fönstret
 root.mainloop()
