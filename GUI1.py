@@ -224,6 +224,14 @@ def fyllMaskinInfo(self):
      medlemsnummer = str(maskinInfo[4])
 
      try:
+          entMaskinBatteriantal.config(state=NORMAL)
+          entMaskinBatteriantal.delete(0, 'end')
+          entMaskinBatteriantal.insert(0, maskinInfo[39])
+          entMaskinBatteriantal.config(state=DISABLED)
+     except:
+          entMaskinnummermaskininfo.config(state=DISABLED)
+
+     try:
           entMaskinnummermaskininfo.config(state=NORMAL)
           entMaskinnummermaskininfo.delete(0, 'end')
           entMaskinnummermaskininfo.insert(0, maskinInfo[0])
@@ -626,6 +634,14 @@ def fyllMaskinInfoIgen(self):
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
+
+     try:
+          entMaskinBatteriantal.config(state=NORMAL)
+          entMaskinBatteriantal.delete(0, 'end')
+          entMaskinBatteriantal.insert(0, maskinInfo[39])
+          entMaskinBatteriantal.config(state=DISABLED)
+     except:
+          entMaskinnummermaskininfo.config(state=DISABLED)
 
      try:
           entMaskinnummermaskininfo.config(state=NORMAL)
@@ -1352,7 +1368,7 @@ def nyMaskinFonster(Typ):
                
           else:              
                cursor.execute("UPDATE maskinregister SET Saneringsvatska = 0 WHERE Maskinnummer = " + Typ +";")
-          cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + entMaskinme_klass.get() + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + entMaskinmotoreffekt.get() + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + entMaskinarsbelopp.get() + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + entMaskinarsmodell.get() + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "'WHERE Maskinnummer = " + Typ +";")            
+          cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + entMaskinme_klass.get() + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + entMaskinmotoreffekt.get() + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + entMaskinarsbelopp.get() + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + entMaskinarsmodell.get() + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "', Batteriantal = '" + entMaskinbatteriAntal.get() + "' WHERE Maskinnummer = " + Typ +";")            
           cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
           cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
      
@@ -2688,7 +2704,7 @@ def hamtaMaskinerFranEntry():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2789,7 +2805,7 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("1.jpg")  
+img = Image.open("c:/filer/OTAD/OTAD/1.jpg")  
 img = img.resize((225,200), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameOvrigText, image=img2)
