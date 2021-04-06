@@ -472,10 +472,10 @@ def fyllMaskinInfo(self):
 
      try:
           TxtOvrigtext.config(state=NORMAL)
-          TxtOvrigtext.delete(0, 'end')
-          TxtOvrigtext.insert(0, maskinInfo[41])
+          TxtOvrigtext.delete(1.0, 'end')
+          TxtOvrigtext.insert(1.0, maskinInfo[41])
           TxtOvrigtext.config(state=DISABLED)
-     except:
+     except Exception:
           TxtOvrigtext.config(state=DISABLED)
 
      try:
@@ -878,8 +878,8 @@ def fyllMaskinInfoIgen(self):
 
      try:
           TxtOvrigtext.config(state=NORMAL)
-          TxtOvrigtext.delete(0, 'end')
-          TxtOvrigtext.insert(0, maskinInfo[41])
+          TxtOvrigtext.delete(1.0, 'end')
+          TxtOvrigtext.insert(END, maskinInfo[41])
           TxtOvrigtext.config(state=DISABLED)
      except:
           TxtOvrigtext.config(state=DISABLED)
@@ -1155,24 +1155,35 @@ def nyMaskinFonster(Typ):
 
      def sparaMaskin(Typ):
           if Typ=="Byt":
+               nyMaskin.lift()
                response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
                if response == 1:
-                    sparaHistorik(maskinnummer)
-                    rensaMaskin()
-                    bytOchNyMaskin()
+                    try:
+                         sparaHistorik(maskinnummer)                         
+                         andraMaskin(maskinnummer, True)
+                         db.commit()                         
+                         fyllMaskinInfoIgen("test")
+                         nyMaskin.destroy()
+                    except Exception:
+                         db.rollback()
+                         traceback.print_exc()
                else:
                     pass
           elif Typ=="Ny":
-               bytOchNyMaskin()
-               print("nyMaskin Ny")
-               db.commit()
-               hamtaDelagarensMaskiner()
-               nyMaskin.destroy()
-               pass
+               try:
+                    bytOchNyMaskin()
+                    print("nyMaskin Ny")
+                    db.commit()
+                    hamtaDelagarensMaskiner()                                  
+                    nyMaskin.destroy()
+               except Exception:
+                    db.rollback()
+                    traceback.print_exc()
+               
           else:
                print("nyMaskin Ändra")
                try:
-                    andraMaskin(Typ)
+                    andraMaskin(Typ, False)
                     db.commit()                
                     fyllMaskinInfoIgen("test")
                     nyMaskin.destroy()
@@ -1189,6 +1200,7 @@ def nyMaskinFonster(Typ):
 
      def bytOchNyMaskin():
           
+
           varCbMotorvarmare = False
           varCbKatalysator = False
           varCbPartikelfilter = False
@@ -1229,18 +1241,24 @@ def nyMaskinFonster(Typ):
 
           if cbMaskininsatserlagd.instate(['selected']) == True:
                varCbMaskininsatserlagd = True
-               
+          
           if cbMaskinnummer.instate(['selected']) == True:
                try:
+                    print("Mindre schyssta grejer")
                     cursor.execute("INSERT INTO maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
                except Exception:
                     traceback.print_exc()
+               for x in tillbehorAttLaggaTill:
+                    print(x)
+                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(cursor.lastrowid) + ");" )
+
           else:
                try:
                     maskinnummerFinns = False
                     valtMaskinNummer = entMaskinnummermaskininfo.get()
                     cursor.execute('SELECT Maskinnummer FROM maskinregister')
                     result = cursor.fetchall()
+                    print("Lite schyssta grejer")
 
                     for x in result:
                          if valtMaskinNummer== str(x[0]):
@@ -1249,16 +1267,28 @@ def nyMaskinFonster(Typ):
                          else:
                               pass
                     if maskinnummerFinns == False:
-                         cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+                         try:                             
+                              cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+                              #db.commit()
+                         except Exception:
+                              traceback.print_exc()
+                         for x in tillbehorAttLaggaTill:
+                              print(x)
+                              cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + entMaskinnummermaskininfo.get() + ");")
                     else:
                          messagebox.showerror(title="Upptaget", message="Maskinnumret är upptaget, var god välj ett.")
                except Exception:
                     traceback.print_exc()
+
+
                
 
 
-     def andraMaskin(Typ):
-          
+     def andraMaskin(Typ, byteTillbehor):
+          if byteTillbehor is True:
+               cursor.execute("Delete from tillbehor where maskinnummer ="+Typ+";")
+
+
           if cbMaskinregummerbara.instate(['selected']) == True:                    
                cursor.execute("UPDATE maskinregister SET regummerbar = 1 WHERE Maskinnummer = " + Typ +";")                   
           else:                   
@@ -1317,27 +1347,21 @@ def nyMaskinFonster(Typ):
                cursor.execute("UPDATE maskinregister SET Gasol = 0 WHERE Maskinnummer = " + Typ +";")
                
 
-          if cbMaskinSaneringsvatska.instate(['selected']) == True:
-               
+          if cbMaskinSaneringsvatska.instate(['selected']) == True:             
                cursor.execute("UPDATE maskinregister SET Saneringsvatska = 1 WHERE Maskinnummer = " + Typ +";")
                
-          else:
-               
+          else:              
                cursor.execute("UPDATE maskinregister SET Saneringsvatska = 0 WHERE Maskinnummer = " + Typ +";")
-               cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + entMaskinme_klass.get() + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + entMaskinmotoreffekt.get() + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + entMaskinarsbelopp.get() + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + entMaskinarsmodell.get() + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "'WHERE Maskinnummer = " + Typ +";")            
-               cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
-               cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+          cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + entMaskinme_klass.get() + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + entMaskinmotoreffekt.get() + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + entMaskinarsbelopp.get() + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + entMaskinarsmodell.get() + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "'WHERE Maskinnummer = " + Typ +";")            
+          cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
+          cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+     
+          for x in tillbehorAttTaBort:
+               cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")                   
+          for x in tillbehorAttLaggaTill:
+               print(x)
+               cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + Typ + ");" )
           
-               for x in tillbehorAttTaBort:
-                    cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")                   
-               for x in tillbehorAttLaggaTill:
-                    print(x)
-                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + Typ + ");" )
-              
-          
-          
-
-
 
      nyMaskin = Toplevel(root)
 
@@ -1758,7 +1782,7 @@ def nyMaskinFonster(Typ):
           try:
                TxtOvrigtext.config(state=NORMAL)
                TxtOvrigtext.delete('1.0', 'end')
-               TxtOvrigtext.insert('end', maskinInfo[41])
+               TxtOvrigtext.insert(END, maskinInfo[41])
                TxtOvrigtext.config(state=DISABLED)
           except:
                pass
@@ -2664,7 +2688,7 @@ def hamtaMaskinerFranEntry():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
