@@ -550,6 +550,7 @@ def fyllMaskinInfo(self):
           referenser = cursor.fetchall()
           
      try:
+          lbMaskinreferens.config(state=NORMAL)
           if lbMaskinreferens.index("end") != 0:
                lbMaskinreferens.delete(0, "end")
                for x in referenser:
@@ -557,8 +558,9 @@ def fyllMaskinInfo(self):
           else:
                for x in referenser:
                     lbMaskinreferens.insert("end", x[0])
+          lbMaskinreferens.config(state=DISABLED)
      except:
-          pass
+          lbMaskinreferens.config(state=DISABLED)
 
      try:
           if maskinInfo[28] == 1:
@@ -964,6 +966,7 @@ def fyllMaskinInfoIgen(self):
           referenser = cursor.fetchall()
 
      try:
+          lbMaskinreferens.config(state=NORMAL)
           if lbMaskinreferens.index("end") != 0:
                lbMaskinreferens.delete(0, "end")
                for x in referenser:
@@ -971,8 +974,9 @@ def fyllMaskinInfoIgen(self):
           else:
                for x in referenser:
                     lbMaskinreferens.insert("end", x[0])
+          lbMaskinreferens.config(state=DISABLED)
      except:
-          pass
+          lbMaskinreferens.config(state=DISABLED)
 
      try:
           if maskinInfo[28] == 1:
@@ -1666,19 +1670,12 @@ def nyMaskinFonster(Typ):
      lblMaskinforare.grid(column=4, row=8, sticky = W, padx=(10,0))
      entMaskinforare=Entry(nyMaskin, width = 32)
      entMaskinforare.grid(column=5, row=8, sticky=W, padx=(10,0))
-
-     lblMaskinreferens = Label(nyMaskin, text="Referensjobb")
-     lblMaskinreferens.grid(column=4, row=9, sticky = W, padx=(10,0))
-     # txtMaskinreferens=Text(nyMaskin, width = 20, height=0.1)
-     # txtMaskinreferens.grid(column=5, row=9, sticky=W, padx=(10,0))
-
-     lbMaskinreferens = Listbox(nyMaskin, height=4)
-     lbMaskinreferens.grid(column=4, row=10, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0))
-     
+     entMaskinforare.config(state=DISABLED)
+  
      lblMaskintillbehor = Label(nyMaskin, text="Tillbehör")
-     lblMaskintillbehor.grid(column=4, row=15, sticky = W, padx=(10,0))
+     lblMaskintillbehor.grid(column=4, row=9, sticky = W, padx=(10,0))
      txtMaskintillbehor=Text(nyMaskin, width = 25, height=0.1)
-     txtMaskintillbehor.grid(column=5, row=15, sticky=W, padx=(10,0))
+     txtMaskintillbehor.grid(column=5, row=9, sticky=W, padx=(10,0))
 
      tillbehorAttTaBort=[]
      tillbehorAttLaggaTill=[]
@@ -1699,18 +1696,13 @@ def nyMaskinFonster(Typ):
      
      lbMaskintillbehor = Listbox(nyMaskin, height=4)
      lbMaskintillbehor.bind('<Double-Button>', taBortTillbehor)
-     lbMaskintillbehor.grid(column=4, row=16, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0), pady=(5,5))  
+     lbMaskintillbehor.grid(column=4, row=10, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0), pady=(5,5))  
 
      ScbLbMaskintillbehor = Scrollbar(nyMaskin, orient="vertical")
-     ScbLbMaskintillbehor.grid(row = 16, column = 6, sticky = N+S+W, rowspan = 4)
+     ScbLbMaskintillbehor.grid(row = 10, column = 6, sticky = N+S+W, rowspan = 4)
      ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
      lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
-
-     scbLbReferenser = Scrollbar(nyMaskin, orient="vertical")
-     scbLbReferenser.grid(row = 10, column=6, sticky = N+S+W, rowspan=4)
-     scbLbReferenser.config(command=lbMaskinreferens.yview)
-     lbMaskinreferens.config(yscrollcommand=scbLbReferenser.set)
-     
+    
      txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), tillbehorAttLaggaTill.append(txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
      #txtMaskinreferens.bind('<Return>', lambda x: (lbMaskinreferens.insert('end', txtMaskinreferens.get('1.0', 'end')), txtMaskinreferens.delete('1.0','end')))
      #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
@@ -3165,7 +3157,6 @@ lblMaskinforare.grid(column=4, row=8, sticky = W, padx=(10,0))
 entMaskinforare=Entry(frameMaskininfo, width = 32)
 entMaskinforare.grid(column=5, row=8, sticky=W, padx=(10,0))
 entMaskinforare.config(state=DISABLED)
-
 
 lblMaskinreferens = Label(frameMaskininfo, text="Referensjobb")
 lblMaskinreferens.grid(column=4, row=9, sticky =W, padx=(10,0))
