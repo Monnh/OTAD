@@ -2728,7 +2728,7 @@ def hamtaMaskinerFranEntry():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "sennaa66",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2829,7 +2829,7 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("c:/filer/OTAD/OTAD/1.jpg")  
+img = Image.open("1.jpg")  
 img = img.resize((225,200), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameOvrigText, image=img2)
