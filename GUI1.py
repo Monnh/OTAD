@@ -801,7 +801,8 @@ def nyMaskinFonster(Typ):
                     try:                        
                          andraMaskin(maskinnummer, True)
                          sparaHistorik(maskinnummer) 
-                         db.commit()                         
+                         db.commit()
+                         fileSave()                         
                          fyllMaskinInfo("empty")
                          nyMaskin.destroy()
                     except Exception:
@@ -814,6 +815,7 @@ def nyMaskinFonster(Typ):
                     bytOchNyMaskin()
                     print("nyMaskin Ny")
                     db.commit()
+                    fileSave()
                     hamtaDelagarensMaskiner()                                  
                     nyMaskin.destroy()
                except Exception:
@@ -824,7 +826,8 @@ def nyMaskinFonster(Typ):
                print("nyMaskin Ändra")
                try:
                     andraMaskin(Typ, False)
-                    db.commit()                
+                    db.commit()
+                    fileSave()                
                     fyllMaskinInfo("empty")
                     nyMaskin.destroy()
                except Exception:
@@ -835,7 +838,7 @@ def nyMaskinFonster(Typ):
     
 
      def bytOchNyMaskin():
-          
+          global maskinnummer
 
           varCbMotorvarmare = cbMaskinmotorvarmare.instate(['selected'])
           varCbKatalysator = cbMaskinkatalysator.instate(['selected'])
@@ -853,11 +856,14 @@ def nyMaskinFonster(Typ):
                try:
                     print("Mindre schyssta grejer")
                     cursor.execute("INSERT INTO maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+                    maskinnummer=cursor.lastrowid
                except Exception:
                     traceback.print_exc()
                for x in tillbehorAttLaggaTill:
                     print(x)
                     cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(cursor.lastrowid) + ");" )
+               print(cursor.lastrowid)
+               cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
 
           else:
                try:
@@ -882,6 +888,7 @@ def nyMaskinFonster(Typ):
                          for x in tillbehorAttLaggaTill:
                               print(x)
                               cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + entMaskinnummermaskininfo.get() + ");")
+                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+maskinnummer+filePath+"', '"+maskinnummer+"');")
                     else:
                          messagebox.showerror(title="Upptaget", message="Maskinnumret är upptaget, var god välj ett.")
                except Exception:
@@ -894,6 +901,7 @@ def nyMaskinFonster(Typ):
      def andraMaskin(Typ, byteTillbehor):
           if byteTillbehor is True:
                cursor.execute("Delete from tillbehor where maskinnummer ="+Typ+";")
+               cursor.execute("Delete from bilder where maskinnummer ="+Typ+";")
 
 
           if cbMaskinregummerbara.instate(['selected']) == True:                    
@@ -1199,6 +1207,7 @@ def nyMaskinFonster(Typ):
      def fileDialog():
           global filePath
           global img3
+          global imgNyBild
           filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
           sparSokVag = filename.rsplit("/", 1)
           filePath=sparSokVag[1]
@@ -1207,11 +1216,13 @@ def nyMaskinFonster(Typ):
           txtSokvag.insert('end', filename)
           nyMaskin.lift()
           imgNyBild = Image.open(filename)  
-          imgNyBild.save('pics/'+maskinnummer+filePath)
-          imgNyBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
-          img3 = ImageTk.PhotoImage(imgNyBild)
+          imgFixadBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
+          img3 = ImageTk.PhotoImage(imgFixadBild)
           img_NyBild = Label(nyMaskin, image=img3) 
           img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
+     def fileSave():
+          print("Maskinnummret är: "+str(maskinnummer))
+          imgNyBild.save('pics/'+str(maskinnummer)+filePath)
      
      
           
