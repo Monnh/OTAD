@@ -608,6 +608,22 @@ def fyllMaskinInfo(self):
      except:
           pass
      
+     try:
+          cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
+          img = cursor.fetchone()
+          img = Image.open(img[0])  
+          img = img.resize((225,200), Image. ANTIALIAS)
+          img2 = ImageTk.PhotoImage(img)
+          img_label.config(image = img2)
+          img_label.image=img2
+     except Exception:
+          img = Image.open("1.jpg")  
+          img = img.resize((225,200), Image. ANTIALIAS)
+          img2 = ImageTk.PhotoImage(img)
+          img_label.config(image = img2)
+          img_label.image=img2
+          #traceback.print_exc()
+
      cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
      tillbehor = cursor.fetchall()
      
@@ -1170,6 +1186,10 @@ def nyMaskinFonster(Typ):
 
      TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set) 
 
+     #Bild
+     img_Bild = Label(nyMaskin) 
+     img_Bild.grid(row=15, column=2, columnspan=2, rowspan=6)
+
      def fileDialog():
 
           global img3
@@ -1365,6 +1385,21 @@ def nyMaskinFonster(Typ):
                #TxtOvrigtext.config(state=DISABLED)
           except:
                pass
+
+          try:
+               cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
+               img = cursor.fetchone()
+               img = Image.open(img[0])  
+               img = img.resize((150,145), Image. ANTIALIAS)
+               img2 = ImageTk.PhotoImage(img)
+               img_Bild.config(image = img2)
+               img_Bild.image=img2
+          except:
+               img = Image.open("1.jpg")  
+               img = img.resize((150,145), Image. ANTIALIAS)
+               img2 = ImageTk.PhotoImage(img)
+               img_Bild.config(image = img2)
+               img_Bild.image=img2
 
           try:
                entMaskinmotoreffekt.config(state=NORMAL)
@@ -2305,7 +2340,7 @@ def hamtaMaskinerFranEntry():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2406,11 +2441,9 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("1.jpg")  
-img = img.resize((225,200), Image. ANTIALIAS)
-img2 = ImageTk.PhotoImage(img)
-img_label = Label(frameOvrigText, image=img2)
+img_label = Label(frameOvrigText)
 img_label.grid(row=0, column=0, sticky = NW)
+
 
 #Delägareinfo
 
