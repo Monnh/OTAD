@@ -878,7 +878,7 @@ def nyMaskinFonster(Typ):
                               cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
                               #db.commit()
                          except Exception:
-                              traceback.print_exc()
+                              traceback.print_exc()                              
                          for x in tillbehorAttLaggaTill:
                               print(x)
                               cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + entMaskinnummermaskininfo.get() + ");")
@@ -968,6 +968,12 @@ def nyMaskinFonster(Typ):
           for x in tillbehorAttLaggaTill:
                print(x)
                cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + Typ + ");" )
+          print("Filepath är: "+filePath)
+          if filePath is not None:
+               try:                         
+                    cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+filePath+"', '"+maskinnummer+"');")
+               except Exception:
+                    traceback.print_exc()    
           
 
      nyMaskin = Toplevel(root)
@@ -1191,9 +1197,13 @@ def nyMaskinFonster(Typ):
      img_Bild.grid(row=15, column=2, columnspan=2, rowspan=6)
 
      def fileDialog():
-
+          global filePath
           global img3
           filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
+          #print(filename.rsplit("/",1))
+          sparSokVag = filename.rsplit("/", 1)
+          #print(sparSokVag[1])
+          filePath=sparSokVag[1]
           txtSokvag = Text(nyMaskin, width = 20, height=0.1)
           txtSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
           txtSokvag.insert('end', filename)
@@ -1203,6 +1213,8 @@ def nyMaskinFonster(Typ):
           img3 = ImageTk.PhotoImage(imgNyBild)
           img_NyBild = Label(nyMaskin, image=img3) 
           img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
+     
+     
           
      btnNyBild = Button(nyMaskin, text="Lägg till bild", command= fileDialog)
      btnNyBild.grid(column=2, row=21, sticky=W, padx=(10,0))
@@ -1389,6 +1401,7 @@ def nyMaskinFonster(Typ):
           try:
                cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
                img = cursor.fetchone()
+               print(img[0])
                img = Image.open(img[0])  
                img = img.resize((150,145), Image. ANTIALIAS)
                img2 = ImageTk.PhotoImage(img)
@@ -2340,7 +2353,7 @@ def hamtaMaskinerFranEntry():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "sennaa66",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
