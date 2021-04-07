@@ -609,7 +609,7 @@ def fyllMaskinInfo(self):
           pass
      
      try:
-          cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
+          cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " order by bildid desc LIMIT 1;")
           img = cursor.fetchone()
           img = Image.open(img[0])  
           img = img.resize((225,200), Image. ANTIALIAS)
@@ -968,10 +968,10 @@ def nyMaskinFonster(Typ):
           for x in tillbehorAttLaggaTill:
                print(x)
                cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + Typ + ");" )
-          print("Filepath är: "+filePath)
+          
           if filePath is not None:
                try:                         
-                    cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+filePath+"', '"+maskinnummer+"');")
+                    cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+maskinnummer+filePath+"', '"+maskinnummer+"');")
                except Exception:
                     traceback.print_exc()    
           
@@ -1200,15 +1200,14 @@ def nyMaskinFonster(Typ):
           global filePath
           global img3
           filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
-          #print(filename.rsplit("/",1))
           sparSokVag = filename.rsplit("/", 1)
-          #print(sparSokVag[1])
           filePath=sparSokVag[1]
           txtSokvag = Text(nyMaskin, width = 20, height=0.1)
           txtSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
           txtSokvag.insert('end', filename)
           nyMaskin.lift()
           imgNyBild = Image.open(filename)  
+          imgNyBild.save('pics/'+maskinnummer+filePath)
           imgNyBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
           img3 = ImageTk.PhotoImage(imgNyBild)
           img_NyBild = Label(nyMaskin, image=img3) 
@@ -1399,7 +1398,7 @@ def nyMaskinFonster(Typ):
                pass
 
           try:
-               cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
+               cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " order by bildid desc LIMIT 1;")
                img = cursor.fetchone()
                print(img[0])
                img = Image.open(img[0])  
