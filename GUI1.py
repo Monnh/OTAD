@@ -2076,7 +2076,8 @@ def taBortMaskin():
 
      response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + str(maskinnummer) + "?")
      if response == 1:  
-          try:     
+          try:  
+               cursor.execute("Delete from bilder where maskinnummer ="+maskinnummer+";")   
                cursor.execute("Delete from tillbehor where maskinnummer ="+maskinnummer+";")   
                cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
                db.commit() 
