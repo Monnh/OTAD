@@ -515,6 +515,229 @@ def forsakringPerDelagareFraga(medlemsnummer):
      outputStream.close()
      os.startfile("forskaringFraga - " + medlemsnummer + ".pdf" )
 
+def forsakringPerDelagare():
+
+     cursor.execute("SELECT Medlemsnummer FROM foretagsregister")
+     medlemmar = cursor.fetchall()
+     medlemmar = list(medlemmar)
+
+     cursor.execute("SELECT forsakringsgivare FROM forsakringsgivare WHERE idforsakringsgivare = 1")
+     forsakringsgivare = cursor.fetchone()
+     
+     cursor.execute("SELECT Maskinnummer FROM maskinregister")
+     totaltMaskiner = cursor.fetchall()
+     totaltMaskiner = list(totaltMaskiner)
+
+     packet = io.BytesIO()
+     c = canvas.Canvas(packet, pagesize=letter)
+     c.setFontSize(10)
+     totalCounter = 0
+     pages = 0
+     belopp = 0
+     
+
+     for i in medlemmar:
+          cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + str(i[0]) +"")
+          maskiner = cursor.fetchall()
+          maskiner = list(maskiner)
+
+          cursor.execute("SELECT Foretagsnamn, Fornamn, Efternamn FROM foretagsregister WHERE Medlemsnummer = " + str(i[0]) + "")
+          foretag = cursor.fetchone()
+
+          counter = 0
+          y=560
+
+
+          if len(maskiner) != 0:
+               c.setFontSize(10)
+               c.drawString(490, 820, str(datetime.date(datetime.now())))
+               c.drawString(71, 620, str(foretag[0]))
+               if foretag[1] is not None:
+                    c.drawString(270, 620, str(foretag[1]))
+               if foretag[1] is not None:
+                    c.drawString(348, 620, str(foretag[2]))
+               c.drawString(480, 620, str(str(i[0])))
+
+               pages+=1
+          
+          
+               for n in maskiner:
+                    
+                    if n[4] is not None:
+                         belopp += int(n[4])
+
+                    if counter < 22: 
+                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         if n[2] is not None and n[3] is not None:
+                              c.setFontSize(7)
+                              c.drawString(175, y, str(n[2]))
+                              c.drawString(209, y, " - ")
+                              c.drawString(215, y, str(n[3]))
+                              c.setFontSize(10)
+                         c.drawString(265, y, str(n[0]))
+                         if n[1] is not None:
+                              if len(n[1]) > 22:
+                                   c.drawString(295, y, str(n[1]))
+                              else:
+                                   c.drawString(310, y, str(n[1]))
+                         if n[5] is not None:
+                              if len(n[5]) > 10:
+                                   c.setFontSize(6)
+                                   c.drawString(430, y, str(n[5]))
+                                   c.setFontSize(10)
+                              else:
+                                   c.drawString(430, y, str(n[5]))
+                         if n[4] is not None:
+                              c.drawString(500, y, str(n[4]))
+                         y-=25
+                    elif counter == 22:
+                         if counter != len(maskiner):
+                              c.showPage()
+                              c.setFontSize(10)
+                              c.drawString(490, 820, str(datetime.date(datetime.now())))
+                              c.drawString(71, 620, str(foretag[0]))
+                              if foretag[1] is not None:
+                                   c.drawString(270, 620, str(foretag[1]))
+                              if foretag[1] is not None:
+                                   c.drawString(348, 620, str(foretag[2]))
+                              c.drawString(480, 620, str(str(i[0])))
+                              y = 560
+                              pages += 1
+                              c.drawString(71, y, str(forsakringsgivare[0]))
+                              if n[2] is not None and n[3] is not None:
+                                   c.setFontSize(7)
+                                   c.drawString(175, y, str(n[2]))
+                                   c.drawString(209, y, " - ")
+                                   c.drawString(215, y, str(n[3]))
+                                   c.setFontSize(10)
+                              c.drawString(265, y, str(n[0]))
+                              if n[1] is not None:
+                                   if len(n[1]) > 22:
+                                        c.drawString(295, y, str(n[1]))
+                                   else:
+                                        c.drawString(310, y, str(n[1]))
+                              if n[5] is not None:
+                                   if len(n[5]) > 10:
+                                        c.setFontSize(6)
+                                        c.drawString(430, y, str(n[5]))
+                                        c.setFontSize(10)
+                                   else:
+                                        c.drawString(430, y, str(n[5]))
+                              if n[4] is not None:
+                                   c.drawString(500, y, str(n[4]))
+                              y-=25
+                    elif counter > 22 and counter < 44:
+                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         if n[2] is not None and n[3] is not None:
+                              c.setFontSize(7)
+                              c.drawString(175, y, str(n[2]))
+                              c.drawString(209, y, " - ")
+                              c.drawString(215, y, str(n[3]))
+                              c.setFontSize(10)
+                         c.drawString(265, y, str(n[0]))
+                         if n[1] is not None:
+                              if len(n[1]) > 22:
+                                   c.drawString(295, y, str(n[1]))
+                              else:
+                                   c.drawString(310, y, str(n[1]))
+                         if n[5] is not None:
+                              if len(n[5]) > 10:
+                                   c.setFontSize(6)
+                                   c.drawString(430, y, str(n[5]))
+                                   c.setFontSize(10)
+                              else:
+                                   c.drawString(430, y, str(n[5]))
+                         if n[4] is not None:
+                              c.drawString(500, y, str(n[4]))
+                         y-=25
+                    elif counter == 44:
+                         if counter != len(maskiner):
+                              c.showPage()
+                              c.setFontSize(10)
+                              c.drawString(490, 820, str(datetime.date(datetime.now())))
+                              c.drawString(71, 620, str(foretag[0]))
+                              if foretag[1] is not None:
+                                   c.drawString(270, 620, str(foretag[1]))
+                              if foretag[1] is not None:
+                                   c.drawString(348, 620, str(foretag[2]))
+                              c.drawString(480, 620, str(str(i[0])))
+                              y = 560
+                              pages += 1
+                              c.drawString(71, y, str(forsakringsgivare[0]))
+                              if n[2] is not None and n[3] is not None:
+                                   c.setFontSize(7)
+                                   c.drawString(175, y, str(n[2]))
+                                   c.drawString(209, y, " - ")
+                                   c.drawString(215, y, str(n[3]))
+                                   c.setFontSize(10)
+                              c.drawString(265, y, str(n[0]))
+                              if n[1] is not None:
+                                   if len(n[1]) > 22:
+                                        c.drawString(295, y, str(n[1]))
+                                   else:
+                                        c.drawString(310, y, str(n[1]))
+                              if n[5] is not None:
+                                   if len(n[5]) > 10:
+                                        c.setFontSize(6)
+                                        c.drawString(430, y, str(n[5]))
+                                        c.setFontSize(10)
+                                   else:
+                                        c.drawString(430, y, str(n[5]))
+                              if n[4] is not None:
+                                   c.drawString(500, y, str(n[4]))
+                              y-=25
+                    elif counter > 44 and counter < 66:
+                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         if n[2] is not None and n[3] is not None:
+                              c.setFontSize(7)
+                              c.drawString(175, y, str(n[2]))
+                              c.drawString(209, y, " - ")
+                              c.drawString(215, y, str(n[3]))
+                              c.setFontSize(10)
+                         c.drawString(265, y, str(n[0]))
+                         if n[1] is not None:
+                              if len(n[1]) > 22:
+                                   c.drawString(295, y, str(n[1]))
+                              else:
+                                   c.drawString(310, y, str(n[1]))
+                         if n[5] is not None:
+                              if len(n[5]) > 10:
+                                   c.setFontSize(6)
+                                   c.drawString(430, y, str(n[5]))
+                                   c.setFontSize(10)
+                              else:
+                                   c.drawString(430, y, str(n[5]))
+                         if n[4] is not None:
+                              c.drawString(500, y, str(n[4]))
+                         y-=25
+                    
+
+                    counter+=1
+                    totalCounter+=1
+                    if counter == len(maskiner):
+                         c.showPage()
+
+          if totalCounter == len(totaltMaskiner):
+
+               c.drawString(150, 350, "Totalt: ")
+               c.drawString(185, 350, str(belopp))
+               pages+=1
+               c.save()
+               packet.seek(0)
+               new_pdf = PdfFileReader(packet)
+               output = PdfFileWriter()
+
+               for x in range(pages):
+                    existing_pdf = PdfFileReader(open("KollektivforsakringperdelagareFraga.pdf", "rb"))
+                    page = existing_pdf.getPage(0)
+                    page.mergePage(new_pdf.getPage(x))
+                    output.addPage(page)
+                    outputStream = open( "forskaring-test.pdf", "wb")
+                    output.write(outputStream)
+                    outputStream.close()
+               
+     os.startfile("forskaring-test.pdf")
+
 def fyllMaskinInfo(self):
      global maskinnummer
      global medlemsnummer
@@ -2768,6 +2991,9 @@ BtnMaskinnehav.grid(row=1, column = 1, sticky=W)
 
 BtnForsakringFraga = Button(home, text="Försäkring (fråga)", command = lambda: forsakringPerDelagareFraga(medlemsnummer))
 BtnForsakringFraga.grid(row=1, column=1, sticky=W, pady=(100,0))
+
+BtnForsakringLista = Button(home, text="Försäkringar", command = lambda: forsakringPerDelagare())
+BtnForsakringLista.grid(row=1, column=1, sticky=W, pady=(200,0))
 
 EntMedlemsnummer = Entry(home, width=5, text = "Medlemsnummer") 
 EntMedlemsnummer.grid(row=1, column=1, pady=(50,0), padx=(50,0), sticky=E)
