@@ -2568,7 +2568,14 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
+<<<<<<< HEAD
 img_label = Label(frameOvrigText)
+=======
+img = Image.open("1.jpg")  
+img = img.resize((225,200), Image. ANTIALIAS)
+img2 = ImageTk.PhotoImage(img)
+img_label = Label(frameOvrigText, image=img2)
+>>>>>>> 479a82fff1002857cb784808c56fda355875d1a0
 img_label.grid(row=0, column=0, sticky = NW)
 
 
