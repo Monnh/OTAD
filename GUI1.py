@@ -2414,13 +2414,60 @@ def uppdateraForsakring():
                     db.rollback()
                     traceback.print_exc()
 
+def hamtaForareMaskin():
+     cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
+     result = cursor.fetchall()
+     result = list(result)
+     LbForareDelagaresMaskiner.delete(0, "end")   
+    
+     for item in result:
+          item = list(item)
+          if item[1] == None:
+               item[1] = ""
+          if item[2] == None:
+               item[2] = ""
+          
+          s=""
+          s += str(item[0])
+          if item[1] == "":
+               s+= ""
+          else:
+               s+= " - "
+               s+=str(item[1])
+          if item[2] == "":
+               s+= ""
+          else:
+               s+= " - "
+               s+=str(item[2])
+                      
+               LbForareDelagaresMaskiner.insert("end",s )
+
+def kopplaMaskin():
+
+     forarid = lbForare.get(lbForare.curselection())
+     index2 = forarid.index(" ")
+     stringforarid = str(forarid[0:index2])
+     foraridString = "".join(stringforarid)
+     print("Forarid: " +foraridString)
+
+     maskinid = LbForareDelagaresMaskiner.get(LbForareDelagaresMaskiner.curselection())
+     index3 = maskinid.index(" ")
+     stringmaskinid = str(maskinid[0:index3])
+     maskinidString = "".join(stringmaskinid)
+     print("Maskinid: " +maskinidString)
+     try:
+          cursor.execute("UPDATE maskinregister SET Forarid =" +foraridString + " WHERE Maskinnummer =" +maskinidString +";")
+          db.commit()
+     except Exception:
+          traceback.print_exc()
+          db.rollback()
 
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2907,29 +2954,41 @@ lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 
 #Förare
 lblForare = Label(forare, text="Förare i systemet")
-lblForare.grid(column=0, row=0, sticky=N, pady=(80,0), padx=(325,0))
+lblForare.grid(column=0, row=0, sticky=N, pady=(10,0), padx=(10,0))
 lbForare = Listbox(forare, width=48, height=25)
-lbForare.grid(column=0, row=0, padx=(350, 0), pady=(100,0))
+lbForare.grid(column=0, row=1, padx=(10, 0), pady=(10,0))
 lbForare.bind('<<ListboxSelect>>', hamtaReferenser)
 
 lblReferenser = Label(forare, text="Förarens referenser")
-lblReferenser.grid(column=1, row=0, sticky=N, pady=(80,0))
-lbReferenser = Listbox(forare, width=80, height=25)
-lbReferenser.grid(column=1, row=0, padx=(25, 0), pady=(100,0))
+lblReferenser.grid(column=1, row=0, sticky=N, pady=(10,0))
+lbReferenser = Listbox(forare, width=60, height=25)
+lbReferenser.grid(column=1, row=1, padx=(10, 0), pady=(10,0))
 
 entLaggTillForare = Entry(forare, width=32)
-entLaggTillForare.grid(column=0, row=1, padx=(254,0))
+entLaggTillForare.grid(column=0, row=2, padx=(10,0), pady=(10,0), sticky =W)
 btnLaggTillForare = Button(forare, text="Lägg till förare", command = lambda: laggTillForare(entLaggTillForare.get()))
-btnLaggTillForare.grid(column=0, row=1, sticky=E, pady=(5,0))
+btnLaggTillForare.grid(column=0, row=3, sticky=W, pady=(10,0), padx=(10,0))
 btnTaBortForare = Button(forare, text="Ta bort förare", command = lambda: taBortForare())
-btnTaBortForare.grid(column=0, row=2, sticky=E, pady=(5,0))
+btnTaBortForare.grid(column=0, row=3, sticky=E, pady=(10,0), padx=(0, 94))
 
-entLaggTillReferens = Entry(forare, width=62)
-entLaggTillReferens.grid(column=1, row=1, padx=(0,82))
+entLaggTillReferens = Entry(forare, width=60)
+entLaggTillReferens.grid(column=1, row=2, padx=(10,0), pady=(10,0), sticky = W)
 btnLaggTillReferens = Button(forare, text="Lägg till referens", command=lambda: laggTillReferens(entLaggTillReferens.get()))
-btnLaggTillReferens.grid(column=1, row=1, sticky=E, pady=(5,0))
+btnLaggTillReferens.grid(column=1, row=3, sticky=W, pady=(10,0), padx=(10,0))
 btnTaBortReferens = Button(forare, text="Ta bort referens", command=lambda:taBortReferens())
-btnTaBortReferens.grid(column=1, row=2, sticky=E, pady=(5,0))
+btnTaBortReferens.grid(column=1, row=3, sticky=E, pady=(10,0), padx=(0,150))
+
+lblForareDelagareMaskiner = Label(forare, text = "Delägarens maskiner")
+lblForareDelagareMaskiner.grid(row=0, column=2, sticky=W, pady=(10,0), padx=(10,0))
+
+LbForareDelagaresMaskiner = Listbox(forare, width = 60, height = 25, exportselection=0)
+LbForareDelagaresMaskiner.grid(row = 1, column = 2, pady=(10,0), padx=(10,0), sticky=W)
+LbForareDelagaresMaskiner.grid_rowconfigure(1, weight=1)
+LbForareDelagaresMaskiner.grid_columnconfigure(0, weight=1)
+
+btnKopplaMaskin = Button(forare, text ="Koppla förare till maskin", command=lambda: kopplaMaskin())
+btnKopplaMaskin.grid(row=3, column=2, sticky=W, pady=(10,0), padx=(10,0))
+
 
 #Förare - test
 
@@ -2998,6 +3057,7 @@ hamtaForare()
 fyllListboxDelagare()
 hamtaMaskinerFranEntry()
 hamtaForsakring()
+hamtaForareMaskin()
 
 # kör fönstret
 root.mainloop()
