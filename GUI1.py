@@ -8,6 +8,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import PIL
 import mysql.connector
+from tkinter.simpledialog import askstring
 from tkinter import filedialog
 from tkcalendar import DateEntry
 from datetime import datetime,date
@@ -362,6 +363,9 @@ def forsakringPerDelagareFraga(medlemsnummer):
      cursor.execute("SELECT Foretagsnamn, Fornamn, Efternamn FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + "")
      foretag = cursor.fetchone()
      
+     cursor.execute("SELECT forsakringsgivare FROM forsakringsgivare WHERE idforsakringsgivare = 1")
+     forsakringsgivare = cursor.fetchone()
+
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
      c.setFontSize(10)
@@ -371,8 +375,10 @@ def forsakringPerDelagareFraga(medlemsnummer):
 
      #Företag
      c.drawString(71, 620, str(foretag[0]))
-     c.drawString(250, 620, str(foretag[1]))
-     c.drawString(348, 620, str(foretag[2]))
+     if foretag[1] is not None:
+          c.drawString(270, 620, str(foretag[1]))
+     if foretag[1] is not None:
+          c.drawString(348, 620, str(foretag[2]))
      c.drawString(480, 620, str(medlemsnummer))
 
      #Maskiner
@@ -381,20 +387,19 @@ def forsakringPerDelagareFraga(medlemsnummer):
      belopp = 0
      pages = 1
      for i in maskiner:
-          if counter < 22:
-               c.drawString(71, y, "Kol. LF")
-               c.drawString(135, y, str(i[2]))
-               c.drawString(185, y, " - ")
-               c.drawString(193, y, str(i[3]))
+          if counter < 22: 
+               c.drawString(71, y, str(forsakringsgivare[0]))
+               c.setFontSize(7)
+               c.drawString(175, y, str(i[2]))
+               c.drawString(209, y, " - ")
+               c.drawString(215, y, str(i[3]))
+               c.setFontSize(10)
                c.drawString(265, y, str(i[0]))
                if i[1] is not None:
                     if len(i[1]) > 22:
                          c.drawString(295, y, str(i[1]))
                     else:
                          c.drawString(310, y, str(i[1]))
-               else:
-                    c.drawString(310, y, str(i[1]))
-
                if i[5] is not None:
                     if len(i[5]) > 10:
                          c.setFontSize(6)
@@ -402,8 +407,6 @@ def forsakringPerDelagareFraga(medlemsnummer):
                          c.setFontSize(10)
                     else:
                          c.drawString(430, y, str(i[5]))
-               else:
-                    c.drawString(430, y, str(i[5]))
                c.drawString(500, y, str(i[4]))
                y-=25
           elif counter == 22:
@@ -411,19 +414,33 @@ def forsakringPerDelagareFraga(medlemsnummer):
                c.setFontSize(10)
                c.drawString(490, 820, str(datetime.date(datetime.now())))
                c.drawString(71, 620, str(foretag[0]))
-               c.drawString(250, 620, str(foretag[1]))
-               c.drawString(348, 620, str(foretag[2]))
+               if foretag[1] is not None:
+                    c.drawString(270, 620, str(foretag[1]))
+               if foretag[1] is not None:
+                    c.drawString(348, 620, str(foretag[2]))
                c.drawString(480, 620, str(medlemsnummer))
                y = 560
                pages = 2
           elif counter > 22 and counter < 44:
-               c.drawString(71, y, "Kol. LF")
-               c.drawString(135, y, str(i[2]))
-               c.drawString(185, y, " - ")
-               c.drawString(193, y, str(i[3]))
+               c.drawString(71, y, str(forsakringsgivare[0]))
+               c.setFontSize(7)
+               c.drawString(175, y, str(i[2]))
+               c.drawString(209, y, " - ")
+               c.drawString(215, y, str(i[3]))
+               c.setFontSize(10)
                c.drawString(265, y, str(i[0]))
-               c.drawString(310, y, str(i[1]))
-               c.drawString(430, y, str(i[5]))
+               if i[1] is not None:
+                    if len(i[1]) > 22:
+                         c.drawString(295, y, str(i[1]))
+                    else:
+                         c.drawString(310, y, str(i[1]))
+               if i[5] is not None:
+                    if len(i[5]) > 10:
+                         c.setFontSize(6)
+                         c.drawString(430, y, str(i[5]))
+                         c.setFontSize(10)
+                    else:
+                         c.drawString(430, y, str(i[5]))
                c.drawString(500, y, str(i[4]))
                y-=25
           elif counter == 44:
@@ -431,19 +448,33 @@ def forsakringPerDelagareFraga(medlemsnummer):
                c.setFontSize(10)
                c.drawString(490, 820, str(datetime.date(datetime.now())))
                c.drawString(71, 620, str(foretag[0]))
-               c.drawString(250, 620, str(foretag[1]))
-               c.drawString(348, 620, str(foretag[2]))
+               if foretag[1] is not None:
+                    c.drawString(270, 620, str(foretag[1]))
+               if foretag[1] is not None:
+                    c.drawString(348, 620, str(foretag[2]))
                c.drawString(480, 620, str(medlemsnummer))
                y = 560
                pages = 3
           elif counter > 44 and counter < 66:
-               c.drawString(71, y, "Kol. LF")
-               c.drawString(135, y, str(i[2]))
-               c.drawString(185, y, " - ")
-               c.drawString(193, y, str(i[3]))
+               c.drawString(71, y, str(forsakringsgivare[0]))
+               c.setFontSize(7)
+               c.drawString(175, y, str(i[2]))
+               c.drawString(209, y, " - ")
+               c.drawString(215, y, str(i[3]))
+               c.setFontSize(10)
                c.drawString(265, y, str(i[0]))
-               c.drawString(310, y, str(i[1]))
-               c.drawString(430, y, str(i[5]))
+               if i[1] is not None:
+                    if len(i[1]) > 22:
+                         c.drawString(295, y, str(i[1]))
+                    else:
+                         c.drawString(310, y, str(i[1]))
+               if i[5] is not None:
+                    if len(i[5]) > 10:
+                         c.setFontSize(6)
+                         c.drawString(430, y, str(i[5]))
+                         c.setFontSize(10)
+                    else:
+                         c.drawString(430, y, str(i[5]))
                c.drawString(500, y, str(i[4]))
                y-=25
                
@@ -883,7 +914,7 @@ def fyllMaskinInfo(self):
           pass
      
      try:
-          cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
+          cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " order by bildid desc LIMIT 1;")
           img = cursor.fetchone()
           img = Image.open(img[0])  
           img = img.resize((225,200), Image. ANTIALIAS)
@@ -1075,7 +1106,8 @@ def nyMaskinFonster(Typ):
                     try:                        
                          andraMaskin(maskinnummer, True)
                          sparaHistorik(maskinnummer) 
-                         db.commit()                         
+                         db.commit()
+                         fileSave()                         
                          fyllMaskinInfo("empty")
                          nyMaskin.destroy()
                     except Exception:
@@ -1088,6 +1120,7 @@ def nyMaskinFonster(Typ):
                     bytOchNyMaskin()
                     print("nyMaskin Ny")
                     db.commit()
+                    fileSave()
                     hamtaDelagarensMaskiner()                                  
                     nyMaskin.destroy()
                except Exception:
@@ -1098,7 +1131,8 @@ def nyMaskinFonster(Typ):
                print("nyMaskin Ändra")
                try:
                     andraMaskin(Typ, False)
-                    db.commit()                
+                    db.commit()
+                    fileSave()                
                     fyllMaskinInfo("empty")
                     nyMaskin.destroy()
                except Exception:
@@ -1109,7 +1143,7 @@ def nyMaskinFonster(Typ):
     
 
      def bytOchNyMaskin():
-          
+          global maskinnummer
 
           varCbMotorvarmare = cbMaskinmotorvarmare.instate(['selected'])
           varCbKatalysator = cbMaskinkatalysator.instate(['selected'])
@@ -1127,11 +1161,14 @@ def nyMaskinFonster(Typ):
                try:
                     print("Mindre schyssta grejer")
                     cursor.execute("INSERT INTO maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+                    maskinnummer=cursor.lastrowid
                except Exception:
                     traceback.print_exc()
                for x in tillbehorAttLaggaTill:
                     print(x)
                     cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(cursor.lastrowid) + ");" )
+               print(cursor.lastrowid)
+               cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
 
           else:
                try:
@@ -1152,10 +1189,11 @@ def nyMaskinFonster(Typ):
                               cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
                               #db.commit()
                          except Exception:
-                              traceback.print_exc()
+                              traceback.print_exc()                              
                          for x in tillbehorAttLaggaTill:
                               print(x)
                               cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + entMaskinnummermaskininfo.get() + ");")
+                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+maskinnummer+filePath+"', '"+maskinnummer+"');")
                     else:
                          messagebox.showerror(title="Upptaget", message="Maskinnumret är upptaget, var god välj ett.")
                except Exception:
@@ -1168,6 +1206,7 @@ def nyMaskinFonster(Typ):
      def andraMaskin(Typ, byteTillbehor):
           if byteTillbehor is True:
                cursor.execute("Delete from tillbehor where maskinnummer ="+Typ+";")
+               cursor.execute("Delete from bilder where maskinnummer ="+Typ+";")
 
 
           if cbMaskinregummerbara.instate(['selected']) == True:                    
@@ -1242,6 +1281,12 @@ def nyMaskinFonster(Typ):
           for x in tillbehorAttLaggaTill:
                print(x)
                cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + Typ + ");" )
+          
+          if filePath is not None:
+               try:                         
+                    cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+maskinnummer+filePath+"', '"+maskinnummer+"');")
+               except Exception:
+                    traceback.print_exc()    
           
 
      nyMaskin = Toplevel(root)
@@ -1465,18 +1510,26 @@ def nyMaskinFonster(Typ):
      img_Bild.grid(row=15, column=2, columnspan=2, rowspan=6)
 
      def fileDialog():
-
+          global filePath
           global img3
+          global imgNyBild
           filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
+          sparSokVag = filename.rsplit("/", 1)
+          filePath=sparSokVag[1]
           txtSokvag = Text(nyMaskin, width = 20, height=0.1)
           txtSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
           txtSokvag.insert('end', filename)
           nyMaskin.lift()
           imgNyBild = Image.open(filename)  
-          imgNyBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
-          img3 = ImageTk.PhotoImage(imgNyBild)
+          imgFixadBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
+          img3 = ImageTk.PhotoImage(imgFixadBild)
           img_NyBild = Label(nyMaskin, image=img3) 
           img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
+     def fileSave():
+          print("Maskinnummret är: "+str(maskinnummer))
+          imgNyBild.save('pics/'+str(maskinnummer)+filePath)
+     
+     
           
      btnNyBild = Button(nyMaskin, text="Lägg till bild", command= fileDialog)
      btnNyBild.grid(column=2, row=21, sticky=W, padx=(10,0))
@@ -1661,8 +1714,9 @@ def nyMaskinFonster(Typ):
                pass
 
           try:
-               cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
+               cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " order by bildid desc LIMIT 1;")
                img = cursor.fetchone()
+               print(img[0])
                img = Image.open(img[0])  
                img = img.resize((150,145), Image. ANTIALIAS)
                img2 = ImageTk.PhotoImage(img)
@@ -2324,13 +2378,17 @@ def tomDelagareInfo():
 
 def taBortMaskin():
      global maskinnummer, medlemsnummer
-
+     
      response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + str(maskinnummer) + "?")
      if response == 1:  
-          try:     
+          try:  
+               cursor.execute("select sokvag from bilder where maskinnummer ="+maskinnummer+";")
+               listaAvBilder = cursor.fetchall() 
+               cursor.execute("Delete from bilder where maskinnummer ="+maskinnummer+";")   
                cursor.execute("Delete from tillbehor where maskinnummer ="+maskinnummer+";")   
                cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
-               db.commit() 
+               db.commit()
+               taBortBilder(listaAvBilder)
                tomMaskinInfo()
                hamtaDelagarensMaskiner()
                fyllMaskinInfo("franMaskiner")
@@ -2339,7 +2397,13 @@ def taBortMaskin():
                traceback.print_exc()
      else:
           pass
-          
+
+def taBortBilder(listaAvBilder):     
+     for x in listaAvBilder:
+          if os.path.exists(x[0]):
+               os.remove(x[0])
+          else:
+               print("Finns inga bilder")      
 
 def hamtaDelagarensMaskiner():
      global medlemsnummer
@@ -2609,6 +2673,52 @@ def hamtaMaskinerFranEntry():
 
                LbMaskiner.insert("end",s )
                
+def bytForsakring():
+     nyForsakring=askstring("Försakring","Namnet på nya försäkringsgivaren.")
+     print(nyForsakring)
+     if nyForsakring is not None:
+          try:
+               cursor.execute("update forsakringsgivare set forsakringsgivare ='"+nyForsakring+"' where idforsakringsgivare=1")
+               db.commit()
+               hamtaForsakring()
+          except Exception:
+               traceback.print_exc()
+               db.rollback()
+          
+def hamtaForsakring():
+     forsakringsGivare=""
+     try:
+          cursor.execute("select Forsakringsgivare from forsakringsgivare where idforsakringsgivare=1")
+          forsakringsGivare = cursor.fetchone()
+     except Exception:
+          traceback.print_exc()
+     txtNuvarandeForsakring.config(state=NORMAL)
+     txtNuvarandeForsakring.delete(1.0, END)
+     txtNuvarandeForsakring.insert(END, forsakringsGivare[0])
+     txtNuvarandeForsakring.config(state=DISABLED)
+
+def uppdateraForsakring():
+     if denyttStartDatum is None:
+          messagebox.showerror("Felmeddelande", "Du måste ha ett nytt start datum ifyllt.")
+     elif denyttSlutDatum is None:
+          messagebox.showerror("Felmeddelande", "Du måste ha ett nytt slut datum ifyllt.")
+     elif entnyArsPremie is None:
+          messagebox.showerror("Felmeddelande", "Du måste ha en ny årspremie ifylld.")
+     else:
+          response = messagebox.askyesno("Varning!", "Är du säker på att du vill uppdatera all försäkringsinformation? \nDetta kommer uppdatera alla maskiner i maskinregistret.")
+          if response ==1:
+               denyttStartDatum.get_date().strftime('%Y-%m-%d')
+               denyttSlutDatum.get_date().strftime('%Y-%m-%d')
+               entnyArsPremie.get()
+               try:
+                    for result in cursor.execute("set sql_safe_updates=0; update maskinregister set period_start ='"+denyttStartDatum.get_date().strftime('%Y-%m-%d')+"' where forsakring =1; update maskinregister set period_slut ='"+denyttSlutDatum.get_date().strftime('%Y-%m-%d')+"' where forsakring =1; update maskinregister set arsbelopp ='"+entnyArsPremie.get()+"' where forsakring=1; set sql_safe_updates=1;", multi=True):
+                         pass
+                    db.commit()
+               except Exception:
+                    db.rollback()
+                    traceback.print_exc()
+
+
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
@@ -3155,12 +3265,50 @@ btnLaggTillReferensTest.grid(column=1, row=0, sticky=E, pady=(2,0))
 btnTaBortReferensTest = Button(forareTest, text="Ta bort referens", command=lambda:taBortReferens())
 btnTaBortReferensTest.grid(column=1, row=0, sticky=E, pady=(60,0))
 
+#Försäkring
 
+forsakringBytFrame = Frame (forsakring)
+forsakringNyPremieFrame = Frame(forsakring)
 
+forsakringBytFrame.grid(column=0, row=0)
+forsakringNyPremieFrame.grid(column=0, row=1, sticky=W, pady=(150,0), padx=(10,0))
+
+lblNuvarandeForsakring = Label(forsakringBytFrame, text="Nuvarande försäkring: ")
+lblNuvarandeForsakring.grid(column=0, row=0, sticky=W, padx=(10,0), pady=(10,0))
+
+txtNuvarandeForsakring = Text(forsakringBytFrame, height=1, width = 32)
+txtNuvarandeForsakring.grid(column=1, row=0, sticky=W, padx=(10,0), pady=(10,0))
+
+btnBytforsakring = Button(forsakringBytFrame, text="Byt försäkring", command=lambda:bytForsakring())
+btnBytforsakring.grid(column=2, row=0, padx=(10,0), pady=(10,0))
+
+lblnyttStartDatum = Label(forsakringNyPremieFrame, text="Nytt startdatum")
+lblnyttStartDatum.grid(column=0, row=0)
+
+lblnyttSlutDatum = Label(forsakringNyPremieFrame, text="Nytt slutdatum")
+lblnyttSlutDatum.grid(column=1, row=0)
+
+denyttStartDatum = DateEntry(forsakringNyPremieFrame, values = "Text", date_pattern="yyyy-mm-dd" )
+denyttStartDatum.delete(0, END)
+denyttStartDatum.grid(column=0, row=1)
+
+denyttSlutDatum = DateEntry(forsakringNyPremieFrame, values = "Text", date_pattern="yyyy-mm-dd" )
+denyttSlutDatum.delete(0,END)
+denyttSlutDatum.grid(column=1, row=1, padx=(3,0))
+
+lblnyArsPremie = Label(forsakringNyPremieFrame, text="Nya årspremien.")
+lblnyArsPremie.grid(column=0, row=2, pady=(10,0))
+
+entnyArsPremie = Entry(forsakringNyPremieFrame, width=15)
+entnyArsPremie.grid(column=0, row=3, pady=(10,10))
+
+btnUppdateraForsakringsInformation = Button(forsakringNyPremieFrame, text="Uppdatera försäkringsinfot.", command=lambda:uppdateraForsakring())
+btnUppdateraForsakringsInformation.grid(column=0, row=4, pady=(0,10), columnspan=2, sticky=W)
 #Funktioner som körs på uppstart
 hamtaForare()
 fyllListboxDelagare()
 hamtaMaskinerFranEntry()
+hamtaForsakring()
 
 # kör fönstret
 root.mainloop()
