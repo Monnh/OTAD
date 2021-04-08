@@ -2073,14 +2073,17 @@ def tomDelagareInfo():
 
 def taBortMaskin():
      global maskinnummer, medlemsnummer
-
+     
      response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + str(maskinnummer) + "?")
      if response == 1:  
           try:  
+               cursor.execute("select sokvag from bilder where maskinnummer ="+maskinnummer+";")
+               listaAvBilder = cursor.fetchall() 
                cursor.execute("Delete from bilder where maskinnummer ="+maskinnummer+";")   
                cursor.execute("Delete from tillbehor where maskinnummer ="+maskinnummer+";")   
                cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
-               db.commit() 
+               db.commit()
+               taBortBilder(listaAvBilder)
                tomMaskinInfo()
                hamtaDelagarensMaskiner()
                fyllMaskinInfo("franMaskiner")
@@ -2089,7 +2092,13 @@ def taBortMaskin():
                traceback.print_exc()
      else:
           pass
-          
+
+def taBortBilder(listaAvBilder):     
+     for x in listaAvBilder:
+          if os.path.exists(x[0]):
+               os.remove(x[0])
+          else:
+               print("Finns inga bilder")      
 
 def hamtaDelagarensMaskiner():
      global medlemsnummer
