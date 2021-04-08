@@ -8,6 +8,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import PIL
 import mysql.connector
+from tkinter.simpledialog import askstring
 from tkinter import filedialog
 from tkcalendar import DateEntry
 from datetime import datetime,date
@@ -2368,6 +2369,52 @@ def hamtaMaskinerFranEntry():
                       
                LbMaskiner.insert("end",s )
                
+def bytForsakring():
+     nyForsakring=askstring("Försakring","Namnet på nya försäkringsgivaren.")
+     print(nyForsakring)
+     if nyForsakring is not None:
+          try:
+               cursor.execute("update forsakringsgivare set forsakringsgivare ='"+nyForsakring+"' where idforsakringsgivare=1")
+               db.commit()
+               hamtaForsakring()
+          except Exception:
+               traceback.print_exc()
+               db.rollback()
+          
+def hamtaForsakring():
+     forsakringsGivare=""
+     try:
+          cursor.execute("select Forsakringsgivare from forsakringsgivare where idforsakringsgivare=1")
+          forsakringsGivare = cursor.fetchone()
+     except Exception:
+          traceback.print_exc()
+     txtNuvarandeForsakring.config(state=NORMAL)
+     txtNuvarandeForsakring.delete(1.0, END)
+     txtNuvarandeForsakring.insert(END, forsakringsGivare[0])
+     txtNuvarandeForsakring.config(state=DISABLED)
+
+def uppdateraForsakring():
+     if denyttStartDatum is None:
+          messagebox.showerror("Felmeddelande", "Du måste ha ett nytt start datum ifyllt.")
+     elif denyttSlutDatum is None:
+          messagebox.showerror("Felmeddelande", "Du måste ha ett nytt slut datum ifyllt.")
+     elif entnyArsPremie is None:
+          messagebox.showerror("Felmeddelande", "Du måste ha en ny årspremie ifylld.")
+     else:
+          response = messagebox.askyesno("Varning!", "Är du säker på att du vill uppdatera all försäkringsinformation? \nDetta kommer uppdatera alla maskiner i maskinregistret.")
+          if response ==1:
+               denyttStartDatum.get_date().strftime('%Y-%m-%d')
+               denyttSlutDatum.get_date().strftime('%Y-%m-%d')
+               entnyArsPremie.get()
+               try:
+                    for result in cursor.execute("set sql_safe_updates=0; update maskinregister set period_start ='"+denyttStartDatum.get_date().strftime('%Y-%m-%d')+"' where forsakring =1; update maskinregister set period_slut ='"+denyttSlutDatum.get_date().strftime('%Y-%m-%d')+"' where forsakring =1; update maskinregister set arsbelopp ='"+entnyArsPremie.get()+"' where forsakring=1; set sql_safe_updates=1;", multi=True):
+                         pass
+                    db.commit()
+               except Exception:
+                    db.rollback()
+                    traceback.print_exc()
+
+
 
 # skapar en databasanslutning
 db = mysql.connector.connect(
@@ -2907,12 +2954,50 @@ btnLaggTillReferensTest.grid(column=1, row=0, sticky=E, pady=(2,0))
 btnTaBortReferensTest = Button(forareTest, text="Ta bort referens", command=lambda:taBortReferens())
 btnTaBortReferensTest.grid(column=1, row=0, sticky=E, pady=(60,0))
 
+#Försäkring
 
+forsakringBytFrame = Frame (forsakring)
+forsakringNyPremieFrame = Frame(forsakring)
 
+forsakringBytFrame.grid(column=0, row=0)
+forsakringNyPremieFrame.grid(column=0, row=1, sticky=W, pady=(150,0), padx=(10,0))
+
+lblNuvarandeForsakring = Label(forsakringBytFrame, text="Nuvarande försäkring: ")
+lblNuvarandeForsakring.grid(column=0, row=0, sticky=W, padx=(10,0), pady=(10,0))
+
+txtNuvarandeForsakring = Text(forsakringBytFrame, height=1, width = 32)
+txtNuvarandeForsakring.grid(column=1, row=0, sticky=W, padx=(10,0), pady=(10,0))
+
+btnBytforsakring = Button(forsakringBytFrame, text="Byt försäkring", command=lambda:bytForsakring())
+btnBytforsakring.grid(column=2, row=0, padx=(10,0), pady=(10,0))
+
+lblnyttStartDatum = Label(forsakringNyPremieFrame, text="Nytt startdatum")
+lblnyttStartDatum.grid(column=0, row=0)
+
+lblnyttSlutDatum = Label(forsakringNyPremieFrame, text="Nytt slutdatum")
+lblnyttSlutDatum.grid(column=1, row=0)
+
+denyttStartDatum = DateEntry(forsakringNyPremieFrame, values = "Text", date_pattern="yyyy-mm-dd" )
+denyttStartDatum.delete(0, END)
+denyttStartDatum.grid(column=0, row=1)
+
+denyttSlutDatum = DateEntry(forsakringNyPremieFrame, values = "Text", date_pattern="yyyy-mm-dd" )
+denyttSlutDatum.delete(0,END)
+denyttSlutDatum.grid(column=1, row=1, padx=(3,0))
+
+lblnyArsPremie = Label(forsakringNyPremieFrame, text="Nya årspremien.")
+lblnyArsPremie.grid(column=0, row=2, pady=(10,0))
+
+entnyArsPremie = Entry(forsakringNyPremieFrame, width=15)
+entnyArsPremie.grid(column=0, row=3, pady=(10,10))
+
+btnUppdateraForsakringsInformation = Button(forsakringNyPremieFrame, text="Uppdatera försäkringsinfot.", command=lambda:uppdateraForsakring())
+btnUppdateraForsakringsInformation.grid(column=0, row=4, pady=(0,10), columnspan=2, sticky=W)
 #Funktioner som körs på uppstart
 hamtaForare()
 fyllListboxDelagare()
 hamtaMaskinerFranEntry()
+hamtaForsakring()
 
 # kör fönstret
 root.mainloop()
