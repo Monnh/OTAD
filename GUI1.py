@@ -210,6 +210,235 @@ def maskinpresentation():     #behöver lägga till funktion för bilder
      #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
      os.startfile("maskinpresentation - " + maskinnummer + ".pdf" )
 
+def maskininnehav(medlemsnummer):
+
+     cursor.execute("SELECT Maskinnummer, MarkeModell, ME_Klass FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + "")
+     maskiner = cursor.fetchall()
+     maskiner = list(maskiner)
+
+     cursor.execute("SELECT Foretagsnamn FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + "")
+     foretag = cursor.fetchone()
+     
+     packet = io.BytesIO()
+     c = canvas.Canvas(packet, pagesize=letter)
+
+     s = str(medlemsnummer)
+     s+= "  -  " + foretag[0]
+
+     #Delägare
+     c.drawString(75, 641, s)
+
+     #Maskiner
+     y=580
+     counter = 0
+     pages = 1
+     for i in maskiner:
+          counter+=1
+          if counter < 17:
+               c.drawString(75, y, str(i[0]))
+               c.drawString(136, y, str(i[1]))
+               c.drawString(290, y, str(i[2]))
+               c.drawString(342, y, "___________________________")     
+               y-=35
+          elif counter == 17:
+               c.showPage()
+               c.drawString(75, 641, s)
+               y=580
+               pages = 2
+          elif counter > 17 and counter < 34:
+               c.drawString(75, y, str(i[0]))
+               c.drawString(136, y, str(i[1]))
+               c.drawString(290, y, str(i[2]))
+               c.drawString(342, y, "___________________________")     
+               y-=35
+          elif counter == 34:
+               c.showPage()
+               c.drawString(75, 641, s)
+               y=580
+               pages = 3
+          elif counter > 34 and counter < 51:
+               c.drawString(75, y, str(i[0]))
+               c.drawString(136, y, str(i[1]))
+               c.drawString(290, y, str(i[2]))
+               c.drawString(342, y, "___________________________")     
+               y-=35
+          elif counter == 51:
+               c.showPage()
+               c.drawString(75, 641, s)
+               y=580
+               pages = 4
+          elif counter > 51 and counter < 68:
+               c.drawString(75, y, str(i[0]))
+               c.drawString(136, y, str(i[1]))
+               c.drawString(290, y, str(i[2]))
+               c.drawString(342, y, "___________________________")     
+               y-=35
+          elif counter == 68:
+               c.showPage()
+               c.drawString(75, 641, s)
+               y=580
+               pages = 5
+          elif counter > 68 and counter < 85:
+               c.drawString(75, y, str(i[0]))
+               c.drawString(136, y, str(i[1]))
+               c.drawString(290, y, str(i[2]))
+               c.drawString(342, y, "___________________________")     
+               y-=35
+
+
+
+     c.save()
+
+     packet.seek(0)
+     new_pdf = PdfFileReader(packet)
+
+     existing_pdf = PdfFileReader(open("maskininnehav.pdf", "rb"))
+     existing_pdf2 = PdfFileReader(open("maskininnehav.pdf", "rb"))
+     existing_pdf3 = PdfFileReader(open("maskininnehav.pdf", "rb"))
+     existing_pdf4 = PdfFileReader(open("maskininnehav.pdf", "rb"))
+     existing_pdf5 = PdfFileReader(open("maskininnehav.pdf", "rb"))
+     output = PdfFileWriter()
+
+     page = existing_pdf.getPage(0)
+     page.mergePage(new_pdf.getPage(0))
+     output.addPage(page)
+     if pages > 1:
+          page2 = existing_pdf2.getPage(0)
+          page2.mergePage(new_pdf.getPage(1))
+          output.addPage(page2)
+          if pages > 2:
+               page3 = existing_pdf3.getPage(0)
+               page3.mergePage(new_pdf.getPage(2))
+               output.addPage(page3)
+               if pages > 3:
+                    page4 = existing_pdf4.getPage(0)
+                    page4.mergePage(new_pdf.getPage(3))
+                    output.addPage(page4)
+                    if pages > 4:
+                         page5 = existing_pdf5.getPage(0)
+                         page5.mergePage(new_pdf.getPage(4))
+                         output.addPage(page5)
+     outputStream = open( "maskininnehav - " + medlemsnummer + ".pdf", "wb")
+     output.write(outputStream)
+     outputStream.close()
+     os.startfile("maskininnehav - " + medlemsnummer + ".pdf" )
+
+def forsakringPerDelagareFraga(medlemsnummer):
+
+     cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + " and Forsakring = '1'")
+     maskiner = cursor.fetchall()
+     maskiner = list(maskiner)
+
+     cursor.execute("SELECT Foretagsnamn, Fornamn, Efternamn FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + "")
+     foretag = cursor.fetchone()
+     
+     packet = io.BytesIO()
+     c = canvas.Canvas(packet, pagesize=letter)
+     c.setFontSize(10)
+
+     #Datum
+     c.drawString(490, 820, str(datetime.date(datetime.now())))
+
+     #Företag
+     c.drawString(71, 620, str(foretag[0]))
+     c.drawString(250, 620, str(foretag[1]))
+     c.drawString(348, 620, str(foretag[2]))
+     c.drawString(480, 620, str(medlemsnummer))
+
+     #Maskiner
+     y=560
+     counter = 0
+     belopp = 0
+     pages = 1
+     for i in maskiner:
+          if counter < 22:
+               c.drawString(71, y, "Kol. LF")
+               c.drawString(135, y, str(i[2]))
+               c.drawString(185, y, " - ")
+               c.drawString(193, y, str(i[3]))
+               c.drawString(265, y, str(i[0]))
+               c.drawString(310, y, str(i[1]))
+               c.drawString(430, y, str(i[5]))
+               c.drawString(500, y, str(i[4]))
+               y-=25
+          elif counter == 22:
+               c.showPage()
+               c.setFontSize(10)
+               c.drawString(490, 820, str(datetime.date(datetime.now())))
+               c.drawString(71, 620, str(foretag[0]))
+               c.drawString(250, 620, str(foretag[1]))
+               c.drawString(348, 620, str(foretag[2]))
+               c.drawString(480, 620, str(medlemsnummer))
+               y = 560
+               pages = 2
+          elif counter > 22 and counter < 44:
+               c.drawString(71, y, "Kol. LF")
+               c.drawString(135, y, str(i[2]))
+               c.drawString(185, y, " - ")
+               c.drawString(193, y, str(i[3]))
+               c.drawString(265, y, str(i[0]))
+               c.drawString(310, y, str(i[1]))
+               c.drawString(430, y, str(i[5]))
+               c.drawString(500, y, str(i[4]))
+               y-=25
+          elif counter == 44:
+               c.showPage()
+               c.setFontSize(10)
+               c.drawString(490, 820, str(datetime.date(datetime.now())))
+               c.drawString(71, 620, str(foretag[0]))
+               c.drawString(250, 620, str(foretag[1]))
+               c.drawString(348, 620, str(foretag[2]))
+               c.drawString(480, 620, str(medlemsnummer))
+               y = 560
+               pages = 3
+          elif counter > 44 and counter < 66:
+               c.drawString(71, y, "Kol. LF")
+               c.drawString(135, y, str(i[2]))
+               c.drawString(185, y, " - ")
+               c.drawString(193, y, str(i[3]))
+               c.drawString(265, y, str(i[0]))
+               c.drawString(310, y, str(i[1]))
+               c.drawString(430, y, str(i[5]))
+               c.drawString(500, y, str(i[4]))
+               y-=25
+               
+          belopp += i[4]
+          counter += 1
+          if counter == len(maskiner):
+               y-=15
+               c.setFontSize(11)
+               c.drawString(460, y, str("Total:"))
+               c.drawString(500, y, str(belopp))
+               y-=3
+               c.drawString(459, y, "_____________")
+
+
+     c.save()
+
+     packet.seek(0)
+     new_pdf = PdfFileReader(packet)
+
+     existing_pdf = PdfFileReader(open("KollektivforsakringperdelagareFraga.pdf", "rb"))
+     existing_pdf2 = PdfFileReader(open("KollektivforsakringperdelagareFraga.pdf", "rb"))
+     existing_pdf3 = PdfFileReader(open("KollektivforsakringperdelagareFraga.pdf", "rb"))
+     output = PdfFileWriter()
+
+     page = existing_pdf.getPage(0)
+     page.mergePage(new_pdf.getPage(0))
+     output.addPage(page)
+     if pages > 1:
+          page2 = existing_pdf2.getPage(0)
+          page2.mergePage(new_pdf.getPage(1))
+          output.addPage(page2)
+          if pages > 2:
+               page3 = existing_pdf3.getPage(0)
+               page3.mergePage(new_pdf.getPage(2))
+               output.addPage(page3)
+     outputStream = open( "forskaringFraga - " + medlemsnummer + ".pdf", "wb")
+     output.write(outputStream)
+     outputStream.close()
+     os.startfile("forskaringFraga - " + medlemsnummer + ".pdf" )
+
 def fyllMaskinInfo(self):
      global maskinnummer
 
@@ -2482,7 +2711,7 @@ def hamtaDelagare(medlemsnr):
      fyllDelagarInfo(medlemsnummer)
      hamtaDelagarensMaskiner()
 
-def historikFonster():
+def historikFonster(maskinnummer):
 
      historikFonster = Toplevel(root)
 
@@ -2492,7 +2721,7 @@ def historikFonster():
 
      def hamtaHistorik():
 
-          cursor.execute('SELECT Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik')
+          cursor.execute('SELECT Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik WHERE Maskinnummer = ' + str(maskinnummer) + ';')
           result = cursor.fetchall()
           
           count = 0
@@ -2517,7 +2746,6 @@ def historikFonster():
 
           cursor.execute("SELECT historikid FROM historik WHERE Maskinnummer = " + str(maskinnummer) + " and Datum = '" + datum + "'")
           historikid = cursor.fetchone()
-          print(historikid[0])
 
           cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
           db.commit()
@@ -2700,27 +2928,28 @@ def hamtaMaskinerFranEntry():
      result = cursor.fetchall()
      result = list(result)
      LbMaskiner.delete(0, "end")   
-    
+
      for item in result:
           item = list(item)
           if item[1] == None:
                item[1] = ""
           if item[2] == None:
                item[2] = ""
-          
+
           s=""
           s += str(item[0])
+
           if item[1] == "":
                s+= ""
           else:
                s+= " - "
                s+=str(item[1])
           if item[2] == "":
-               s+= ""
+               s+= " "
           else:
                s+= " - "
                s+=str(item[2])
-                      
+
                LbMaskiner.insert("end",s )
                
 
@@ -2728,7 +2957,7 @@ def hamtaMaskinerFranEntry():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "sennaa66",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -2766,6 +2995,13 @@ maskinnummer = ""
 forarid = ""
 
 #skapar textfält och textboxar
+
+BtnMaskinnehav = Button(home, text="Maskininnehav", command = lambda: maskininnehav(medlemsnummer))
+BtnMaskinnehav.grid(row=1, column = 1, sticky=W)
+
+BtnForsakringFraga = Button(home, text="Försäkring (fråga)", command = lambda: forsakringPerDelagareFraga(medlemsnummer))
+BtnForsakringFraga.grid(row=1, column=1, sticky=W, pady=(100,0))
+
 EntMedlemsnummer = Entry(home, width=5, text = "Medlemsnummer") 
 EntMedlemsnummer.grid(row=1, column=1, pady=(50,0), padx=(50,0), sticky=E)
 EntMedlemsnummer.bind("<KeyRelease>", lambda args: hamtaDelagareFranEntry())
@@ -2829,7 +3065,7 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("c:/filer/OTAD/OTAD/1.jpg")  
+img = Image.open("1.jpg")  
 img = img.resize((225,200), Image. ANTIALIAS)
 img2 = ImageTk.PhotoImage(img)
 img_label = Label(frameOvrigText, image=img2)
@@ -3051,7 +3287,7 @@ btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
 btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration())
 btnMiljodeklaration.grid(column=1, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
-btnHistorik=Button(frameMaskininfo, text="Historik", command = lambda: historikFonster())
+btnHistorik=Button(frameMaskininfo, text="Historik", command = lambda: historikFonster(entMaskinnummermaskininfo.get()))
 btnHistorik.grid(column=6, row=0, sticky=W, padx=(10,10))
 
 btnLaggtillmaskin=Button(frameMaskininfo, text="Lägg till ny", command = lambda: nyMaskinFonster("Ny"))
