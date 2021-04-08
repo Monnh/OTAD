@@ -212,7 +212,7 @@ def maskinpresentation():     #behöver lägga till funktion för bilder
 
 def maskininnehav(medlemsnummer):
 
-     cursor.execute("SELECT Maskinnummer, MarkeModell, ME_Klass FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + "")
+     cursor.execute("SELECT Maskinnummer, MarkeModell, ME_Klass, Maskininsats FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + "")
      maskiner = cursor.fetchall()
      maskiner = list(maskiner)
 
@@ -221,13 +221,14 @@ def maskininnehav(medlemsnummer):
      
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
+     
 
      s = str(medlemsnummer)
      s+= "  -  " + foretag[0]
 
      #Delägare
      c.drawString(75, 641, s)
-
+     
      #Maskiner
      y=580
      counter = 0
@@ -235,54 +236,83 @@ def maskininnehav(medlemsnummer):
      for i in maskiner:
           counter+=1
           if counter < 17:
+               c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
-               c.drawString(136, y, str(i[1]))
-               c.drawString(290, y, str(i[2]))
-               c.drawString(342, y, "___________________________")     
+               if i[3] == 1:
+                    c.drawString(136, y, str("Ja"))
+               elif i[3] == 0:
+                    c.drawString(136, y, str("Nej"))
+               c.drawString(178, y, str(i[1]))
+               c.drawString(318, y, str(i[2]))
+               c.drawString(362, y, "_____________________________")     
                y-=35
           elif counter == 17:
                c.showPage()
+               c.setFontSize(12)
                c.drawString(75, 641, s)
                y=580
                pages = 2
           elif counter > 17 and counter < 34:
+               c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
-               c.drawString(136, y, str(i[1]))
-               c.drawString(290, y, str(i[2]))
-               c.drawString(342, y, "___________________________")     
+               if i[3] == 1:
+                    c.drawString(136, y, str("Ja"))
+               elif i[3] == 0:
+                    c.drawString(136, y, str("Nej"))
+               c.drawString(178, y, str(i[1]))
+               c.drawString(318, y, str(i[2]))
+               c.drawString(362, y, "_____________________________")     
                y-=35
           elif counter == 34:
                c.showPage()
+               c.setFontSize(12)
                c.drawString(75, 641, s)
                y=580
                pages = 3
           elif counter > 34 and counter < 51:
+               c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
-               c.drawString(136, y, str(i[1]))
-               c.drawString(290, y, str(i[2]))
-               c.drawString(342, y, "___________________________")     
+               if i[3] == 1:
+                    c.drawString(136, y, str("Ja"))
+               elif i[3] == 0:
+                    c.drawString(136, y, str("Nej"))
+               c.drawString(178, y, str(i[1]))
+               c.drawString(318, y, str(i[2]))
+               c.drawString(362, y, "_____________________________")     
                y-=35
           elif counter == 51:
                c.showPage()
+               c.setFontSize(12)
                c.drawString(75, 641, s)
                y=580
                pages = 4
           elif counter > 51 and counter < 68:
+               c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
-               c.drawString(136, y, str(i[1]))
-               c.drawString(290, y, str(i[2]))
-               c.drawString(342, y, "___________________________")     
+               if i[3] == 1:
+                    c.drawString(136, y, str("Ja"))
+               elif i[3] == 0:
+                    c.drawString(136, y, str("Nej"))
+               c.drawString(178, y, str(i[1]))
+               c.drawString(318, y, str(i[2]))
+               c.drawString(362, y, "_____________________________")     
                y-=35
           elif counter == 68:
                c.showPage()
+               c.setFontSize(12)
                c.drawString(75, 641, s)
                y=580
                pages = 5
           elif counter > 68 and counter < 85:
+               c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
-               c.drawString(136, y, str(i[1]))
-               c.drawString(290, y, str(i[2]))
-               c.drawString(342, y, "___________________________")     
+               if i[3] == 1:
+                    c.drawString(136, y, str("Ja"))
+               elif i[3] == 0:
+                    c.drawString(136, y, str("Nej"))
+               c.drawString(178, y, str(i[1]))
+               c.drawString(318, y, str(i[2]))
+               c.drawString(362, y, "_____________________________")     
                y-=35
 
 
@@ -357,8 +387,23 @@ def forsakringPerDelagareFraga(medlemsnummer):
                c.drawString(185, y, " - ")
                c.drawString(193, y, str(i[3]))
                c.drawString(265, y, str(i[0]))
-               c.drawString(310, y, str(i[1]))
-               c.drawString(430, y, str(i[5]))
+               if i[1] is not None:
+                    if len(i[1]) > 22:
+                         c.drawString(295, y, str(i[1]))
+                    else:
+                         c.drawString(310, y, str(i[1]))
+               else:
+                    c.drawString(310, y, str(i[1]))
+
+               if i[5] is not None:
+                    if len(i[5]) > 10:
+                         c.setFontSize(6)
+                         c.drawString(430, y, str(i[5]))
+                         c.setFontSize(10)
+                    else:
+                         c.drawString(430, y, str(i[5]))
+               else:
+                    c.drawString(430, y, str(i[5]))
                c.drawString(500, y, str(i[4]))
                y-=25
           elif counter == 22:
