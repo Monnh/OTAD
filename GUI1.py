@@ -441,15 +441,19 @@ def forsakringPerDelagareFraga(medlemsnummer):
 
 def fyllMaskinInfo(self):
      global maskinnummer
-
-     selectedMaskin = LbMaskiner.get(LbMaskiner.curselection())
-     index2 = selectedMaskin.index(" ")
-     stringSelectedMaskin = str(selectedMaskin[0:index2])
-     maskinnummer = "".join(stringSelectedMaskin)
-     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+     global medlemsnummer
+     if self == "franDelagare":
+          selectedMaskin = LbMaskiner.get(LbMaskiner.curselection())
+          index2 = selectedMaskin.index(" ")
+          stringSelectedMaskin = str(selectedMaskin[0:index2])
+          maskinnummer = "".join(stringSelectedMaskin)
+     elif self =="franMaskiner":
+          maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
+          maskinnummer = maskinnummer[0]
+          maskinnummer = str(maskinnummer) 
+     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
-     
      medlemsnummer = str(maskinInfo[4])
 
      try:
@@ -626,6 +630,8 @@ def fyllMaskinInfo(self):
                deMaskinperiod2.set_date(maskinInfo[42])
           except:
                pass
+     deMaskinperiod1.delete(0, END)
+     deMaskinperiod2.delete(0, END)
 
      if maskinInfo[7] is not None:
           try:
@@ -710,7 +716,7 @@ def fyllMaskinInfo(self):
      try:
           TxtOvrigtext.config(state=NORMAL)
           TxtOvrigtext.delete(1.0, 'end')
-          TxtOvrigtext.insert(1.0, maskinInfo[41])
+          TxtOvrigtext.insert(END, maskinInfo[41])
           TxtOvrigtext.config(state=DISABLED)
      except Exception:
           TxtOvrigtext.config(state=DISABLED)
@@ -831,6 +837,22 @@ def fyllMaskinInfo(self):
      except:
           pass
      
+     try:
+          cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
+          img = cursor.fetchone()
+          img = Image.open(img[0])  
+          img = img.resize((225,200), Image. ANTIALIAS)
+          img2 = ImageTk.PhotoImage(img)
+          img_label.config(image = img2)
+          img_label.image=img2
+     except Exception:
+          img = Image.open("1.jpg")  
+          img = img.resize((225,200), Image. ANTIALIAS)
+          img2 = ImageTk.PhotoImage(img)
+          img_label.config(image = img2)
+          img_label.image=img2
+          #traceback.print_exc()
+
      cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
      tillbehor = cursor.fetchall()
      
@@ -841,422 +863,20 @@ def fyllMaskinInfo(self):
      else:
           for x in tillbehor:
                lbMaskintillbehor.insert("end", x[0])
+     if self == "franDelagare":
+          cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+          maskiner = cursor.fetchall()
 
-     cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
-     maskiner = cursor.fetchall()
-
-     if LbDelagaresMaskiner.index("end") != 0:
-          LbDelagaresMaskiner.delete(0, "end")
-          for x in maskiner:
-               LbDelagaresMaskiner.insert("end", x)
-     else:
-          for x in maskiner:
-               LbDelagaresMaskiner.insert("end", x)    
+          if LbDelagaresMaskiner.index("end") != 0:
+               LbDelagaresMaskiner.delete(0, "end")
+               for x in maskiner:
+                    LbDelagaresMaskiner.insert("end", x)
+          else:
+               for x in maskiner:
+                    LbDelagaresMaskiner.insert("end", x)    
      
-     fyllDelagarInfo(medlemsnummer)
+          fyllDelagarInfo(medlemsnummer)
      tabControl.select(delagare)
-
-def fyllMaskinInfoIgen(self):
-     global maskinnummer
-     if self != "test":
-          maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
-          maskinnummer = maskinnummer[0]
-          maskinnummer = str(maskinnummer)
-     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
-     maskinInfo = cursor.fetchone()
-     maskinInfo = list(maskinInfo)
-
-     try:
-          entMaskinBatteriantal.config(state=NORMAL)
-          entMaskinBatteriantal.delete(0, 'end')
-          entMaskinBatteriantal.insert(0, maskinInfo[39])
-          entMaskinBatteriantal.config(state=DISABLED)
-     except:
-          entMaskinnummermaskininfo.config(state=DISABLED)
-
-     try:
-          entMaskinnummermaskininfo.config(state=NORMAL)
-          entMaskinnummermaskininfo.delete(0, 'end')
-          entMaskinnummermaskininfo.insert(0, maskinInfo[0])
-          entMaskinnummermaskininfo.config(state=DISABLED)
-     except:
-          entMaskinnummermaskininfo.config(state=DISABLED)
-
-     try:
-          entMaskinbeteckning.config(state=NORMAL)
-          entMaskinbeteckning.delete(0, 'end')
-          entMaskinbeteckning.insert(0, maskinInfo[1])
-          entMaskinbeteckning.config(state=DISABLED)
-     except:
-          entMaskinbeteckning.config(state=DISABLED)
-
-     try:
-          entMaskinme_klass.config(state=NORMAL)
-          entMaskinme_klass.delete(0, 'end')
-          entMaskinme_klass.insert(0, maskinInfo[2])
-          entMaskinme_klass.config(state=DISABLED)
-     except:
-          entMaskinme_klass.config(state=DISABLED)
-     
-     try:
-          entMaskinmotorfabrikat.config(state=NORMAL)
-          entMaskinmotorfabrikat.delete(0, 'end')
-          entMaskinmotorfabrikat.insert(0, maskinInfo[8])
-          entMaskinmotorfabrikat.config(state=DISABLED)
-     except:
-          entMaskinmotorfabrikat.config(state=DISABLED)
-
-     try:
-          entMaskinmotortyp.config(state=NORMAL)
-          entMaskinmotortyp.delete(0, 'end')
-          entMaskinmotortyp.insert(0, maskinInfo[9])
-          entMaskinmotortyp.config(state=DISABLED)
-     except:
-          entMaskinmotortyp.config(state=DISABLED)
-
-     try:
-          entMaskinmotor.config(state=NORMAL)
-          entMaskinmotor.delete(0, 'end')
-          entMaskinmotor.insert(0, maskinInfo[16])
-          entMaskinmotor.config(state=DISABLED)
-     except:
-          entMaskinmotor.config(state=DISABLED)
-     
-     try:
-          entMaskinvaxellada.config(state=NORMAL)
-          entMaskinvaxellada.delete(0, 'end')
-          entMaskinvaxellada.insert(0, maskinInfo[18])
-          entMaskinvaxellada.config(state=DISABLED)
-     except:
-          entMaskinvaxellada.config(state=DISABLED)
-     
-     try:
-          entMaskinhydraulsystem.config(state=NORMAL)
-          entMaskinhydraulsystem.delete(0, 'end')
-          entMaskinhydraulsystem.insert(0, maskinInfo[20])
-          entMaskinhydraulsystem.config(state=DISABLED)
-     except:
-          entMaskinhydraulsystem.config(state=DISABLED)
-     
-     try:
-          entMaskinkylvatska.config(state=NORMAL)
-          entMaskinkylvatska.delete(0, 'end')
-          entMaskinkylvatska.insert(0, maskinInfo[33])
-          entMaskinkylvatska.config(state=DISABLED)
-     except:
-          entMaskinkylvatska.config(state=DISABLED)
-     
-     try:
-          entMaskinmotoreffekt.config(state=NORMAL)
-          entMaskinmotoreffekt.delete(0, 'end')
-          entMaskinmotoreffekt.insert(0, maskinInfo[10])
-          entMaskinmotoreffekt.config(state=DISABLED)
-     except:
-          entMaskinmotoreffekt.config(state=DISABLED)
-
-     try:
-          if maskinInfo[12] == 1:
-               cbMaskinmotorvarmare.state(['selected'])
-               cbMaskinmotorvarmare.state(['disabled'])
-          else:
-               cbMaskinmotorvarmare.state(['!selected'])
-               cbMaskinmotorvarmare.state(['disabled'])
-     except:
-          pass
-
-     try:
-          if maskinInfo[14] == 1:
-               cbMaskinkatalysator.state(['selected'])
-               cbMaskinkatalysator.state(['disabled'])
-          else:
-               cbMaskinkatalysator.state(['!selected'])
-               cbMaskinkatalysator.state(['disabled'])
-     except:
-          pass
-
-     try:
-          if maskinInfo[15] == 1:
-               cbMaskinpartikelfilter.state(['selected'])
-               cbMaskinpartikelfilter.state(['disabled'])
-          else:
-               cbMaskinpartikelfilter.state(['!selected'])
-               cbMaskinpartikelfilter.state(['disabled'])
-     except:
-          pass
-
-     try:
-          if maskinInfo[11] == 1:
-               cbMaskinvattenbaseradlack.state(['selected'])
-               cbMaskinvattenbaseradlack.state(['disabled'])
-          else:
-               cbMaskinvattenbaseradlack.state(['!selected'])
-               cbMaskinvattenbaseradlack.state(['disabled'])
-     except:
-          pass
-
-     try:
-          entMaskinkylmedia.config(state=NORMAL)
-          entMaskinkylmedia.delete(0, 'end')
-          entMaskinkylmedia.insert(0, maskinInfo[13])
-          entMaskinkylmedia.config(state=DISABLED)
-     except:
-          entMaskinkylmedia.config(state=DISABLED)
-
-     try:
-          entMaskinbullernivautv.config(state=NORMAL)
-          entMaskinbullernivautv.delete(0, 'end')
-          entMaskinbullernivautv.insert(0, maskinInfo[29])
-          entMaskinbullernivautv.config(state=DISABLED)
-     except:
-          entMaskinbullernivautv.config(state=DISABLED)
-
-     try:
-          entMaskinbullernivainv.config(state=NORMAL)
-          entMaskinbullernivainv.delete(0, 'end')
-          entMaskinbullernivainv.insert(0, maskinInfo[31])
-          entMaskinbullernivainv.config(state=DISABLED)
-     except:
-          entMaskinbullernivainv.config(state=DISABLED)
-
-     try:
-          entMaskinsmorjfett.config(state=NORMAL)
-          entMaskinsmorjfett.delete(0, 'end')
-          entMaskinsmorjfett.insert(0, maskinInfo[24])
-          entMaskinsmorjfett.config(state=DISABLED)
-     except:
-          entMaskinsmorjfett.config(state=DISABLED)
-     
-     try:
-          entMaskinBatterityp.config(state=NORMAL)
-          entMaskinBatterityp.delete(0, 'end')
-          entMaskinBatterityp.insert(0, maskinInfo[38])
-          entMaskinBatterityp.config(state=DISABLED)
-     except:
-          entMaskinBatterityp.config(state=DISABLED)
-
-     if maskinInfo[7] is not None:
-          try:
-               deMaskinperiod1.set_date(maskinInfo[7])
-               deMaskinperiod2.set_date(maskinInfo[42])
-          except:
-               pass
-
-     deMaskinperiod1.delete(0, END)
-     deMaskinperiod2.delete(0, END)
-
-     if maskinInfo[7] is not None:
-          try:
-               deMaskinperiod1.set_date(maskinInfo[7])
-               deMaskinperiod2.set_date(maskinInfo[42])
-          except:
-               pass
-
-     try:
-          entMaskinarsbelopp.config(state=NORMAL)
-          entMaskinarsbelopp.delete(0, 'end')
-          entMaskinarsbelopp.insert(0, maskinInfo[5])
-          entMaskinarsbelopp.config(state=DISABLED)
-     except:
-          entMaskinarsbelopp.config(state=DISABLED)
-
-     try:
-          entMaskinmiljostatus.config(state=NORMAL)
-          entMaskinmiljostatus.delete(0, 'end')
-          entMaskinmiljostatus.insert(0, maskinInfo[30])
-          entMaskinmiljostatus.config(state=DISABLED)
-     except:
-          entMaskinmiljostatus.config(state=DISABLED)
-
-     try:
-          entMaskinarsmodell.config(state=NORMAL)
-          entMaskinarsmodell.delete(0, 'end')
-          entMaskinarsmodell.insert(0, maskinInfo[6])
-          entMaskinarsmodell.config(state=DISABLED)
-     except:
-          entMaskinarsmodell.config(state=DISABLED)
-
-     try:
-          entMaskinregistreringsnummer.config(state=NORMAL)
-          entMaskinregistreringsnummer.delete(0, 'end')
-          entMaskinregistreringsnummer.insert(0, maskinInfo[26])
-          entMaskinregistreringsnummer.config(state=DISABLED)
-     except:
-          entMaskinregistreringsnummer.config(state=DISABLED)
-
-     try:
-          entMaskintyp.config(state=NORMAL)
-          entMaskintyp.delete(0, 'end')
-          entMaskintyp.insert(0, maskinInfo[27])
-          entMaskintyp.config(state=DISABLED)
-     except:
-          entMaskintyp.config(state=DISABLED)
-
-     try:
-          entMaskinmotoroljevolym.config(state=NORMAL)
-          entMaskinmotoroljevolym.delete(0, 'end')
-          entMaskinmotoroljevolym.insert(0, maskinInfo[17])
-          entMaskinmotoroljevolym.config(state=DISABLED)
-     except:
-          entMaskinmotoroljevolym.config(state=DISABLED)
-
-     try:
-          entMaskinvaxelladevolym.config(state=NORMAL)
-          entMaskinvaxelladevolym.delete(0, 'end')
-          entMaskinvaxelladevolym.insert(0, maskinInfo[19])
-          entMaskinvaxelladevolym.config(state=DISABLED)
-     except:
-          entMaskinvaxelladevolym.config(state=DISABLED)
-
-     try:
-          entMaskinhydraulsystemvolym.config(state=NORMAL)
-          entMaskinhydraulsystemvolym.delete(0, 'end')
-          entMaskinhydraulsystemvolym.insert(0, maskinInfo[21])
-          entMaskinhydraulsystemvolym.config(state=DISABLED)
-     except:
-          entMaskinhydraulsystemvolym.config(state=DISABLED)
-
-     try:
-          entMaskinkylvatskavolym.config(state=NORMAL)
-          entMaskinkylvatskavolym.delete(0, 'end')
-          entMaskinkylvatskavolym.insert(0, maskinInfo[32])
-          entMaskinkylvatskavolym.config(state=DISABLED)
-     except:
-          entMaskinkylvatskavolym.config(state=DISABLED)
-
-     try:
-          TxtOvrigtext.config(state=NORMAL)
-          TxtOvrigtext.delete(1.0, 'end')
-          TxtOvrigtext.insert(END, maskinInfo[41])
-          TxtOvrigtext.config(state=DISABLED)
-     except:
-          TxtOvrigtext.config(state=DISABLED)
-
-     try:
-          entMaskinbransle.config(state=NORMAL)
-          entMaskinbransle.delete(0, 'end')
-          entMaskinbransle.insert(0, maskinInfo[23])
-          entMaskinbransle.config(state=DISABLED)
-     except:
-          entMaskinbransle.config(state=DISABLED)
-
-     try:
-          entMaskindackfabrikat.config(state=NORMAL)
-          entMaskindackfabrikat.delete(0, 'end')
-          entMaskindackfabrikat.insert(0, maskinInfo[25])
-          entMaskindackfabrikat.config(state=DISABLED)
-     except:
-          entMaskindackfabrikat.config(state=DISABLED)
-
-     try:
-          entMaskindimension.config(state=NORMAL)
-          entMaskindimension.delete(0, 'end')
-          entMaskindimension.insert(0, maskinInfo[34])
-          entMaskindimension.config(state=DISABLED)
-     except:
-          entMaskindimension.config(state=DISABLED)
-
-     try:
-          if maskinInfo[37] == 1:
-               cbMaskingasolanlaggning.state(['selected'])
-               cbMaskingasolanlaggning.state(['disabled'])
-          else:
-               cbMaskingasolanlaggning.state(['!selected'])
-               cbMaskingasolanlaggning.state(['disabled'])
-     except:
-          pass
-
-     try:
-          if maskinInfo[22] == 1:
-               cbMaskinSaneringsvatska.state(['selected'])
-               cbMaskinSaneringsvatska.state(['disabled'])
-          else:
-               cbMaskinSaneringsvatska.state(['!selected'])
-               cbMaskinSaneringsvatska.state(['disabled'])
-     except:
-          pass
-
-     forarnamn=""
-     if maskinInfo[40] != None:
-          cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
-          forarnamn = cursor.fetchone()
-
-     try:
-          entMaskinforare.config(state=NORMAL)
-          entMaskinforare.delete(0, 'end')
-          entMaskinforare.insert(0, forarnamn[0])
-          entMaskinforare.config(state=DISABLED)
-     except:
-          pass
-
-     referenser = []     
-     referenser.clear()
-     if maskinInfo[40] != None:
-          cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
-          referenser = cursor.fetchall()
-
-     try:
-          lbMaskinreferens.config(state=NORMAL)
-          if lbMaskinreferens.index("end") != 0:
-               lbMaskinreferens.delete(0, "end")
-               for x in referenser:
-                    lbMaskinreferens.insert("end", x[0])
-          else:
-               for x in referenser:
-                    lbMaskinreferens.insert("end", x[0])
-          lbMaskinreferens.config(state=DISABLED)
-     except:
-          lbMaskinreferens.config(state=DISABLED)
-
-     try:
-          if maskinInfo[28] == 1:
-               cbMaskininsatserlagd.state(['selected'])
-               cbMaskininsatserlagd.state(['disabled'])
-          else:
-               cbMaskininsatserlagd.state(['!selected'])
-               cbMaskininsatserlagd.state(['disabled'])
-     except:
-          pass
-     
-     try:
-          if maskinInfo[36] == 1:
-               cbMaskinregummerade.state(['selected'])
-               cbMaskinregummerade.state(['disabled'])
-          else:
-               cbMaskinregummerade.state(['!selected'])
-               cbMaskinregummerade.state(['disabled'])
-     except:
-          pass
-
-     try:
-          if maskinInfo[35] == 1:
-               cbMaskinregummerbara.state(['selected'])
-               cbMaskinregummerbara.state(['disabled'])
-          else:
-               cbMaskinregummerbara.state(['!selected'])
-               cbMaskinregummerbara.state(['disabled'])
-     except:
-          pass
-
-     try:
-          if maskinInfo[3] == 1:
-               cbMaskinKollektivforsakring.state(['selected'])
-               cbMaskinKollektivforsakring.state(['disabled'])
-          else:
-               cbMaskinKollektivforsakring.state(['!selected'])
-               cbMaskinKollektivforsakring.state(['disabled'])
-     except:
-          pass
-     
-     cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
-     tillbehor = cursor.fetchall()
-     
-     if lbMaskintillbehor.index("end") != 0:
-          lbMaskintillbehor.delete(0, "end")
-          for x in tillbehor:
-               lbMaskintillbehor.insert("end", x[0])
-     else:
-          for x in tillbehor:
-               lbMaskintillbehor.insert("end", x[0])
      
 def nyDelagare(Typ):
      global medlemsnummer
@@ -1411,7 +1031,7 @@ def nyMaskinFonster(Typ):
                          andraMaskin(maskinnummer, True)
                          sparaHistorik(maskinnummer) 
                          db.commit()                         
-                         fyllMaskinInfoIgen("test")
+                         fyllMaskinInfo("empty")
                          nyMaskin.destroy()
                     except Exception:
                          db.rollback()
@@ -1434,62 +1054,29 @@ def nyMaskinFonster(Typ):
                try:
                     andraMaskin(Typ, False)
                     db.commit()                
-                    fyllMaskinInfoIgen("test")
+                    fyllMaskinInfo("empty")
                     nyMaskin.destroy()
                except Exception:
                     db.rollback()
                     traceback.print_exc()
                     print("Kunde inte ändra maskin")
 
-     def rensaMaskin():
-          try:
-               cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + maskinnummer + ";")
-          except:
-               pass         
+    
 
      def bytOchNyMaskin():
           
 
-          varCbMotorvarmare = False
-          varCbKatalysator = False
-          varCbPartikelfilter = False
-          varCbVattenbaseradlack = False
-          varCbKollektivForsakring = False
-          varCbRegummerbara = False
-          varCbRegummerade = False
-          varCbGasolanlaggning = False
-          varCbSaneringsvatska = False
-          varCbMaskininsatserlagd = False
-          
-          if cbMaskinmotorvarmare.instate(['selected']) == True:
-               varCbMotorvarmare = True
+          varCbMotorvarmare = cbMaskinmotorvarmare.instate(['selected'])
+          varCbKatalysator = cbMaskinkatalysator.instate(['selected'])
+          varCbPartikelfilter = cbMaskinpartikelfilter.instate(['selected'])
+          varCbVattenbaseradlack = cbMaskinvattenbaseradlack.instate(['selected'])
+          varCbKollektivForsakring = cbMaskinKollektivforsakring.instate(['selected'])
+          varCbRegummerbara = cbMaskinregummerbara.instate(['selected'])
+          varCbRegummerade = cbMaskinregummerade.instate(['selected'])
+          varCbGasolanlaggning = cbMaskingasolanlaggning.instate(['selected'])
+          varCbSaneringsvatska = cbMaskinSaneringsvatska.instate(['selected'])
+          varCbMaskininsatserlagd = cbMaskininsatserlagd.instate(['selected'])
 
-          if cbMaskinkatalysator.instate(['selected']) == True:
-               varCbKatalysator = True
-
-          if cbMaskinpartikelfilter.instate(['selected']) == True:
-               varCbPartikelfilter = True
-
-          if cbMaskinvattenbaseradlack.instate(['selected']) == True:
-               varCbVattenbaseradlack = True
-
-          if cbMaskinKollektivforsakring.instate(['selected']) == True:
-               varCbKollektivForsakring = True
-
-          if cbMaskinregummerbara.instate(['selected']) == True:
-               varCbRegummerbara = True
-
-          if cbMaskinregummerade.instate(['selected']) == True:
-               varCbRegummerade = True
-
-          if cbMaskingasolanlaggning.instate(['selected']) == True:
-               varCbGasolanlaggning = True
-
-          if cbMaskinSaneringsvatska.instate(['selected']) == True:
-               varCbSaneringsvatska = True
-
-          if cbMaskininsatserlagd.instate(['selected']) == True:
-               varCbMaskininsatserlagd = True
           
           if cbMaskinnummer.instate(['selected']) == True:
                try:
@@ -1828,6 +1415,10 @@ def nyMaskinFonster(Typ):
 
      TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set) 
 
+     #Bild
+     img_Bild = Label(nyMaskin) 
+     img_Bild.grid(row=15, column=2, columnspan=2, rowspan=6)
+
      def fileDialog():
 
           global img3
@@ -2020,9 +1611,24 @@ def nyMaskinFonster(Typ):
                TxtOvrigtext.config(state=NORMAL)
                TxtOvrigtext.delete('1.0', 'end')
                TxtOvrigtext.insert(END, maskinInfo[41])
-               TxtOvrigtext.config(state=DISABLED)
+               #TxtOvrigtext.config(state=DISABLED)
           except:
                pass
+
+          try:
+               cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " LIMIT 1;")
+               img = cursor.fetchone()
+               img = Image.open(img[0])  
+               img = img.resize((150,145), Image. ANTIALIAS)
+               img2 = ImageTk.PhotoImage(img)
+               img_Bild.config(image = img2)
+               img_Bild.image=img2
+          except:
+               img = Image.open("1.jpg")  
+               img = img.resize((150,145), Image. ANTIALIAS)
+               img2 = ImageTk.PhotoImage(img)
+               img_Bild.config(image = img2)
+               img_Bild.image=img2
 
           try:
                entMaskinmotoreffekt.config(state=NORMAL)
@@ -2410,7 +2016,7 @@ def fyllDelagarInfoMedNummer(self):
      except:
           pass
      try:
-          fyllMaskinInfoIgen(maskinnummer)
+          fyllMaskinInfo("franMaskin")
      except:
           pass
      tabControl.select(delagare)
@@ -2675,14 +2281,20 @@ def taBortMaskin():
      global maskinnummer, medlemsnummer
 
      response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + str(maskinnummer) + "?")
-     if response == 1:          
-          cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
-          db.commit() 
-          tomMaskinInfo()
-          hamtaDelagarensMaskiner()
-          fyllMaskinInfoIgen(maskinnummer)
+     if response == 1:  
+          try:     
+               cursor.execute("Delete from tillbehor where maskinnummer ="+maskinnummer+";")   
+               cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
+               db.commit() 
+               tomMaskinInfo()
+               hamtaDelagarensMaskiner()
+               fyllMaskinInfo("franMaskiner")
+          except Exception:
+               db.rollback()
+               traceback.print_exc()
      else:
           pass
+          
 
 def hamtaDelagarensMaskiner():
      global medlemsnummer
@@ -3020,7 +2632,7 @@ LbDelagare.bind('<Double-Button>', fyllDelagarInfoMedNummer)
 
 LbMaskiner = Listbox(home, width = 60, height = 30, exportselection=0)
 LbMaskiner.grid(row = 2, column = 3, columnspan = 2, rowspan = 2, padx=(20,0), pady=(5,0))
-LbMaskiner.bind('<Double-Button>', fyllMaskinInfo)
+LbMaskiner.bind('<Double-Button>', lambda x=None: fyllMaskinInfo("franDelagare"))
 
 ScbDelagare = Scrollbar(home, orient="vertical")
 ScbDelagare.grid(row = 2, column = 2, sticky = N+S+E, rowspan = 2, pady=(10,0))
@@ -3052,7 +2664,7 @@ LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45, height = 12, exportsele
 LbDelagaresMaskiner.grid(row = 1, column = 0)
 LbDelagaresMaskiner.grid_rowconfigure(1, weight=1)
 LbDelagaresMaskiner.grid_columnconfigure(0, weight=1)
-LbDelagaresMaskiner.bind('<<ListboxSelect>>', fyllMaskinInfoIgen)
+LbDelagaresMaskiner.bind('<<ListboxSelect>>', lambda x=None: fyllMaskinInfo("franMaskiner"))
 
 lblDelagareMaskiner = Label(frameMaskiner, text = "Delägarens maskiner")
 lblDelagareMaskiner.grid(row=0, column=0, sticky=NW)
@@ -3065,11 +2677,9 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img = Image.open("1.jpg")  
-img = img.resize((225,200), Image. ANTIALIAS)
-img2 = ImageTk.PhotoImage(img)
-img_label = Label(frameOvrigText, image=img2)
+img_label = Label(frameOvrigText)
 img_label.grid(row=0, column=0, sticky = NW)
+
 
 #Delägareinfo
 
