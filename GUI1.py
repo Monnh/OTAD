@@ -524,7 +524,7 @@ def forsakringPerDelagare():
      cursor.execute("SELECT forsakringsgivare FROM forsakringsgivare WHERE idforsakringsgivare = 1")
      forsakringsgivare = cursor.fetchone()
      
-     cursor.execute("SELECT Maskinnummer FROM maskinregister")
+     cursor.execute("SELECT Maskinnummer FROM maskinregister where Forsakring = '1'")
      totaltMaskiner = cursor.fetchall()
      totaltMaskiner = list(totaltMaskiner)
 
@@ -537,7 +537,7 @@ def forsakringPerDelagare():
      
 
      for i in medlemmar:
-          cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + str(i[0]) +"")
+          cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + str(i[0]) + " and Forsakring = '1';")
           maskiner = cursor.fetchall()
           maskiner = list(maskiner)
 
@@ -718,7 +718,7 @@ def forsakringPerDelagare():
                          c.showPage()
 
           if totalCounter == len(totaltMaskiner):
-
+               
                c.drawString(150, 350, "Totalt: ")
                c.drawString(185, 350, str(belopp))
                pages+=1
