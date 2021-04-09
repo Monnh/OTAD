@@ -2568,14 +2568,7 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-<<<<<<< HEAD
 img_label = Label(frameOvrigText)
-=======
-img = Image.open("1.jpg")  
-img = img.resize((225,200), Image. ANTIALIAS)
-img2 = ImageTk.PhotoImage(img)
-img_label = Label(frameOvrigText, image=img2)
->>>>>>> 479a82fff1002857cb784808c56fda355875d1a0
 img_label.grid(row=0, column=0, sticky = NW)
 
 
@@ -2962,7 +2955,7 @@ lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 #Förare
 lblForare = Label(forare, text="Förare i systemet")
 lblForare.grid(column=0, row=0, sticky=N, pady=(10,0), padx=(10,0))
-lbForare = Listbox(forare, width=48, height=25)
+lbForare = Listbox(forare, width=48, height=25, exportselection=0)
 lbForare.grid(column=0, row=1, padx=(10, 0), pady=(10,0))
 lbForare.bind('<<ListboxSelect>>', hamtaReferenser)
 
