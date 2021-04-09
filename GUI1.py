@@ -2691,9 +2691,12 @@ def historikFonster(maskinnummer):
           cursor.execute("SELECT historikid FROM historik WHERE Maskinnummer = " + str(maskinnummer) + " and Datum = '" + datum + "'")
           historikid = cursor.fetchone()
 
-          cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
-          db.commit()
-          
+          try:
+               cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
+               db.commit()
+          except Exception:
+               traceback.print_exc()
+               db.rollback()
      
      LbHistorik = ttk.Treeview(historikFonster)
      LbHistorik.grid(row=1, column=1, padx=(10,0), pady=(10,0))
@@ -2994,7 +2997,7 @@ def kopplaMaskin():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
