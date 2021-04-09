@@ -2987,13 +2987,13 @@ forarid = ""
 #skapar textfält och textboxar
 
 BtnMaskinnehav = Button(home, text="Maskininnehav", command = lambda: maskininnehav(medlemsnummer))
-BtnMaskinnehav.grid(row=1, column = 1, sticky=W)
+BtnMaskinnehav.grid(row=3, column = 5)
 
 BtnForsakringFraga = Button(home, text="Försäkring (fråga)", command = lambda: forsakringPerDelagareFraga(medlemsnummer))
-BtnForsakringFraga.grid(row=1, column=1, sticky=W, pady=(100,0))
+BtnForsakringFraga.grid(row=3, column=5, pady=(100,0))
 
 BtnForsakringLista = Button(home, text="Försäkringar", command = lambda: forsakringPerDelagare())
-BtnForsakringLista.grid(row=1, column=1, sticky=W, pady=(200,0))
+BtnForsakringLista.grid(row=3, column=5, pady=(200,0))
 
 EntMedlemsnummer = Entry(home, width=5, text = "Medlemsnummer") 
 EntMedlemsnummer.grid(row=1, column=1, pady=(50,0), padx=(50,0), sticky=E)
