@@ -22,6 +22,7 @@ imgNyBild = None
 def clickButton():
      pass
 
+#funktion som skapar rapporten miljödeklaration
 def miljodeklaration():
      global maskinnummer
 
@@ -32,7 +33,6 @@ def miljodeklaration():
      cursor.execute('SELECT Fornamn, Efternamn, Foretagsnamn, Gatuadress, Postnummer, Postadress FROM foretagsregister WHERE Medlemsnummer = ' + str(maskinInfo[4]) + ';')
      delagarInfoLista = cursor.fetchone()
      delagarInfoLista = list(delagarInfoLista)
-
 
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
@@ -125,7 +125,7 @@ def miljodeklaration():
      outputStream.close()
      os.startfile("miljödeklaration - " + str(maskinnummer) + ".pdf" )
 
-def maskinpresentation():     #behöver lägga till funktion för bilder
+def maskinpresentation():     
      global maskinnummer
 
      cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forarid FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
@@ -739,6 +739,7 @@ def forsakringPerDelagare():
                
      os.startfile("forskaring-test.pdf")
 
+#funktion som fyller delägarfönstret med data om maskinen
 def fyllMaskinInfo(self):
      global maskinnummer
      global medlemsnummer
@@ -2766,7 +2767,6 @@ def hamtaForare():
           s+=" "
           s+= str(item[1])
           lbForare.insert("end", s) 
-          lbForareTest.insert("end", s)
 
 def hamtaReferenser(self):
      global forarid
@@ -2781,20 +2781,6 @@ def hamtaReferenser(self):
           
      for item in referenser:                              
           lbReferenser.insert("end", item[0])
-
-def hamtaReferenserTest(self):
-     global forarid
-     
-     selectedForare = lbForareTest.get(lbForareTest.curselection())
-     indexSpace = selectedForare.index(" ")
-     stringSelectedForare = str(selectedForare[0:indexSpace])
-     forarid = "".join(stringSelectedForare)
-     cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
-     referenser = cursor.fetchall()
-     lbReferenserTest.delete(0, 'end')
-          
-     for item in referenser:                              
-          lbReferenserTest.insert("end", item[0])
 
 def laggTillForare(forare):
      
@@ -3000,7 +2986,7 @@ def kopplaMaskin():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -3017,16 +3003,12 @@ tabControl = ttk.Notebook(root)
 home = ttk.Frame(tabControl)
 delagare = ttk.Frame(tabControl)
 forare = ttk.Frame(tabControl)
-forareTest = ttk.Frame(tabControl)
 forsakring = ttk.Frame(tabControl)
-rapporter = ttk.Frame(tabControl)
 installningar = ttk.Frame(tabControl)
 tabControl.add(home, text='Home')
 tabControl.add(delagare, text='Delägare')
 tabControl.add(forare, text="Förare")
-tabControl.add(forareTest, text="FörareTest")
 tabControl.add(forsakring, text='Försäkringar')
-tabControl.add(rapporter, text='Rapporter')
 tabControl.add(installningar, text='Inställningar')
 tabControl.grid(column=0, row=0)
 
@@ -3532,30 +3514,6 @@ LbForareDelagaresMaskiner.grid_columnconfigure(0, weight=1)
 
 btnKopplaMaskin = Button(forare, text ="Koppla förare till maskin", command=lambda: kopplaMaskin())
 btnKopplaMaskin.grid(row=3, column=2, sticky=W, pady=(10,0), padx=(10,0))
-
-
-#Förare - test
-
-lbForareTest = Listbox(forareTest, width=30, height=15)
-lbForareTest.grid(column=0, row=0, pady=(5,0),padx=(5,0), sticky=W)
-lbForareTest.bind('<<ListboxSelect>>', hamtaReferenserTest)
-
-lbReferenserTest = Listbox(forareTest, width=80, height=6)
-lbReferenserTest.grid(column=1, row=0, pady=(5,0), sticky=N)
-
-entLaggTillForareTest = Entry(forareTest, width=32)
-entLaggTillForareTest.grid(column=0, row=1, padx=(5,0), sticky=W)
-btnLaggTillForareTest = Button(forareTest, text="Lägg till förare", command = lambda: laggTillForare(entLaggTillForareTest.get()))
-btnLaggTillForareTest.grid(column=0, row=1, pady=(5,0), sticky=E)
-btnTaBortForareTest = Button(forareTest, text="Ta bort förare", command = lambda: taBortForare())
-btnTaBortForareTest.grid(column=0, row=2, pady=(5,0), sticky=E)
-
-entLaggTillReferensTest = Entry(forareTest, width=62)
-entLaggTillReferensTest.grid(column=1, row=0, sticky=W)
-btnLaggTillReferensTest = Button(forareTest, text="Lägg till referens", command=lambda: laggTillReferens(entLaggTillReferensTest.get()))
-btnLaggTillReferensTest.grid(column=1, row=0, sticky=E, pady=(2,0))
-btnTaBortReferensTest = Button(forareTest, text="Ta bort referens", command=lambda:taBortReferens())
-btnTaBortReferensTest.grid(column=1, row=0, sticky=E, pady=(60,0))
 
 #Försäkring
 
