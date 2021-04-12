@@ -1390,11 +1390,12 @@ def nyMaskinFonster(Typ):
                except Exception:
                     traceback.print_exc()
                for x in tillbehorAttLaggaTill:
-                    print(x)
-                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(cursor.lastrowid) + ");" )
-               print(cursor.lastrowid)
-               cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
-
+                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(maskinnummer) + ");" )
+               if filePath is not None:
+                    try:
+                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
+                    except:
+                         pass
           else:
                try:
                     maskinnummerFinns = False
