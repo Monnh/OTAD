@@ -16,7 +16,8 @@ import os
 import traceback
 
 #funktioner
-
+filePath = None
+imgNyBild = None
 
 def clickButton():
      pass
@@ -1320,7 +1321,7 @@ def taBortDelagare():
           pass
 
 def nyMaskinFonster(Typ):
-
+     global filePath
      def sparaMaskin(Typ):
           if Typ=="Byt":
                nyMaskin.lift()
@@ -1427,6 +1428,7 @@ def nyMaskinFonster(Typ):
 
 
      def andraMaskin(Typ, byteTillbehor):
+          global filePath
           if byteTillbehor is True:
                cursor.execute("Delete from tillbehor where maskinnummer ="+Typ+";")
                cursor.execute("Delete from bilder where maskinnummer ="+Typ+";")
@@ -1750,7 +1752,8 @@ def nyMaskinFonster(Typ):
           img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
      def fileSave():
           print("Maskinnummret är: "+str(maskinnummer))
-          imgNyBild.save('pics/'+str(maskinnummer)+filePath)
+          if imgNyBild is not None:
+               imgNyBild.save('pics/'+str(maskinnummer)+filePath)
      
      
           
@@ -2691,9 +2694,12 @@ def historikFonster(maskinnummer):
           cursor.execute("SELECT historikid FROM historik WHERE Maskinnummer = " + str(maskinnummer) + " and Datum = '" + datum + "'")
           historikid = cursor.fetchone()
 
-          cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
-          db.commit()
-          
+          try:
+               cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
+               db.commit()
+          except Exception:
+               traceback.print_exc()
+               db.rollback()
      
      LbHistorik = ttk.Treeview(historikFonster)
      LbHistorik.grid(row=1, column=1, padx=(10,0), pady=(10,0))
@@ -2994,7 +3000,7 @@ def kopplaMaskin():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -3030,6 +3036,7 @@ tabControl.grid(column=0, row=0)
 medlemsnummer = ""
 maskinnummer = ""
 forarid = ""
+
 
 #skapar textfält och textboxar
 
