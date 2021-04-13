@@ -2907,11 +2907,12 @@ def hamtaForare():
 #Fyller lbReferenser och EntKoppladMaskin
 def hamtaReferenser(self):
      global forarid
-     
+
      selectedForare = lbForare.get(lbForare.curselection())
      indexSpace = selectedForare.index(" ")
      stringSelectedForare = str(selectedForare[0:indexSpace])
      forarid = "".join(stringSelectedForare)
+
      cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
      referenser = cursor.fetchall()
      cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = " +forarid +" LIMIT 1;")
@@ -2972,6 +2973,8 @@ def taBortForare():
           cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +forarid +";")
           cursor.execute("DELETE FROM forare WHERE forarid = '"+ forarid +"'")
           db.commit()
+          refreshKoppladMaskin(forarid)
+          lbReferenser.delete(0,END)
      except Exception:
           traceback.print_exc()
           db.rollback()
