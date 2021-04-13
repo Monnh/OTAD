@@ -140,13 +140,18 @@ def maskinpresentation():
      tillbehor = cursor.fetchall()
      tillbehor = list(tillbehor)
 
-     cursor.execute('select namn from forare where forarid ='+ str(maskinInfo[6])+';')
-     forarnamn = cursor.fetchone()
-     forarnamn = list(forarnamn)
+     if maskinInfo[6] is not None:
+          cursor.execute('select namn from forare where forarid = '+ str(maskinInfo[6])+';')
+          forarnamn = cursor.fetchone()
+          forarnamn = list(forarnamn)
 
-     cursor.execute('SELECT Beskrivning FROM referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
-     referenser = cursor.fetchall()
-     referenser = list(referenser)
+          cursor.execute('SELECT Beskrivning FROM referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
+          referenser = cursor.fetchall()
+          referenser = list(referenser)
+
+     else:
+          forarnamn=[""]
+          referenser=[("")]
 
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
@@ -191,8 +196,9 @@ def maskinpresentation():
      c.drawString(140, 518, str(rad3))
      c.drawString(140, 498, str(rad4))
      c.drawString(140, 478, str(rad5))
-     c.drawString(152, 112, str(referenser[0][0]))
-     c.drawString(152, 86, str(referenser[1][0]))
+     if maskinInfo[6] is not None:
+          c.drawString(152, 112, str(referenser[0][0]))
+          c.drawString(152, 86, str(referenser[1][0]))
 
      c.save()
 
