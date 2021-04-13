@@ -140,13 +140,24 @@ def maskinpresentation():
      tillbehor = cursor.fetchall()
      tillbehor = list(tillbehor)
 
+<<<<<<< HEAD
      cursor.execute('select namn from forare where forarid = '+ str(maskinInfo[6])+';')
      forarnamn = cursor.fetchone()
      forarnamn = list(forarnamn)
+=======
+     if maskinInfo[6] is not None:
+          cursor.execute('select namn from forare where forarid = '+ str(maskinInfo[6])+';')
+          forarnamn = cursor.fetchone()
+          forarnamn = list(forarnamn)
+>>>>>>> main
 
-     cursor.execute('SELECT Beskrivning FROM referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
-     referenser = cursor.fetchall()
-     referenser = list(referenser)
+          cursor.execute('SELECT Beskrivning FROM referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
+          referenser = cursor.fetchall()
+          referenser = list(referenser)
+
+     else:
+          forarnamn=[""]
+          referenser=[("")]
 
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
@@ -191,8 +202,9 @@ def maskinpresentation():
      c.drawString(140, 518, str(rad3))
      c.drawString(140, 498, str(rad4))
      c.drawString(140, 478, str(rad5))
-     c.drawString(152, 112, str(referenser[0][0]))
-     c.drawString(152, 86, str(referenser[1][0]))
+     if maskinInfo[6] is not None:
+          c.drawString(152, 112, str(referenser[0][0]))
+          c.drawString(152, 86, str(referenser[1][0]))
 
      c.save()
 
@@ -1390,11 +1402,12 @@ def nyMaskinFonster(Typ):
                except Exception:
                     traceback.print_exc()
                for x in tillbehorAttLaggaTill:
-                    print(x)
-                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(cursor.lastrowid) + ");" )
-               print(cursor.lastrowid)
-               cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
-
+                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(maskinnummer) + ");" )
+               if filePath is not None:
+                    try:
+                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
+                    except:
+                         pass
           else:
                try:
                     maskinnummerFinns = False
