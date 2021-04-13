@@ -2967,8 +2967,14 @@ def taBortForare():
      indexSpace = selectedForare.index(" ")
      stringSelectedForare = str(selectedForare[0:indexSpace])
      forarid = "".join(stringSelectedForare)
-     cursor.execute("DELETE FROM forare WHERE forarid = '"+ forarid +"'")
-     db.commit()
+     try:
+          cursor.execute("Delete from referens where forarid='"+forarid+"'")
+          cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +forarid +";")
+          cursor.execute("DELETE FROM forare WHERE forarid = '"+ forarid +"'")
+          db.commit()
+     except Exception:
+          traceback.print_exc()
+          db.rollback()
      hamtaForare()
 
 def hamtaDelagareFranEntry():
