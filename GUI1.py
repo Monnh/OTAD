@@ -2789,8 +2789,12 @@ def hamtaReferenser(self):
      lbReferenser.delete(0, 'end')
      entKoppladMaskin.config(state=NORMAL)
      entKoppladMaskin.delete(0, 'end')
-     entKoppladMaskin.insert(0, koppladMaskin[0])
+
+     if koppladMaskin is not None:
+          entKoppladMaskin.insert(0, koppladMaskin[0])
+     
      entKoppladMaskin.config(state=DISABLED)
+     
 
      for item in referenser:                              
           lbReferenser.insert("end", item[0])
@@ -2987,12 +2991,41 @@ def kopplaMaskin():
      stringmaskinid = str(maskinid[0:index3])
      maskinidString = "".join(stringmaskinid)
      print("Maskinid: " +maskinidString)
+
+     def queryKopplaMaskin():
+          try:
+               cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
+               cursor.execute("UPDATE maskinregister SET Forarid =" +foraridString + " WHERE Maskinnummer =" +maskinidString +";")
+               db.commit()
+          except Exception:
+               traceback.print_exc()
+               db.rollback()
+
+     cursor.execute("SELECT Forarid FROM maskinregister WHERE Maskinnummer = " +maskinidString +";")
+     x=cursor.fetchone()
+     if x[0] is not None:
+          response = messagebox.askyesno("Varning!", "Det finns redan en förare registrerad på maskin nummer "+maskinidString +" \nVill du fortsätta ändå?")
+          if response ==1:
+               queryKopplaMaskin()
+          else: 
+            pass   
+     else:
+          queryKopplaMaskin()
+
+def kopplaBortMaskin():
+     forarid = lbForare.get(lbForare.curselection())
+     index2 = forarid.index(" ")
+     stringforarid = str(forarid[0:index2])
+     foraridString = "".join(stringforarid)
+     print("Forarid: " +foraridString)
+
      try:
-          cursor.execute("UPDATE maskinregister SET Forarid =" +foraridString + " WHERE Maskinnummer =" +maskinidString +";")
+          cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
           db.commit()
      except Exception:
           traceback.print_exc()
           db.rollback()
+
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
@@ -3525,6 +3558,9 @@ LbForareDelagaresMaskiner.grid_columnconfigure(0, weight=1)
 
 btnKopplaMaskin = Button(forare, text ="Koppla förare till maskin", command=lambda: kopplaMaskin())
 btnKopplaMaskin.grid(row=3, column=2, sticky=W, pady=(10,0), padx=(10,0))
+
+btnKopplaBortMaskin = Button(forare, text="Koppla bort förare från maskin", command=lambda: kopplaBortMaskin())
+btnKopplaBortMaskin.grid(row=1, column=3, sticky=NW, pady=(38,0), padx=(10,0))
 
 lblKoppladMaskin = Label(forare, text ="Markerad förare är kopplad till maskin:")
 lblKoppladMaskin.grid(row=0, column=3, pady=(10,0), padx=(10,0))
