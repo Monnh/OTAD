@@ -113,7 +113,7 @@ def miljodeklaration():
      packet.seek(0)
      new_pdf = PdfFileReader(packet)
 
-     existing_pdf = PdfFileReader(open("miljödeklaration.pdf", "rb"))
+     existing_pdf = PdfFileReader(open("Miljödeklaration.pdf", "rb"))
      output = PdfFileWriter()
 
      page = existing_pdf.getPage(0)
@@ -140,6 +140,9 @@ def maskinpresentation():
      tillbehor = cursor.fetchall()
      tillbehor = list(tillbehor)
 
+     cursor.execute('SELECT sokvag FROM bilder WHERE Maskinnummer = ' + maskinnummer + ' order by bildid desc LIMIT 1;')
+     bild = cursor.fetchone()
+
      if maskinInfo[6] is not None:
           cursor.execute('select namn from forare where forarid = '+ str(maskinInfo[6])+';')
           forarnamn = cursor.fetchone()
@@ -162,7 +165,8 @@ def maskinpresentation():
      rad5=""
      y=1
 
-     c.drawImage("1.jpg", 72, 134, 450, 340)
+     if bild is not None:
+          c.drawImage(bild[0], 72, 134, 450, 340)
      c.drawString(133, 710, str(maskinInfo[0])) 
      c.drawString(455, 690, str(maskinInfo[1]))
      c.drawString(455, 670, str(maskinInfo[2]))
@@ -213,7 +217,7 @@ def maskinpresentation():
      packet.seek(0)
      new_pdf = PdfFileReader(packet)
 
-     existing_pdf = PdfFileReader(open("maskinpresentation.pdf", "rb"))
+     existing_pdf = PdfFileReader(open("Maskinpresentation.pdf", "rb"))
      output = PdfFileWriter()
 
      page = existing_pdf.getPage(0)
@@ -406,7 +410,7 @@ def maskininnehav(medlemsnummer):
      output = PdfFileWriter()
 
      for x in range(pages):
-          existing_pdf = PdfFileReader(open("maskininnehav.pdf", "rb"))
+          existing_pdf = PdfFileReader(open("Maskininnehav.pdf", "rb"))
           page = existing_pdf.getPage(0)
           page.mergePage(new_pdf.getPage(x))
           output.addPage(page)
@@ -3168,7 +3172,7 @@ def refreshKoppladMaskin(forarId):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
