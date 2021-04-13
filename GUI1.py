@@ -2774,7 +2774,7 @@ def hamtaForare():
           s+=" "
           s+= str(item[1])
           lbForare.insert("end", s) 
-
+#Fyller lbReferenser och EntKoppladMaskin
 def hamtaReferenser(self):
      global forarid
      
@@ -2784,8 +2784,14 @@ def hamtaReferenser(self):
      forarid = "".join(stringSelectedForare)
      cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
      referenser = cursor.fetchall()
+     cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = " +forarid +" LIMIT 1;")
+     koppladMaskin = cursor.fetchone()
      lbReferenser.delete(0, 'end')
-          
+     entKoppladMaskin.config(state=NORMAL)
+     entKoppladMaskin.delete(0, 'end')
+     entKoppladMaskin.insert(0, koppladMaskin[0])
+     entKoppladMaskin.config(state=DISABLED)
+
      for item in referenser:                              
           lbReferenser.insert("end", item[0])
 
@@ -2987,8 +2993,6 @@ def kopplaMaskin():
      except Exception:
           traceback.print_exc()
           db.rollback()
-
-
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
@@ -3497,7 +3501,7 @@ lblReferenser.grid(column=1, row=0, sticky=N, pady=(10,0))
 lbReferenser = Listbox(forare, width=60, height=25)
 lbReferenser.grid(column=1, row=1, padx=(10, 0), pady=(10,0))
 
-entLaggTillForare = Entry(forare, width=32)
+entLaggTillForare = Entry(forare, width=48)
 entLaggTillForare.grid(column=0, row=2, padx=(10,0), pady=(10,0), sticky =W)
 btnLaggTillForare = Button(forare, text="Lägg till förare", command = lambda: laggTillForare(entLaggTillForare.get()))
 btnLaggTillForare.grid(column=0, row=3, sticky=W, pady=(10,0), padx=(10,0))
@@ -3521,6 +3525,11 @@ LbForareDelagaresMaskiner.grid_columnconfigure(0, weight=1)
 
 btnKopplaMaskin = Button(forare, text ="Koppla förare till maskin", command=lambda: kopplaMaskin())
 btnKopplaMaskin.grid(row=3, column=2, sticky=W, pady=(10,0), padx=(10,0))
+
+lblKoppladMaskin = Label(forare, text ="Markerad förare är kopplad till maskin:")
+lblKoppladMaskin.grid(row=0, column=3, pady=(10,0), padx=(10,0))
+entKoppladMaskin = Entry(forare, width = 5)
+entKoppladMaskin.grid(row=1, column=3, pady=(10,0), padx=(10,0), sticky=NW)
 
 #Försäkring
 
