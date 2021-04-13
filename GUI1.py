@@ -120,10 +120,10 @@ def miljodeklaration():
      page.mergePage(new_pdf.getPage(0))
      output.addPage(page)
 
-     outputStream = open( "miljödeklaration - " + str(maskinnummer) + ".pdf", "wb")
+     outputStream = open( "Miljödeklaration - " + str(maskinnummer) + ".pdf", "wb")
      output.write(outputStream)
      outputStream.close()
-     os.startfile("miljödeklaration - " + str(maskinnummer) + ".pdf" )
+     os.startfile("Miljödeklaration - " + str(maskinnummer) + ".pdf" )
 
 def maskinpresentation():     
      global maskinnummer
@@ -140,24 +140,18 @@ def maskinpresentation():
      tillbehor = cursor.fetchall()
      tillbehor = list(tillbehor)
 
-<<<<<<< HEAD
-     cursor.execute('select namn from forare where forarid = '+ str(maskinInfo[6])+';')
-     forarnamn = cursor.fetchone()
-     forarnamn = list(forarnamn)
-=======
      if maskinInfo[6] is not None:
           cursor.execute('select namn from forare where forarid = '+ str(maskinInfo[6])+';')
           forarnamn = cursor.fetchone()
           forarnamn = list(forarnamn)
->>>>>>> main
 
           cursor.execute('SELECT Beskrivning FROM referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
           referenser = cursor.fetchall()
           referenser = list(referenser)
 
      else:
-          forarnamn=[""]
-          referenser=[("")]
+          forarnamn = None
+          referenser = None
 
      packet = io.BytesIO()
      c = canvas.Canvas(packet, pagesize=letter)
@@ -168,19 +162,27 @@ def maskinpresentation():
      rad5=""
      y=1
 
-     c.drawImage("1.jpg", 72, 132, 450, 340)
+     c.drawImage("1.jpg", 72, 134, 450, 340)
      c.drawString(133, 710, str(maskinInfo[0])) 
      c.drawString(455, 690, str(maskinInfo[1]))
      c.drawString(455, 670, str(maskinInfo[2]))
      c.drawString(455, 650, str(maskinInfo[3]))
      c.drawString(455, 630, str(maskinInfo[4]))
      c.drawString(455, 610, str(maskinInfo[5]))
-     c.drawString(133, 670, str(forarnamn[0]))
+     if forarnamn is not None:
+          c.drawString(133, 670, str(forarnamn[0]))
      c.drawString(133, 690, str(foretag[0]))
      c.drawString(467, 710, str(maskinnummer))
+     
+     counter = 0
      for x in tillbehor:
+          counter +=1
           s = x[0]
-          s+=", "
+          if(counter == len(tillbehor)):
+               s+=""
+          else:
+               s+=", "
+               
           if y>12:
                rad5+=s
           elif y>9:
@@ -194,15 +196,15 @@ def maskinpresentation():
                rad2+=s
           else:
                y+=1
-               rad1+=s         
+               rad1+=s      
 
-
+     
      c.drawString(140, 558, str(rad1))
      c.drawString(140, 538, str(rad2))
      c.drawString(140, 518, str(rad3))
      c.drawString(140, 498, str(rad4))
      c.drawString(140, 478, str(rad5))
-     if maskinInfo[6] is not None:
+     if referenser is not None and len(referenser) != 0:
           c.drawString(152, 112, str(referenser[0][0]))
           c.drawString(152, 86, str(referenser[1][0]))
 
@@ -218,11 +220,11 @@ def maskinpresentation():
      page.mergePage(new_pdf.getPage(0))
      output.addPage(page)
      #Fixa i framtiden så att man kan använda sig av custom paths (till servern) för att spara dokumenten på andra ställen.
-     outputStream = open( "maskinpresentation - " + maskinnummer + ".pdf", "wb")
+     outputStream = open( "Maskinpresentation - " + maskinnummer + ".pdf", "wb")
      output.write(outputStream)
      outputStream.close()
      #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
-     os.startfile("maskinpresentation - " + maskinnummer + ".pdf" )
+     os.startfile("Maskinpresentation - " + maskinnummer + ".pdf" )
 
 def maskininnehav(medlemsnummer):
 
@@ -247,8 +249,9 @@ def maskininnehav(medlemsnummer):
      y=580
      counter = 0
      pages = 1
+
      for i in maskiner:
-          counter+=1
+
           if counter < 17:
                c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
@@ -256,16 +259,21 @@ def maskininnehav(medlemsnummer):
                     c.drawString(136, y, str("Ja"))
                elif i[3] == 0:
                     c.drawString(136, y, str("Nej"))
-               c.drawString(178, y, str(i[1]))
-               c.drawString(318, y, str(i[2]))
+               if i[1] is not None:
+                    c.drawString(178, y, str(i[1]))
+               if i[2] is not None:
+                    c.drawString(318, y, str(i[2]))
                c.drawString(362, y, "_____________________________")     
                y-=35
+          
           elif counter == 17:
-               c.showPage()
-               c.setFontSize(12)
-               c.drawString(75, 641, s)
-               y=580
-               pages = 2
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(12)
+                    c.drawString(75, 641, s)
+                    y=580
+                    pages += 1
+
           elif counter > 17 and counter < 34:
                c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
@@ -273,16 +281,21 @@ def maskininnehav(medlemsnummer):
                     c.drawString(136, y, str("Ja"))
                elif i[3] == 0:
                     c.drawString(136, y, str("Nej"))
-               c.drawString(178, y, str(i[1]))
-               c.drawString(318, y, str(i[2]))
+               if i[1] is not None:
+                    c.drawString(178, y, str(i[1]))
+               if i[2] is not None:
+                    c.drawString(318, y, str(i[2]))
                c.drawString(362, y, "_____________________________")     
                y-=35
+          
           elif counter == 34:
-               c.showPage()
-               c.setFontSize(12)
-               c.drawString(75, 641, s)
-               y=580
-               pages = 3
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(12)
+                    c.drawString(75, 641, s)
+                    y=580
+                    pages += 1
+
           elif counter > 34 and counter < 51:
                c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
@@ -290,16 +303,21 @@ def maskininnehav(medlemsnummer):
                     c.drawString(136, y, str("Ja"))
                elif i[3] == 0:
                     c.drawString(136, y, str("Nej"))
-               c.drawString(178, y, str(i[1]))
-               c.drawString(318, y, str(i[2]))
+               if i[1] is not None:
+                    c.drawString(178, y, str(i[1]))
+               if i[2] is not None:
+                    c.drawString(318, y, str(i[2]))
                c.drawString(362, y, "_____________________________")     
                y-=35
+
           elif counter == 51:
-               c.showPage()
-               c.setFontSize(12)
-               c.drawString(75, 641, s)
-               y=580
-               pages = 4
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(12)
+                    c.drawString(75, 641, s)
+                    y=580
+                    pages += 1
+
           elif counter > 51 and counter < 68:
                c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
@@ -307,16 +325,21 @@ def maskininnehav(medlemsnummer):
                     c.drawString(136, y, str("Ja"))
                elif i[3] == 0:
                     c.drawString(136, y, str("Nej"))
-               c.drawString(178, y, str(i[1]))
-               c.drawString(318, y, str(i[2]))
+               if i[1] is not None:
+                    c.drawString(178, y, str(i[1]))
+               if i[2] is not None:
+                    c.drawString(318, y, str(i[2]))
                c.drawString(362, y, "_____________________________")     
                y-=35
+
           elif counter == 68:
-               c.showPage()
-               c.setFontSize(12)
-               c.drawString(75, 641, s)
-               y=580
-               pages = 5
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(12)
+                    c.drawString(75, 641, s)
+                    y=580
+                    pages += 1
+          
           elif counter > 68 and counter < 85:
                c.setFontSize(10)
                c.drawString(75, y, str(i[0]))
@@ -324,48 +347,74 @@ def maskininnehav(medlemsnummer):
                     c.drawString(136, y, str("Ja"))
                elif i[3] == 0:
                     c.drawString(136, y, str("Nej"))
-               c.drawString(178, y, str(i[1]))
-               c.drawString(318, y, str(i[2]))
+               if i[1] is not None:
+                    c.drawString(178, y, str(i[1]))
+               if i[2] is not None:
+                    c.drawString(318, y, str(i[2]))
                c.drawString(362, y, "_____________________________")     
                y-=35
 
+          elif counter == 85:
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(12)
+                    c.drawString(75, 641, s)
+                    y=580
+                    pages += 1
 
+          elif counter > 85 and counter < 102:
+               c.setFontSize(10)
+               c.drawString(75, y, str(i[0]))
+               if i[3] == 1:
+                    c.drawString(136, y, str("Ja"))
+               elif i[3] == 0:
+                    c.drawString(136, y, str("Nej"))
+               if i[1] is not None:
+                    c.drawString(178, y, str(i[1]))
+               if i[2] is not None:
+                    c.drawString(318, y, str(i[2]))
+               c.drawString(362, y, "_____________________________")     
+               y-=35
+
+          elif counter == 102:
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(12)
+                    c.drawString(75, 641, s)
+                    y=580
+                    pages += 1
+
+          elif counter > 102 and counter < 119:
+               c.setFontSize(10)
+               c.drawString(75, y, str(i[0]))
+               if i[3] == 1:
+                    c.drawString(136, y, str("Ja"))
+               elif i[3] == 0:
+                    c.drawString(136, y, str("Nej"))
+               if i[1] is not None:
+                    c.drawString(178, y, str(i[1]))
+               if i[2] is not None:
+                    c.drawString(318, y, str(i[2]))
+               c.drawString(362, y, "_____________________________")     
+               y-=35
+
+          counter+=1
 
      c.save()
-
      packet.seek(0)
      new_pdf = PdfFileReader(packet)
-
-     existing_pdf = PdfFileReader(open("maskininnehav.pdf", "rb"))
-     existing_pdf2 = PdfFileReader(open("maskininnehav.pdf", "rb"))
-     existing_pdf3 = PdfFileReader(open("maskininnehav.pdf", "rb"))
-     existing_pdf4 = PdfFileReader(open("maskininnehav.pdf", "rb"))
-     existing_pdf5 = PdfFileReader(open("maskininnehav.pdf", "rb"))
      output = PdfFileWriter()
 
-     page = existing_pdf.getPage(0)
-     page.mergePage(new_pdf.getPage(0))
-     output.addPage(page)
-     if pages > 1:
-          page2 = existing_pdf2.getPage(0)
-          page2.mergePage(new_pdf.getPage(1))
-          output.addPage(page2)
-          if pages > 2:
-               page3 = existing_pdf3.getPage(0)
-               page3.mergePage(new_pdf.getPage(2))
-               output.addPage(page3)
-               if pages > 3:
-                    page4 = existing_pdf4.getPage(0)
-                    page4.mergePage(new_pdf.getPage(3))
-                    output.addPage(page4)
-                    if pages > 4:
-                         page5 = existing_pdf5.getPage(0)
-                         page5.mergePage(new_pdf.getPage(4))
-                         output.addPage(page5)
-     outputStream = open( "maskininnehav - " + medlemsnummer + ".pdf", "wb")
-     output.write(outputStream)
-     outputStream.close()
-     os.startfile("maskininnehav - " + medlemsnummer + ".pdf" )
+     for x in range(pages):
+          existing_pdf = PdfFileReader(open("maskininnehav.pdf", "rb"))
+          page = existing_pdf.getPage(0)
+          page.mergePage(new_pdf.getPage(x))
+          output.addPage(page)
+          outputStream = open( "Maskininnehav - " + medlemsnummer + ".pdf", "wb")
+          output.write(outputStream)
+          outputStream.close()
+     
+     os.startfile("Maskininnehav - " + medlemsnummer + ".pdf" )
 
 def forsakringPerDelagareFraga(medlemsnummer):
 
@@ -399,7 +448,9 @@ def forsakringPerDelagareFraga(medlemsnummer):
      counter = 0
      belopp = 0
      pages = 1
+
      for i in maskiner:
+
           if counter < 22: 
                c.drawString(71, y, str(forsakringsgivare[0]))
                c.setFontSize(7)
@@ -422,18 +473,21 @@ def forsakringPerDelagareFraga(medlemsnummer):
                          c.drawString(430, y, str(i[5]))
                c.drawString(500, y, str(i[4]))
                y-=25
+
           elif counter == 22:
-               c.showPage()
-               c.setFontSize(10)
-               c.drawString(490, 820, str(datetime.date(datetime.now())))
-               c.drawString(71, 620, str(foretag[0]))
-               if foretag[1] is not None:
-                    c.drawString(270, 620, str(foretag[1]))
-               if foretag[1] is not None:
-                    c.drawString(348, 620, str(foretag[2]))
-               c.drawString(480, 620, str(medlemsnummer))
-               y = 560
-               pages = 2
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(10)
+                    c.drawString(490, 820, str(datetime.date(datetime.now())))
+                    c.drawString(71, 620, str(foretag[0]))
+                    if foretag[1] is not None:
+                         c.drawString(270, 620, str(foretag[1]))
+                    if foretag[1] is not None:
+                         c.drawString(348, 620, str(foretag[2]))
+                    c.drawString(480, 620, str(medlemsnummer))
+                    y = 560
+                    pages += 1
+
           elif counter > 22 and counter < 44:
                c.drawString(71, y, str(forsakringsgivare[0]))
                c.setFontSize(7)
@@ -456,18 +510,21 @@ def forsakringPerDelagareFraga(medlemsnummer):
                          c.drawString(430, y, str(i[5]))
                c.drawString(500, y, str(i[4]))
                y-=25
+
           elif counter == 44:
-               c.showPage()
-               c.setFontSize(10)
-               c.drawString(490, 820, str(datetime.date(datetime.now())))
-               c.drawString(71, 620, str(foretag[0]))
-               if foretag[1] is not None:
-                    c.drawString(270, 620, str(foretag[1]))
-               if foretag[1] is not None:
-                    c.drawString(348, 620, str(foretag[2]))
-               c.drawString(480, 620, str(medlemsnummer))
-               y = 560
-               pages = 3
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(10)
+                    c.drawString(490, 820, str(datetime.date(datetime.now())))
+                    c.drawString(71, 620, str(foretag[0]))
+                    if foretag[1] is not None:
+                         c.drawString(270, 620, str(foretag[1]))
+                    if foretag[1] is not None:
+                         c.drawString(348, 620, str(foretag[2]))
+                    c.drawString(480, 620, str(medlemsnummer))
+                    y = 560
+                    pages += 1
+
           elif counter > 44 and counter < 66:
                c.drawString(71, y, str(forsakringsgivare[0]))
                c.setFontSize(7)
@@ -490,11 +547,89 @@ def forsakringPerDelagareFraga(medlemsnummer):
                          c.drawString(430, y, str(i[5]))
                c.drawString(500, y, str(i[4]))
                y-=25
+
+          elif counter == 66:
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(10)
+                    c.drawString(490, 820, str(datetime.date(datetime.now())))
+                    c.drawString(71, 620, str(foretag[0]))
+                    if foretag[1] is not None:
+                         c.drawString(270, 620, str(foretag[1]))
+                    if foretag[1] is not None:
+                         c.drawString(348, 620, str(foretag[2]))
+                    c.drawString(480, 620, str(medlemsnummer))
+                    y = 560
+                    pages += 1
+
+          elif counter > 66 and counter < 88:
+               c.drawString(71, y, str(forsakringsgivare[0]))
+               c.setFontSize(7)
+               c.drawString(175, y, str(i[2]))
+               c.drawString(209, y, " - ")
+               c.drawString(215, y, str(i[3]))
+               c.setFontSize(10)
+               c.drawString(265, y, str(i[0]))
+               if i[1] is not None:
+                    if len(i[1]) > 22:
+                         c.drawString(295, y, str(i[1]))
+                    else:
+                         c.drawString(310, y, str(i[1]))
+               if i[5] is not None:
+                    if len(i[5]) > 10:
+                         c.setFontSize(6)
+                         c.drawString(430, y, str(i[5]))
+                         c.setFontSize(10)
+                    else:
+                         c.drawString(430, y, str(i[5]))
+               c.drawString(500, y, str(i[4]))
+               y-=25
                
+          elif counter == 88:
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.setFontSize(10)
+                    c.drawString(490, 820, str(datetime.date(datetime.now())))
+                    c.drawString(71, 620, str(foretag[0]))
+                    if foretag[1] is not None:
+                         c.drawString(270, 620, str(foretag[1]))
+                    if foretag[1] is not None:
+                         c.drawString(348, 620, str(foretag[2]))
+                    c.drawString(480, 620, str(medlemsnummer))
+                    y = 560
+                    pages += 1
+
+          elif counter > 88 and counter < 110:
+               c.drawString(71, y, str(forsakringsgivare[0]))
+               c.setFontSize(7)
+               c.drawString(175, y, str(i[2]))
+               c.drawString(209, y, " - ")
+               c.drawString(215, y, str(i[3]))
+               c.setFontSize(10)
+               c.drawString(265, y, str(i[0]))
+               if i[1] is not None:
+                    if len(i[1]) > 22:
+                         c.drawString(295, y, str(i[1]))
+                    else:
+                         c.drawString(310, y, str(i[1]))
+               if i[5] is not None:
+                    if len(i[5]) > 10:
+                         c.setFontSize(6)
+                         c.drawString(430, y, str(i[5]))
+                         c.setFontSize(10)
+                    else:
+                         c.drawString(430, y, str(i[5]))
+               c.drawString(500, y, str(i[4]))
+               y-=25
+
+
           belopp += i[4]
           counter += 1
           if counter == len(maskiner):
-               y-=15
+               if counter == 22 or counter == 44 or counter == 66 or counter == 88 or counter == 110:
+                    y-=2
+               else:
+                    y-=15
                c.setFontSize(11)
                c.drawString(460, y, str("Total:"))
                c.drawString(500, y, str(belopp))
@@ -503,30 +638,19 @@ def forsakringPerDelagareFraga(medlemsnummer):
 
 
      c.save()
-
      packet.seek(0)
      new_pdf = PdfFileReader(packet)
-
-     existing_pdf = PdfFileReader(open("KollektivforsakringperdelagareFraga.pdf", "rb"))
-     existing_pdf2 = PdfFileReader(open("KollektivforsakringperdelagareFraga.pdf", "rb"))
-     existing_pdf3 = PdfFileReader(open("KollektivforsakringperdelagareFraga.pdf", "rb"))
      output = PdfFileWriter()
-
-     page = existing_pdf.getPage(0)
-     page.mergePage(new_pdf.getPage(0))
-     output.addPage(page)
-     if pages > 1:
-          page2 = existing_pdf2.getPage(0)
-          page2.mergePage(new_pdf.getPage(1))
-          output.addPage(page2)
-          if pages > 2:
-               page3 = existing_pdf3.getPage(0)
-               page3.mergePage(new_pdf.getPage(2))
-               output.addPage(page3)
-     outputStream = open( "forskaringFraga - " + medlemsnummer + ".pdf", "wb")
-     output.write(outputStream)
-     outputStream.close()
-     os.startfile("forskaringFraga - " + medlemsnummer + ".pdf" )
+     for x in range(pages):
+          existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
+          page = existing_pdf.getPage(0)
+          page.mergePage(new_pdf.getPage(x))
+          output.addPage(page)
+          outputStream = open( "Kollektivförsäkring - " + medlemsnummer + ".pdf", "wb")
+          output.write(outputStream)
+          outputStream.close()
+     
+     os.startfile("Kollektivförsäkring - " + medlemsnummer + ".pdf" )
 
 def forsakringPerDelagare():
 
@@ -741,15 +865,15 @@ def forsakringPerDelagare():
                output = PdfFileWriter()
 
                for x in range(pages):
-                    existing_pdf = PdfFileReader(open("KollektivforsakringperdelagareFraga.pdf", "rb"))
+                    existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
                     page = existing_pdf.getPage(0)
                     page.mergePage(new_pdf.getPage(x))
                     output.addPage(page)
-                    outputStream = open( "forskaring-test.pdf", "wb")
+                    outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
                     output.write(outputStream)
                     outputStream.close()
                
-     os.startfile("forskaring-test.pdf")
+     os.startfile("AllaFörsäkradeMaskiner.pdf")
 
 #funktion som fyller delägarfönstret med data om maskinen
 def fyllMaskinInfo(self):
