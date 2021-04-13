@@ -140,7 +140,7 @@ def maskinpresentation():
      tillbehor = cursor.fetchall()
      tillbehor = list(tillbehor)
 
-     cursor.execute('select namn from forare where forarid ='+ str(maskinInfo[6])+';')
+     cursor.execute('select namn from forare where forarid = '+ str(maskinInfo[6])+';')
      forarnamn = cursor.fetchone()
      forarnamn = list(forarnamn)
 
@@ -2986,7 +2986,7 @@ def kopplaMaskin():
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "sennaa66",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
