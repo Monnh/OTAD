@@ -2787,13 +2787,7 @@ def hamtaReferenser(self):
      cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = " +forarid +" LIMIT 1;")
      koppladMaskin = cursor.fetchone()
      lbReferenser.delete(0, 'end')
-     entKoppladMaskin.config(state=NORMAL)
-     entKoppladMaskin.delete(0, 'end')
-
-     if koppladMaskin is not None:
-          entKoppladMaskin.insert(0, koppladMaskin[0])
-     
-     entKoppladMaskin.config(state=DISABLED)
+     refreshKoppladMaskin(forarid)
      
 
      for item in referenser:                              
@@ -2992,11 +2986,14 @@ def kopplaMaskin():
      maskinidString = "".join(stringmaskinid)
      print("Maskinid: " +maskinidString)
 
+     
+
      def queryKopplaMaskin():
           try:
                cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
                cursor.execute("UPDATE maskinregister SET Forarid =" +foraridString + " WHERE Maskinnummer =" +maskinidString +";")
                db.commit()
+               refreshKoppladMaskin(foraridString)
           except Exception:
                traceback.print_exc()
                db.rollback()
@@ -3022,15 +3019,26 @@ def kopplaBortMaskin():
      try:
           cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
           db.commit()
+          refreshKoppladMaskin(foraridString)
      except Exception:
           traceback.print_exc()
           db.rollback()
 
+def refreshKoppladMaskin(forarId):
+     cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = " +forarId +" LIMIT 1;")
+     koppladMaskin = cursor.fetchone()
+     entKoppladMaskin.config(state=NORMAL)
+     entKoppladMaskin.delete(0, 'end')
+
+     if koppladMaskin is not None:
+          entKoppladMaskin.insert(0, koppladMaskin[0])
+     
+     entKoppladMaskin.config(state=DISABLED)
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "sennaa66",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
