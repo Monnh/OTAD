@@ -3267,15 +3267,19 @@ def hamtaMaskinerFranEntry():
                
 def bytForsakring():
      nyForsakring=askstring("Försakring","Namnet på nya försäkringsgivaren.")
-     print(nyForsakring)
-     if nyForsakring is not None:
-          try:
-               cursor.execute("update forsakringsgivare set forsakringsgivare ='"+nyForsakring+"' where idforsakringsgivare=1")
-               db.commit()
-               hamtaForsakring()
-          except Exception:
-               traceback.print_exc()
-               db.rollback()
+     if len(nyForsakring)!=0:
+
+          print(nyForsakring)
+          if nyForsakring is not None:
+               try:
+                    cursor.execute("update forsakringsgivare set forsakringsgivare ='"+nyForsakring+"' where idforsakringsgivare=1")
+                    db.commit()
+                    hamtaForsakring()
+               except Exception:
+                    traceback.print_exc()
+                    db.rollback()
+     else:
+          messagebox.showerror(title="Ej godkännt försäkringsnamn.", message="Du måste skriva i ett giltigt försäkringsnamn.")
           
 def hamtaForsakring():
      forsakringsGivare=""
@@ -3410,7 +3414,7 @@ def refreshKoppladMaskin(forarId):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
