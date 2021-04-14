@@ -3266,11 +3266,12 @@ def hamtaForsakring():
      txtNuvarandeForsakring.config(state=DISABLED)
 
 def uppdateraForsakring():
-     if denyttStartDatum is None:
+     print(denyttStartDatum.get())
+     if len(denyttStartDatum.get())==0:
           messagebox.showerror("Felmeddelande", "Du måste ha ett nytt start datum ifyllt.")
-     elif denyttSlutDatum is None:
+     elif len(denyttSlutDatum.get())==0:
           messagebox.showerror("Felmeddelande", "Du måste ha ett nytt slut datum ifyllt.")
-     elif entnyArsPremie is None:
+     elif len(entnyArsPremie.get()) ==0:
           messagebox.showerror("Felmeddelande", "Du måste ha en ny årspremie ifylld.")
      else:
           response = messagebox.askyesno("Varning!", "Är du säker på att du vill uppdatera all försäkringsinformation? \nDetta kommer uppdatera alla maskiner i maskinregistret.")
