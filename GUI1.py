@@ -1054,6 +1054,11 @@ def fyllMaskinInfo(self):
           maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
           maskinnummer = maskinnummer[0]
           maskinnummer = str(maskinnummer) 
+     elif self =="endastDelagare":
+          LbDelagaresMaskiner.selection_set(0)
+          maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
+          maskinnummer = maskinnummer[0]
+          maskinnummer = str(maskinnummer) 
      cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
@@ -2642,12 +2647,10 @@ def fyllDelagarInfoMedNummer(self):
      fyllDelagarInfo(medlemsnummer)
      try:
           hamtaDelagarensMaskiner()
-     except:
-          pass
-     try:
-          fyllMaskinInfo("franMaskin")
-     except:
-          pass
+          fyllMaskinInfo("endastDelagare")
+     except Exception:
+          traceback.print_exc()
+
      tabControl.select(delagare)
 
 def fyllDelagarInfo(medlemsnummer):
@@ -2670,7 +2673,7 @@ def fyllDelagarInfo(medlemsnummer):
           txtForetag.insert('end', delagarInfo[1])
           txtForetag.config(state=DISABLED)
      except:
-          pass
+          txtForetag.config(state=DISABLED)
      
      try:
           txtFornamn.config(state=NORMAL)
@@ -2678,7 +2681,7 @@ def fyllDelagarInfo(medlemsnummer):
           txtFornamn.insert('end', delagarInfo[2])
           txtFornamn.config(state=DISABLED)
      except:
-          pass
+          txtFornamn.config(state=DISABLED)
      
      try:
           txtEfternamn.config(state=NORMAL)
@@ -2686,7 +2689,7 @@ def fyllDelagarInfo(medlemsnummer):
           txtEfternamn.insert('end', delagarInfo[3])
           txtEfternamn.config(state=DISABLED)
      except:
-          pass
+          txtEfternamn.config(state=DISABLED)
      
      try:
           txtAdress.config(state=NORMAL)
@@ -2694,7 +2697,7 @@ def fyllDelagarInfo(medlemsnummer):
           txtAdress.insert('end', delagarInfo[4])
           txtAdress.config(state=DISABLED)
      except:
-          pass
+          txtAdress.config(state=DISABLED)
      
      try:
           txtPostnummer.config(state=NORMAL)
@@ -2702,7 +2705,7 @@ def fyllDelagarInfo(medlemsnummer):
           txtPostnummer.insert('end', delagarInfo[5])
           txtPostnummer.config(state=DISABLED)
      except:
-          pass
+          txtPostnummer.config(state=DISABLED)
      
      try:
           txtPostadress.config(state=NORMAL)
@@ -2710,7 +2713,7 @@ def fyllDelagarInfo(medlemsnummer):
           txtPostadress.insert('end', delagarInfo[6])
           txtPostadress.config(state=DISABLED)
      except:
-          pass
+          txtPostadress.config(state=DISABLED)
      
      try:
           txtTelefon.config(state=NORMAL)
@@ -2718,7 +2721,7 @@ def fyllDelagarInfo(medlemsnummer):
           txtTelefon.insert('end', delagarInfo[7])
           txtTelefon.config(state=DISABLED)
      except:
-          pass
+          txtTelefon.config(state=DISABLED)
 
 def tomMaskinInfo():
      
@@ -2947,11 +2950,8 @@ def hamtaDelagarensMaskiner():
                LbDelagaresMaskiner.insert("end", x)
      else:
           for x in maskiner:
-               LbDelagaresMaskiner.insert("end", x)   
-     LbDelagaresMaskiner.selection_set(0)
-     maskinnummer = LbDelagaresMaskiner.get(0)
-     maskinnummer = maskinnummer[0]
-     maskinnummer = str(maskinnummer)
+               LbDelagaresMaskiner.insert("end", x)  
+     fyllMaskinInfo("endastDelagare")
      
 def hamtaDelagare(medlemsnr):
      global medlemsnummer
@@ -3343,7 +3343,7 @@ def refreshKoppladMaskin(forarId):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -3451,7 +3451,10 @@ ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Maskinbild
-img_label = Label(frameOvrigText)
+img = Image.open("1.jpg")  
+img = img.resize((225,200), Image. ANTIALIAS)
+img4 = ImageTk.PhotoImage(img)
+img_label = Label(frameOvrigText, image=img4)
 img_label.grid(row=0, column=0, sticky = NW)
 
 
