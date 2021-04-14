@@ -2061,6 +2061,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           lblOvrigtext.grid(column=2, row=9, sticky = W, padx=(10,0))
           TxtOvrigtext = Text(nyMaskin, width = 32, height=3)
           TxtOvrigtext.grid(row=10, column=2, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,15))
+          TxtOvrigtext.config(state=DISABLED)
 
           #Scrollbar
           ScbTxtOvrigText = Scrollbar(nyMaskin, orient="vertical")
@@ -3824,6 +3825,7 @@ lblOvrigtext = Label(frameMaskininfo, text="Övrig text")
 lblOvrigtext.grid(column=2, row=9, sticky=W, padx=(10,0))
 TxtOvrigtext = Text(frameMaskininfo, width = 20, height=4)
 TxtOvrigtext.grid(row=10, column=2, columnspan=2, rowspan=3, sticky=NSEW, padx=(10,15))
+TxtOvrigtext.config(state=DISABLED)
 
 #Scrollbar
 ScbTxtOvrigText = Scrollbar(frameMaskininfo, orient="vertical")
