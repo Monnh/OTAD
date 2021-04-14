@@ -1658,10 +1658,14 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
      print("test: "+entrymaskinnummer+entrymedlemsnummer)
      print(len(entrymedlemsnummer))
      print(len(entrymaskinnummer))
+     print(Typ)
+     print(Typ.isdigit())
      if len(entrymedlemsnummer) == 1:
           messagebox.showerror(title="Ej valt delägare/maskin", message="Du måste välja en delägare och/eller en maskin innan du kan Lägga till ny/ändra/byta." )
      elif Typ =="Byt" and len (entrymaskinnummer) ==0:
           messagebox.showerror(title="Ej valt maskin.", message="Du måste välja en maskin för att kunna byta.")
+     elif len(Typ)==0 and len(entrymaskinnummer) == 0:
+          messagebox.showerror(title="Ej valt maskin", message ="Du måste välja en maskin för att kunna ändra den.")
 
      else:
           global filePath
