@@ -2938,25 +2938,27 @@ def tomDelagareInfo():
 
 def taBortMaskin():
      global maskinnummer, medlemsnummer
-     
-     response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + str(maskinnummer) + "?")
-     if response == 1:  
-          try:  
-               cursor.execute("select sokvag from bilder where maskinnummer ="+maskinnummer+";")
-               listaAvBilder = cursor.fetchall() 
-               cursor.execute("Delete from bilder where maskinnummer ="+maskinnummer+";")   
-               cursor.execute("Delete from tillbehor where maskinnummer ="+maskinnummer+";")   
-               cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
-               db.commit()
-               taBortBilder(listaAvBilder)
-               tomMaskinInfo()
-               hamtaDelagarensMaskiner()
-               fyllMaskinInfo("franMaskiner")
-          except Exception:
-               db.rollback()
-               traceback.print_exc()
+     if len(maskinnummer) == 0:
+          messagebox.showerror(title="Välj en maskin först.", message="Du måste välja en maskin innan du kan ta bort den.")
      else:
-          pass
+          response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + str(maskinnummer) + "?")
+          if response == 1:  
+               try:  
+                    cursor.execute("select sokvag from bilder where maskinnummer ="+maskinnummer+";")
+                    listaAvBilder = cursor.fetchall() 
+                    cursor.execute("Delete from bilder where maskinnummer ="+maskinnummer+";")   
+                    cursor.execute("Delete from tillbehor where maskinnummer ="+maskinnummer+";")   
+                    cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
+                    db.commit()
+                    taBortBilder(listaAvBilder)
+                    tomMaskinInfo()
+                    hamtaDelagarensMaskiner()
+                    fyllMaskinInfo("franMaskiner")
+               except Exception:
+                    db.rollback()
+                    traceback.print_exc()
+          else:
+               pass
 
 def taBortBilder(listaAvBilder):     
      for x in listaAvBilder:
