@@ -1655,9 +1655,14 @@ def taBortDelagare():
                pass
 
 def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
-     print(entrymaskinnummer+entrymedlemsnummer)
-     if len(entrymaskinnummer) == 0 or len(entrymedlemsnummer) == 0 :
+     print("test: "+entrymaskinnummer+entrymedlemsnummer)
+     print(len(entrymedlemsnummer))
+     print(len(entrymaskinnummer))
+     if len(entrymedlemsnummer) == 1:
           messagebox.showerror(title="Ej valt delägare/maskin", message="Du måste välja en delägare och/eller en maskin innan du kan Lägga till ny/ändra/byta." )
+     elif Typ =="Byt" and len (entrymaskinnummer) ==0:
+          messagebox.showerror(title="Ej valt maskin.", message="Du måste välja en maskin för att kunna byta.")
+
      else:
           global filePath
           def sparaMaskin(Typ):
@@ -3422,7 +3427,7 @@ def refreshKoppladMaskin(forarId):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
