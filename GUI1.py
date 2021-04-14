@@ -1585,7 +1585,11 @@ def nyDelagare(Typ):
      btnAvbrytNyDelagare = Button(nyDelagare, text="Avbryt", command = lambda: nyDelagare.destroy())
      btnAvbrytNyDelagare.grid(row = 8, column = 1, pady = (10, 0), padx=(5,0))
 
-     if Typ == "Ändra":
+     if Typ == "Ändra" and len(medlemsnummer) == 0:
+          nyDelagare.destroy()
+          messagebox.showerror("Fel", "Välj en delägare att ändra.")
+
+     elif Typ == "Ändra":
           cursor.execute('SELECT * FROM foretagsregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
           delagarInformation = cursor.fetchone()
           delagarInformation = list(delagarInformation)
@@ -1634,18 +1638,21 @@ def nyDelagare(Typ):
 def taBortDelagare():
      global medlemsnummer
 
-     response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort delägare nr. " + medlemsnummer + "? \nDetta tar även bort alla maskiner på detta medlemsnummer.")
-     if response == 1:
-          cursor.execute("DELETE FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + ";")
-          cursor.execute("DELETE FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + ";" )
-          db.commit()
-          medlemsnummer = ""
-          tomMaskinInfo()
-          tomDelagareInfo()
-          fyllListboxDelagare()
-
+     if len(medlemsnummer) == 0:
+          messagebox.showerror("Fel", "Ingen delägare är vald.")
      else:
-          pass
+          response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort delägare nr. " + medlemsnummer + "? \nDetta tar även bort alla maskiner på detta medlemsnummer.")
+          if response == 1:
+               cursor.execute("DELETE FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + ";")
+               cursor.execute("DELETE FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + ";" )
+               db.commit()
+               medlemsnummer = ""
+               tomMaskinInfo()
+               tomDelagareInfo()
+               fyllListboxDelagare()
+
+          else:
+               pass
 
 def nyMaskinFonster(Typ):
      global filePath
@@ -2965,25 +2972,29 @@ def hamtaDelagarensMaskiner():
 
      cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
      maskiner = cursor.fetchall()
-     LbDelagaresMaskiner.selection_clear(0, "end")
-     if LbDelagaresMaskiner.index("end") != 0:
-          LbDelagaresMaskiner.delete(0, "end")
-          for x in maskiner:
-               LbDelagaresMaskiner.insert("end", x)
-     else:
-          for x in maskiner:
-               LbDelagaresMaskiner.insert("end", x)   
-     LbDelagaresMaskiner.selection_set(0)
-     fyllMaskinInfo("endastDelagare")
+     if len(maskiner) != 0:
+          LbDelagaresMaskiner.selection_clear(0, "end")
+          if LbDelagaresMaskiner.index("end") != 0:
+               LbDelagaresMaskiner.delete(0, "end")
+               for x in maskiner:
+                    LbDelagaresMaskiner.insert("end", x)
+          else:
+               for x in maskiner:
+                    LbDelagaresMaskiner.insert("end", x)   
+          LbDelagaresMaskiner.selection_set(0)
+          fyllMaskinInfo("endastDelagare")
      
 def hamtaDelagare(medlemsnr):
      global medlemsnummer
 
-     medlemsnummer = medlemsnr
+     if len(medlemsnr) == 0:
+          messagebox.showerror("Fel", "Fyll i ett medlemsnummer.") 
+     else:
+          medlemsnummer = medlemsnr
 
-     tomMaskinInfo()
-     fyllDelagarInfo(medlemsnummer)
-     hamtaDelagarensMaskiner()
+          tomMaskinInfo()
+          fyllDelagarInfo(medlemsnummer)
+          hamtaDelagarensMaskiner()
 
 def historikFonster(maskinnummer):
 
@@ -2995,19 +3006,22 @@ def historikFonster(maskinnummer):
 
      def hamtaHistorik():
 
-          cursor.execute('SELECT Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik WHERE Maskinnummer = ' + str(maskinnummer) + ';')
-          result = cursor.fetchall()
-          
-          count = 0
+          if maskinnummer is not None and maskinnummer != "":
+               cursor.execute('SELECT Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik WHERE Maskinnummer = ' + str(maskinnummer) + ';')
+               result = cursor.fetchall()
 
-          for x in result:                           
-               LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4]))
-               count += 1
+               count = 0
 
-          if len(result) == 0:
-               btnTaBortHistorik["state"] = DISABLED
+               for x in result:                           
+                    LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4]))
+                    count += 1
+               
+               if len(result) == 0:
+                    btnTaBortHistorik["state"] = DISABLED
+               else:
+                    btnTaBortHistorik["state"] = NORMAL
           else:
-               btnTaBortHistorik["state"] = NORMAL
+               btnTaBortHistorik["state"] = DISABLED
 
      def taBortHistorik():
           maskinnummer=  ""
@@ -3171,9 +3185,19 @@ def taBortForare():
           indexSpace = selectedForare.index(" ")
           stringSelectedForare = str(selectedForare[0:indexSpace])
           forarid = "".join(stringSelectedForare)
-          cursor.execute("DELETE FROM forare WHERE forarid = '"+ forarid +"'")
-          db.commit()
-          hamtaForare()
+          cursor.execute("SELECT * FROM forare WHERE forarid = '"+ forarid +"'")
+          kopplad = cursor.fetchall()
+          if len(kopplad) != 0:
+               response = messagebox.askyesno("Varning", "Föraren är kopplad till en maskin.\nVill du ta bort föraren ändå?")
+               if response == 1:  
+                    cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " + forarid +";")
+                    cursor.execute("DELETE FROM forare WHERE forarid = '"+ forarid +"'")
+                    db.commit()
+                    entKoppladMaskin.config(state=NORMAL)
+                    entKoppladMaskin.delete(0, 'end')
+                    hamtaForare()
+               elif response == 0:
+                    pass
 
 def hamtaDelagareFranEntry():
 
