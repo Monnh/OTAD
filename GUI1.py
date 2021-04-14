@@ -3386,19 +3386,26 @@ def kopplaMaskin():
           queryKopplaMaskin()
 
 def kopplaBortMaskin():
-     forarid = lbForare.get(lbForare.curselection())
-     index2 = forarid.index(" ")
-     stringforarid = str(forarid[0:index2])
-     foraridString = "".join(stringforarid)
-     print("Forarid: " +foraridString)
+     if len(lbForare.curselection()) == 0:
+          messagebox.showerror("Fel", "Ingen förare vald")
+     else:
+          forarid = lbForare.get(lbForare.curselection())
+          index2 = forarid.index(" ")
+          stringforarid = str(forarid[0:index2])
+          foraridString = "".join(stringforarid)
+          print("Forarid: " +foraridString)
 
-     try:
-          cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
-          db.commit()
-          refreshKoppladMaskin(foraridString)
-     except Exception:
-          traceback.print_exc()
-          db.rollback()
+          try:
+               cursor.execute("SELECT Namn from forare WHERE Forarid = '" +foraridString +"';")
+               forarNamn = cursor.fetchone()
+               response = messagebox.askyesno("Varning", "Är du säker att du vill kopplingen mellan " + str(forarNamn[0]) +" och maskin " + entKoppladMaskin.get() + "?")
+               if response == 1:
+                    cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
+                    db.commit()
+                    refreshKoppladMaskin(foraridString)
+          except Exception:
+               traceback.print_exc()
+               db.rollback()
 
 def refreshKoppladMaskin(forarId):
      cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = " +forarId +" LIMIT 1;")
@@ -3414,7 +3421,7 @@ def refreshKoppladMaskin(forarId):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
