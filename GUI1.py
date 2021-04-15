@@ -1528,8 +1528,10 @@ def nyDelagare(Typ):
                cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
                db.commit()
                medlemsnummer = entNyMedlemsnummer.get()
-               fyllDelagarInfo(medlemsnummer)
                nyDelagare.destroy()
+               tomDelagareInfo()
+               tomMaskinInfo()
+               fyllDelagarInfo(medlemsnummer)
                tabControl.select(delagare)
                fyllListboxDelagare()
 
