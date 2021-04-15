@@ -1678,11 +1678,6 @@ def taBortDelagare():
                pass
 
 def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
-     print("test: "+entrymaskinnummer+entrymedlemsnummer)
-     print(len(entrymedlemsnummer))
-     print(len(entrymaskinnummer))
-     print(Typ)
-     print(Typ.isdigit())
      if len(entrymedlemsnummer) == 1:
           messagebox.showerror(title="Ej valt delägare/maskin", message="Du måste välja en delägare och/eller en maskin innan du kan Lägga till ny/ändra/byta." )
      elif Typ =="Byt" and len (entrymaskinnummer) ==0:
@@ -1716,7 +1711,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     try:
                          bytOchNyMaskin()
                          print("nyMaskin Ny")
-                         nyMaskin.lift()
                          db.commit()
                          fileSave()
                          maskinnummer = entNyMaskinnummermaskininfo.get()
@@ -3466,7 +3460,7 @@ def valideraSiffror(input):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
