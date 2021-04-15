@@ -23,8 +23,7 @@ def clickButton():
      pass
 
 #funktion som skapar rapporten miljödeklaration
-def miljodeklaration():
-     global maskinnummer
+def miljodeklaration(maskinnummer):
 
      if len(maskinnummer) == 0:
           messagebox.showerror("Fel", "Ingen maskin är vald.")
@@ -166,8 +165,7 @@ def miljodeklaration():
           outputStream.close()
           os.startfile("Miljödeklaration - " + str(maskinnummer) + ".pdf" )
 
-def maskinpresentation():     
-     global maskinnummer
+def maskinpresentation(maskinnummer):     
 
      if len(maskinnummer) == 0:
           messagebox.showerror("Fel", "Ingen maskin är vald.")
@@ -1039,24 +1037,23 @@ def forsakringPerDelagare():
                     if counter == len(maskiner):
                          c.showPage()
 
-          if totalCounter == len(totaltMaskiner):
-               
-               c.drawString(150, 350, "Totalt: ")
-               c.drawString(185, 350, str(belopp))
-               pages+=1
-               c.save()
-               packet.seek(0)
-               new_pdf = PdfFileReader(packet)
-               output = PdfFileWriter()
+               if totalCounter == len(totaltMaskiner):
+                    c.drawString(150, 350, "Totalt: ")
+                    c.drawString(185, 350, str(belopp))
+                    pages+=1
+                    c.save()
+                    packet.seek(0)
+                    new_pdf = PdfFileReader(packet)
+                    output = PdfFileWriter()
 
-               for x in range(pages):
-                    existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
-                    page = existing_pdf.getPage(0)
-                    page.mergePage(new_pdf.getPage(x))
-                    output.addPage(page)
-                    outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
-                    output.write(outputStream)
-                    outputStream.close()
+                    for x in range(pages):
+                         existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
+                         page = existing_pdf.getPage(0)
+                         page.mergePage(new_pdf.getPage(x))
+                         output.addPage(page)
+                         outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
+                         output.write(outputStream)
+                         outputStream.close()
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
 
@@ -1089,7 +1086,7 @@ def fyllMaskinInfo(self):
           entMaskinBatteriantal.insert(0, maskinInfo[39])
           entMaskinBatteriantal.config(state=DISABLED)
      except:
-          entMaskinnummermaskininfo.config(state=DISABLED)
+          entMaskinBatteriantal.config(state=DISABLED)
 
      try:
           entMaskinnummermaskininfo.config(state=NORMAL)
@@ -1516,24 +1513,35 @@ def nyDelagare(Typ):
      def spara(Typ):
           global medlemsnummer
           
-          if Typ == "Ändra":               
-               cursor.execute("UPDATE foretagsregister SET Foretagsnamn = '" + entNyForetag.get() + "', Fornamn = '" + entNyFornamn.get() + "', Efternamn = '" + entNyEfternamn.get() + "', Gatuadress = '" + entNyGatuadress.get() + "', Postnummer = '" + entNyPostnummer.get() + "', Postadress = '" + entNyPostadress.get() + "', Telefon = '" + entNyTelefon.get() + "' WHERE Medlemsnummer = " + medlemsnummer +";")
-               db.commit()
-               fyllDelagarInfo(medlemsnummer)
-               nyDelagare.destroy()
-               tabControl.select(delagare)
-               fyllListboxDelagare()
+          if Typ == "Ändra":              
+               if len(entNyForetag.get()) == 0:
+                    messagebox.showerror("Fel", "Delägaren måste ha ett företagsnamn.")
+                    nyDelagare.lift() 
+               else:
+                    cursor.execute("UPDATE foretagsregister SET Foretagsnamn = '" + entNyForetag.get() + "', Fornamn = '" + entNyFornamn.get() + "', Efternamn = '" + entNyEfternamn.get() + "', Gatuadress = '" + entNyGatuadress.get() + "', Postnummer = '" + entNyPostnummer.get() + "', Postadress = '" + entNyPostadress.get() + "', Telefon = '" + entNyTelefon.get() + "' WHERE Medlemsnummer = " + medlemsnummer +";")
+                    db.commit()
+                    fyllDelagarInfo(medlemsnummer)
+                    nyDelagare.destroy()
+                    tabControl.select(delagare)
+                    fyllListboxDelagare()
 
           elif Typ == "Ny":
-               cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
-               db.commit()
-               medlemsnummer = entNyMedlemsnummer.get()
-               nyDelagare.destroy()
-               tomDelagareInfo()
-               tomMaskinInfo()
-               fyllDelagarInfo(medlemsnummer)
-               tabControl.select(delagare)
-               fyllListboxDelagare()
+               if len(entNyMedlemsnummer.get()) == 0:
+                    messagebox.showerror("Fel", "Delägaren måste ha ett medlemsnummer.")
+                    nyDelagare.lift()
+               elif len(entNyForetag.get()) == 0:
+                    messagebox.showerror("Fel", "Delägaren måste ha ett företagsnamn.")
+                    nyDelagare.lift()
+               else:
+                    cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
+                    db.commit()
+                    medlemsnummer = entNyMedlemsnummer.get()
+                    nyDelagare.destroy()
+                    tomDelagareInfo()
+                    tomMaskinInfo()
+                    fyllDelagarInfo(medlemsnummer)
+                    tabControl.select(delagare)
+                    fyllListboxDelagare()
 
      nyDelagare = Toplevel(root)
 
@@ -1680,7 +1688,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               andraMaskin(maskinnummer, True)
                               sparaHistorik(maskinnummer) 
                               db.commit()
-                              fileSave()                         
+                              fileSave()
+                              maskinnummer = entNyMaskinnummermaskininfo.get()                       
                               fyllMaskinInfo("empty")
                               nyMaskin.destroy()
                          except Exception:
@@ -1694,6 +1703,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          print("nyMaskin Ny")
                          db.commit()
                          fileSave()
+                         maskinnummer = entNyMaskinnummermaskininfo.get()
+                         fyllMaskinInfo("empty")
                          hamtaDelagarensMaskiner()                                  
                          nyMaskin.destroy()
                     except Exception:
@@ -1705,7 +1716,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     try:
                          andraMaskin(Typ, False)
                          db.commit()
-                         fileSave()                
+                         fileSave()               
                          fyllMaskinInfo("empty")
                          nyMaskin.destroy()
                     except Exception:
@@ -1760,7 +1771,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                                    pass
                          if maskinnummerFinns == False:
                               try:                             
-                                   cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+                                   cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
                                    #db.commit()
                               except Exception:
                                    traceback.print_exc()                              
@@ -2955,8 +2966,9 @@ def tomDelagareInfo():
           txtTelefon.delete('1.0', 'end')
           txtTelefon.config(state=DISABLED)   
 
-def taBortMaskin():
-     global maskinnummer, medlemsnummer
+def taBortMaskin(maskinnummer):
+     global medlemsnummer
+     
      if len(maskinnummer) == 0:
           messagebox.showerror(title="Välj en maskin först.", message="Du måste välja en maskin innan du kan ta bort den.")
      else:
@@ -3758,10 +3770,10 @@ entMaskinarsbelopp.config(state=DISABLED)
 
 #Buttons
 
-btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation())
+btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation(entMaskinnummermaskininfo()))
 btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
-btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration())
+btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration(entMaskinnummermaskininfo.get()))
 btnMiljodeklaration.grid(column=1, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
 btnHistorik=Button(frameMaskininfo, text="Historik", command = lambda: historikFonster(entMaskinnummermaskininfo.get()))
@@ -3776,7 +3788,7 @@ btnAndramaskin.grid(column=4, row=22,sticky=E, pady=(20,0))
 btnBytmaskin=Button(frameMaskininfo, text="Byt maskin", command = lambda: nyMaskinFonster("Byt",entMaskinnummermaskininfo.get(), txtMedlemsnummerDelagare.get(1.0, END)))
 btnBytmaskin.grid(column=5, row=22, padx=(0,60), pady=(20,0))
 
-btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin", command  = lambda: taBortMaskin())
+btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin", command  = lambda: taBortMaskin(entMaskinnummermaskininfo.get()))
 btnTabortmaskin.grid(column=5, row=22, sticky=E, pady=(20,0))
 
 
