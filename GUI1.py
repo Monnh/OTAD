@@ -1039,24 +1039,26 @@ def forsakringPerDelagare():
                     if counter == len(maskiner):
                          c.showPage()
 
-          if totalCounter == len(totaltMaskiner):
-               
-               c.drawString(150, 350, "Totalt: ")
-               c.drawString(185, 350, str(belopp))
-               pages+=1
-               c.save()
-               packet.seek(0)
-               new_pdf = PdfFileReader(packet)
-               output = PdfFileWriter()
+               if totalCounter == len(totaltMaskiner):
+                    print(totalCounter)  
+                    print(len(totaltMaskiner))
+                    c.drawString(150, 350, "Totalt: ")
+                    c.drawString(185, 350, str(belopp))
+                    pages+=1
+                    c.save()
+                    packet.seek(0)
+                    new_pdf = PdfFileReader(packet)
+                    output = PdfFileWriter()
 
-               for x in range(pages):
-                    existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
-                    page = existing_pdf.getPage(0)
-                    page.mergePage(new_pdf.getPage(x))
-                    output.addPage(page)
-                    outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
-                    output.write(outputStream)
-                    outputStream.close()
+                    for x in range(pages):
+                         existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
+                         page = existing_pdf.getPage(0)
+                         page.mergePage(new_pdf.getPage(x))
+                         output.addPage(page)
+                         outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
+                         output.write(outputStream)
+                         outputStream.close()
+     print("Test Försäkringar")     
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
 
@@ -3433,7 +3435,7 @@ def refreshKoppladMaskin(forarId):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "sennaa66",
      database = "tschakt"
 )
 cursor = db.cursor()
