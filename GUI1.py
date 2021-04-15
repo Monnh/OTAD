@@ -1053,7 +1053,7 @@ def forsakringPerDelagare():
                          output.addPage(page)
                          outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
                          output.write(outputStream)
-                         outputStream.close()
+                         outputStream.close()    
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
 
@@ -1914,7 +1914,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinme_klass = Label(nyMaskin, text="ME-Klass")
           lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinme_klass = Entry(nyMaskin, width = 32)
+          entMaskinme_klass = Entry(nyMaskin, width = 32,validate="key", validatecommand=(validera, "%P"))
           entMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0))
 
           lblMaskinmotorfabrikat = Label(nyMaskin, text="Motorfabrikat")
@@ -3441,6 +3441,12 @@ def refreshKoppladMaskin(forarId):
           entKoppladMaskin.insert(0, koppladMaskin[0])
      
      entKoppladMaskin.config(state=DISABLED)
+
+def valideraSiffror(input):
+     if input.isdigit() and len(input) < 7 or len(input)==0 :
+          return True
+     else:
+          return False
 # skapar en databasanslutning
 db = mysql.connector.connect(
      host = "localhost",
@@ -3478,6 +3484,7 @@ medlemsnummer = ""
 maskinnummer = ""
 forarid = ""
 
+validera = root.register(valideraSiffror)
 
 #skapar textfält och textboxar
 
