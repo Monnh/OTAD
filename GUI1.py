@@ -1509,7 +1509,7 @@ def nyDelagare(Typ):
           titel = "Ändra befintlig delägare"
      elif Typ == "Ny":
           titel = "Lägg till ny delägare"
-          
+     
      def spara(Typ):
           global medlemsnummer
           
@@ -1526,6 +1526,11 @@ def nyDelagare(Typ):
                     fyllListboxDelagare()
 
           elif Typ == "Ny":
+               cursor.execute("SELECT Medlemsnummer FROM foretagsregister")
+               upptagnaMedlemsnummer = cursor.fetchall()
+               upptagnaMedlemsnummer = list(upptagnaMedlemsnummer)
+               upptaget = False
+
                if len(entNyMedlemsnummer.get()) == 0:
                     messagebox.showerror("Fel", "Delägaren måste ha ett medlemsnummer.")
                     nyDelagare.lift()
@@ -1533,15 +1538,23 @@ def nyDelagare(Typ):
                     messagebox.showerror("Fel", "Delägaren måste ha ett företagsnamn.")
                     nyDelagare.lift()
                else:
-                    cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
-                    db.commit()
-                    medlemsnummer = entNyMedlemsnummer.get()
-                    nyDelagare.destroy()
-                    tomDelagareInfo()
-                    tomMaskinInfo()
-                    fyllDelagarInfo(medlemsnummer)
-                    tabControl.select(delagare)
-                    fyllListboxDelagare()
+                    for i in upptagnaMedlemsnummer:
+                         if i[0] == int(entNyMedlemsnummer.get()):
+                              upptaget = True
+                              break
+                    if upptaget == False:
+                         cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
+                         db.commit()
+                         medlemsnummer = entNyMedlemsnummer.get()
+                         nyDelagare.destroy()
+                         tomDelagareInfo()
+                         tomMaskinInfo()
+                         fyllDelagarInfo(medlemsnummer)
+                         tabControl.select(delagare)
+                         fyllListboxDelagare()
+                    else:
+                         messagebox.showerror("Fel", "Medlemsnumret är upptaget, välj ett annat.")
+                         nyDelagare.lift()
 
      nyDelagare = Toplevel(root)
 
@@ -1551,7 +1564,7 @@ def nyDelagare(Typ):
 
      lblNyMedlemsnummer = Label(nyDelagare, text="Medlemsnr")
      lblNyMedlemsnummer.grid(row = 0, column = 0, sticky = W, padx = (10, 0), pady=(7,0))
-     entNyMedlemsnummer = Entry(nyDelagare, width = 5)
+     entNyMedlemsnummer = Entry(nyDelagare, width = 5, validate="key", validatecommand=(validera, "%P"))
      entNyMedlemsnummer.grid(row = 0, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
      lblNyForetag = Label(nyDelagare, text= "Företag")
@@ -1576,7 +1589,7 @@ def nyDelagare(Typ):
 
      lblNyPostnummer = Label(nyDelagare, text= "Postnummer")
      lblNyPostnummer.grid(row = 5, column = 0, sticky = W, padx = (10, 0), pady=(7, 0))
-     entNyPostnummer = Entry(nyDelagare, width = 25)
+     entNyPostnummer = Entry(nyDelagare, width = 25, validate="key", validatecommand=(validera, "%P"))
      entNyPostnummer.grid(row = 5, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
      lblNyPostadress = Label(nyDelagare, text= "Postadress")
@@ -4027,7 +4040,7 @@ denyttSlutDatum.grid(column=1, row=1, padx=(3,0))
 lblnyArsPremie = Label(forsakringNyPremieFrame, text="Nya årspremien.")
 lblnyArsPremie.grid(column=0, row=2, pady=(10,0))
 
-entnyArsPremie = Entry(forsakringNyPremieFrame, width=15)
+entnyArsPremie = Entry(forsakringNyPremieFrame, width=15, validate="key", validatecommand=(validera, "%P"))
 entnyArsPremie.grid(column=0, row=3, pady=(10,10))
 
 btnUppdateraForsakringsInformation = Button(forsakringNyPremieFrame, text="Uppdatera försäkringsinfot.", command=lambda:uppdateraForsakring())
