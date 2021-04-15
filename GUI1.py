@@ -23,8 +23,7 @@ def clickButton():
      pass
 
 #funktion som skapar rapporten miljödeklaration
-def miljodeklaration():
-     global maskinnummer
+def miljodeklaration(maskinnummer):
 
      if len(maskinnummer) == 0:
           messagebox.showerror("Fel", "Ingen maskin är vald.")
@@ -166,8 +165,7 @@ def miljodeklaration():
           outputStream.close()
           os.startfile("Miljödeklaration - " + str(maskinnummer) + ".pdf" )
 
-def maskinpresentation():     
-     global maskinnummer
+def maskinpresentation(maskinnummer):     
 
      if len(maskinnummer) == 0:
           messagebox.showerror("Fel", "Ingen maskin är vald.")
@@ -1040,8 +1038,6 @@ def forsakringPerDelagare():
                          c.showPage()
 
                if totalCounter == len(totaltMaskiner):
-                    print(totalCounter)  
-                    print(len(totaltMaskiner))
                     c.drawString(150, 350, "Totalt: ")
                     c.drawString(185, 350, str(belopp))
                     pages+=1
@@ -1057,8 +1053,7 @@ def forsakringPerDelagare():
                          output.addPage(page)
                          outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
                          output.write(outputStream)
-                         outputStream.close()
-     print("Test Försäkringar")     
+                         outputStream.close()    
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
 
@@ -1091,7 +1086,7 @@ def fyllMaskinInfo(self):
           entMaskinBatteriantal.insert(0, maskinInfo[39])
           entMaskinBatteriantal.config(state=DISABLED)
      except:
-          entMaskinnummermaskininfo.config(state=DISABLED)
+          entMaskinBatteriantal.config(state=DISABLED)
 
      try:
           entMaskinnummermaskininfo.config(state=NORMAL)
@@ -1514,28 +1509,52 @@ def nyDelagare(Typ):
           titel = "Ändra befintlig delägare"
      elif Typ == "Ny":
           titel = "Lägg till ny delägare"
-          
+     
      def spara(Typ):
           global medlemsnummer
           
-          if Typ == "Ändra":               
-               cursor.execute("UPDATE foretagsregister SET Foretagsnamn = '" + entNyForetag.get() + "', Fornamn = '" + entNyFornamn.get() + "', Efternamn = '" + entNyEfternamn.get() + "', Gatuadress = '" + entNyGatuadress.get() + "', Postnummer = '" + entNyPostnummer.get() + "', Postadress = '" + entNyPostadress.get() + "', Telefon = '" + entNyTelefon.get() + "' WHERE Medlemsnummer = " + medlemsnummer +";")
-               db.commit()
-               fyllDelagarInfo(medlemsnummer)
-               nyDelagare.destroy()
-               tabControl.select(delagare)
-               fyllListboxDelagare()
+          if Typ == "Ändra":              
+               if len(entNyForetag.get()) == 0:
+                    messagebox.showerror("Fel", "Delägaren måste ha ett företagsnamn.")
+                    nyDelagare.lift() 
+               else:
+                    cursor.execute("UPDATE foretagsregister SET Foretagsnamn = '" + entNyForetag.get() + "', Fornamn = '" + entNyFornamn.get() + "', Efternamn = '" + entNyEfternamn.get() + "', Gatuadress = '" + entNyGatuadress.get() + "', Postnummer = '" + entNyPostnummer.get() + "', Postadress = '" + entNyPostadress.get() + "', Telefon = '" + entNyTelefon.get() + "' WHERE Medlemsnummer = " + medlemsnummer +";")
+                    db.commit()
+                    fyllDelagarInfo(medlemsnummer)
+                    nyDelagare.destroy()
+                    tabControl.select(delagare)
+                    fyllListboxDelagare()
 
           elif Typ == "Ny":
-               cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
-               db.commit()
-               medlemsnummer = entNyMedlemsnummer.get()
-               nyDelagare.destroy()
-               tomDelagareInfo()
-               tomMaskinInfo()
-               fyllDelagarInfo(medlemsnummer)
-               tabControl.select(delagare)
-               fyllListboxDelagare()
+               cursor.execute("SELECT Medlemsnummer FROM foretagsregister")
+               upptagnaMedlemsnummer = cursor.fetchall()
+               upptagnaMedlemsnummer = list(upptagnaMedlemsnummer)
+               upptaget = False
+
+               if len(entNyMedlemsnummer.get()) == 0:
+                    messagebox.showerror("Fel", "Delägaren måste ha ett medlemsnummer.")
+                    nyDelagare.lift()
+               elif len(entNyForetag.get()) == 0:
+                    messagebox.showerror("Fel", "Delägaren måste ha ett företagsnamn.")
+                    nyDelagare.lift()
+               else:
+                    for i in upptagnaMedlemsnummer:
+                         if i[0] == int(entNyMedlemsnummer.get()):
+                              upptaget = True
+                              break
+                    if upptaget == False:
+                         cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
+                         db.commit()
+                         medlemsnummer = entNyMedlemsnummer.get()
+                         nyDelagare.destroy()
+                         tomDelagareInfo()
+                         tomMaskinInfo()
+                         fyllDelagarInfo(medlemsnummer)
+                         tabControl.select(delagare)
+                         fyllListboxDelagare()
+                    else:
+                         messagebox.showerror("Fel", "Medlemsnumret är upptaget, välj ett annat.")
+                         nyDelagare.lift()
 
      nyDelagare = Toplevel(root)
 
@@ -1545,7 +1564,7 @@ def nyDelagare(Typ):
 
      lblNyMedlemsnummer = Label(nyDelagare, text="Medlemsnr")
      lblNyMedlemsnummer.grid(row = 0, column = 0, sticky = W, padx = (10, 0), pady=(7,0))
-     entNyMedlemsnummer = Entry(nyDelagare, width = 5)
+     entNyMedlemsnummer = Entry(nyDelagare, width = 5, validate="key", validatecommand=(validera, "%P"))
      entNyMedlemsnummer.grid(row = 0, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
      lblNyForetag = Label(nyDelagare, text= "Företag")
@@ -1570,7 +1589,7 @@ def nyDelagare(Typ):
 
      lblNyPostnummer = Label(nyDelagare, text= "Postnummer")
      lblNyPostnummer.grid(row = 5, column = 0, sticky = W, padx = (10, 0), pady=(7, 0))
-     entNyPostnummer = Entry(nyDelagare, width = 25)
+     entNyPostnummer = Entry(nyDelagare, width = 25, validate="key", validatecommand=(validera, "%P"))
      entNyPostnummer.grid(row = 5, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
      lblNyPostadress = Label(nyDelagare, text= "Postadress")
@@ -1684,7 +1703,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               andraMaskin(maskinnummer, True)
                               sparaHistorik(maskinnummer) 
                               db.commit()
-                              fileSave()                         
+                              fileSave()
+                              maskinnummer = entNyMaskinnummermaskininfo.get()                       
                               fyllMaskinInfo("empty")
                               nyMaskin.destroy()
                          except Exception:
@@ -1699,6 +1719,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          nyMaskin.lift()
                          db.commit()
                          fileSave()
+                         maskinnummer = entNyMaskinnummermaskininfo.get()
+                         fyllMaskinInfo("empty")
                          hamtaDelagarensMaskiner()                                  
                          nyMaskin.destroy()
                     except Exception:
@@ -1711,7 +1733,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     try:
                          andraMaskin(Typ, False)
                          db.commit()
-                         fileSave()                
+                         fileSave()               
                          fyllMaskinInfo("empty")
                          nyMaskin.destroy()
                     except Exception:
@@ -2959,8 +2981,9 @@ def tomDelagareInfo():
           txtTelefon.delete('1.0', 'end')
           txtTelefon.config(state=DISABLED)   
 
-def taBortMaskin():
-     global maskinnummer, medlemsnummer
+def taBortMaskin(maskinnummer):
+     global medlemsnummer
+     
      if len(maskinnummer) == 0:
           messagebox.showerror(title="Välj en maskin först.", message="Du måste välja en maskin innan du kan ta bort den.")
      else:
@@ -3443,7 +3466,7 @@ def valideraSiffror(input):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -3769,10 +3792,10 @@ entMaskinarsbelopp.config(state=DISABLED)
 
 #Buttons
 
-btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation())
+btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation(entMaskinnummermaskininfo()))
 btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
-btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration())
+btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration(entMaskinnummermaskininfo.get()))
 btnMiljodeklaration.grid(column=1, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
 btnHistorik=Button(frameMaskininfo, text="Historik", command = lambda: historikFonster(entMaskinnummermaskininfo.get()))
@@ -3787,7 +3810,7 @@ btnAndramaskin.grid(column=4, row=22,sticky=E, pady=(20,0))
 btnBytmaskin=Button(frameMaskininfo, text="Byt maskin", command = lambda: nyMaskinFonster("Byt",entMaskinnummermaskininfo.get(), txtMedlemsnummerDelagare.get(1.0, END)))
 btnBytmaskin.grid(column=5, row=22, padx=(0,60), pady=(20,0))
 
-btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin", command  = lambda: taBortMaskin())
+btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin", command  = lambda: taBortMaskin(entMaskinnummermaskininfo.get()))
 btnTabortmaskin.grid(column=5, row=22, sticky=E, pady=(20,0))
 
 
@@ -4019,7 +4042,7 @@ denyttSlutDatum.grid(column=1, row=1, padx=(3,0))
 lblnyArsPremie = Label(forsakringNyPremieFrame, text="Nya årspremien.")
 lblnyArsPremie.grid(column=0, row=2, pady=(10,0))
 
-entnyArsPremie = Entry(forsakringNyPremieFrame, width=15)
+entnyArsPremie = Entry(forsakringNyPremieFrame, width=15, validate="key", validatecommand=(validera, "%P"))
 entnyArsPremie.grid(column=0, row=3, pady=(10,10))
 
 btnUppdateraForsakringsInformation = Button(forsakringNyPremieFrame, text="Uppdatera försäkringsinfot.", command=lambda:uppdateraForsakring())
