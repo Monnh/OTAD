@@ -280,7 +280,7 @@ def maskininnehav(medlemsnummer):
           messagebox.showerror("Fel", "Ingen delägare är vald.")
      
      else:
-          cursor.execute("SELECT Maskinnummer, MarkeModell, ME_Klass, Maskininsats FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + "")
+          cursor.execute("SELECT Maskinnummer, MarkeModell, ME_Klass, Maskininsats, Forsakring, Arsmodell, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + "")
           maskiner = cursor.fetchall()
           maskiner = list(maskiner)
 
@@ -295,160 +295,210 @@ def maskininnehav(medlemsnummer):
           s+= "  -  " + foretag[0]
 
           #Delägare
-          c.drawString(75, 641, s)
-          
+          c.setFontSize(14)
+          c.drawString(75, 650, s)
+
           #Maskiner
-          y=580
+          y=590
           counter = 0
           pages = 1
 
           for i in maskiner:
 
-               if counter < 17:
+               if counter < 21:
                     c.setFontSize(10)
-                    c.drawString(75, y, str(i[0]))
+                    c.drawString(77, y, str(i[0]))
                     if i[3] == 1:
-                         c.drawString(136, y, str("Ja"))
+                         c.drawString(131, y, str("Ja"))
                     elif i[3] == 0:
-                         c.drawString(136, y, str("Nej"))
+                         c.drawString(131, y, str("Nej"))
+                    if i[4] == 1:
+                         c.drawString(167, y, str("Ja"))
+                    elif i[4] == 0:
+                         c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(178, y, str(i[1]))
+                         c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
-                         c.drawString(318, y, str(i[2]))
-                    c.drawString(362, y, "_____________________________")     
-                    y-=35
+                         c.drawString(340, y, str(i[2])) 
+                    if i[5] is not None:
+                         c.drawString(395, y, str(i[5]))
+                    if i[6] is not None:
+                         c.drawString(450, y, str(i[6]))
+                    y-=27
                
-               elif counter == 17:
+               elif counter == 21:
                     if counter != len(maskiner):
                          c.showPage()
-                         c.setFontSize(12)
-                         c.drawString(75, 641, s)
-                         y=580
+                         c.setFontSize(14)
+                         c.drawString(75, 650, s)
+                         y=590
                          pages += 1
 
-               elif counter > 17 and counter < 34:
+               elif counter > 21 and counter < 42:
                     c.setFontSize(10)
-                    c.drawString(75, y, str(i[0]))
+                    c.drawString(77, y, str(i[0]))
                     if i[3] == 1:
-                         c.drawString(136, y, str("Ja"))
+                         c.drawString(131, y, str("Ja"))
                     elif i[3] == 0:
-                         c.drawString(136, y, str("Nej"))
+                         c.drawString(131, y, str("Nej"))
+                    if i[4] == 1:
+                         c.drawString(167, y, str("Ja"))
+                    elif i[4] == 0:
+                         c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(178, y, str(i[1]))
+                         c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
-                         c.drawString(318, y, str(i[2]))
-                    c.drawString(362, y, "_____________________________")     
-                    y-=35
+                         c.drawString(340, y, str(i[2])) 
+                    if i[5] is not None:
+                         c.drawString(395, y, str(i[5]))
+                    if i[6] is not None:
+                         c.drawString(450, y, str(i[6]))
+                    y-=27
                
-               elif counter == 34:
+               elif counter == 42:
                     if counter != len(maskiner):
                          c.showPage()
-                         c.setFontSize(12)
-                         c.drawString(75, 641, s)
-                         y=580
+                         c.setFontSize(14)
+                         c.drawString(75, 650, s)
+                         y=590
                          pages += 1
 
-               elif counter > 34 and counter < 51:
+               elif counter > 42 and counter < 63:
                     c.setFontSize(10)
-                    c.drawString(75, y, str(i[0]))
+                    c.drawString(77, y, str(i[0]))
                     if i[3] == 1:
-                         c.drawString(136, y, str("Ja"))
+                         c.drawString(131, y, str("Ja"))
                     elif i[3] == 0:
-                         c.drawString(136, y, str("Nej"))
+                         c.drawString(131, y, str("Nej"))
+                    if i[4] == 1:
+                         c.drawString(167, y, str("Ja"))
+                    elif i[4] == 0:
+                         c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(178, y, str(i[1]))
+                         c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
-                         c.drawString(318, y, str(i[2]))
-                    c.drawString(362, y, "_____________________________")     
-                    y-=35
+                         c.drawString(340, y, str(i[2])) 
+                    if i[5] is not None:
+                         c.drawString(395, y, str(i[5]))
+                    if i[6] is not None:
+                         c.drawString(450, y, str(i[6]))
+                    y-=27
 
-               elif counter == 51:
+               elif counter == 63:
                     if counter != len(maskiner):
                          c.showPage()
-                         c.setFontSize(12)
-                         c.drawString(75, 641, s)
-                         y=580
+                         c.setFontSize(14)
+                         c.drawString(75, 650, s)
+                         y=590
                          pages += 1
 
-               elif counter > 51 and counter < 68:
+               elif counter > 63 and counter < 84:
                     c.setFontSize(10)
-                    c.drawString(75, y, str(i[0]))
+                    c.drawString(77, y, str(i[0]))
                     if i[3] == 1:
-                         c.drawString(136, y, str("Ja"))
+                         c.drawString(131, y, str("Ja"))
                     elif i[3] == 0:
-                         c.drawString(136, y, str("Nej"))
+                         c.drawString(131, y, str("Nej"))
+                    if i[4] == 1:
+                         c.drawString(167, y, str("Ja"))
+                    elif i[4] == 0:
+                         c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(178, y, str(i[1]))
+                         c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
-                         c.drawString(318, y, str(i[2]))
-                    c.drawString(362, y, "_____________________________")     
-                    y-=35
+                         c.drawString(340, y, str(i[2])) 
+                    if i[5] is not None:
+                         c.drawString(395, y, str(i[5]))
+                    if i[6] is not None:
+                         c.drawString(450, y, str(i[6]))
+                    y-=27
 
-               elif counter == 68:
+               elif counter == 84:
                     if counter != len(maskiner):
                          c.showPage()
-                         c.setFontSize(12)
-                         c.drawString(75, 641, s)
-                         y=580
+                         c.setFontSize(14)
+                         c.drawString(75, 650, s)
+                         y=590
                          pages += 1
                
-               elif counter > 68 and counter < 85:
+               elif counter > 105 and counter < 126:
                     c.setFontSize(10)
-                    c.drawString(75, y, str(i[0]))
+                    c.drawString(77, y, str(i[0]))
                     if i[3] == 1:
-                         c.drawString(136, y, str("Ja"))
+                         c.drawString(131, y, str("Ja"))
                     elif i[3] == 0:
-                         c.drawString(136, y, str("Nej"))
+                         c.drawString(131, y, str("Nej"))
+                    if i[4] == 1:
+                         c.drawString(167, y, str("Ja"))
+                    elif i[4] == 0:
+                         c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(178, y, str(i[1]))
+                         c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
-                         c.drawString(318, y, str(i[2]))
-                    c.drawString(362, y, "_____________________________")     
-                    y-=35
+                         c.drawString(340, y, str(i[2])) 
+                    if i[5] is not None:
+                         c.drawString(395, y, str(i[5]))
+                    if i[6] is not None:
+                         c.drawString(450, y, str(i[6]))
+                    y-=27
 
-               elif counter == 85:
+               elif counter == 126:
                     if counter != len(maskiner):
                          c.showPage()
-                         c.setFontSize(12)
-                         c.drawString(75, 641, s)
-                         y=580
+                         c.setFontSize(14)
+                         c.drawString(75, 650, s)
+                         y=590
                          pages += 1
 
-               elif counter > 85 and counter < 102:
+               elif counter > 126 and counter < 147:
                     c.setFontSize(10)
-                    c.drawString(75, y, str(i[0]))
+                    c.drawString(77, y, str(i[0]))
                     if i[3] == 1:
-                         c.drawString(136, y, str("Ja"))
+                         c.drawString(131, y, str("Ja"))
                     elif i[3] == 0:
-                         c.drawString(136, y, str("Nej"))
+                         c.drawString(131, y, str("Nej"))
+                    if i[4] == 1:
+                         c.drawString(167, y, str("Ja"))
+                    elif i[4] == 0:
+                         c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(178, y, str(i[1]))
+                         c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
-                         c.drawString(318, y, str(i[2]))
-                    c.drawString(362, y, "_____________________________")     
-                    y-=35
+                         c.drawString(340, y, str(i[2])) 
+                    if i[5] is not None:
+                         c.drawString(395, y, str(i[5]))
+                    if i[6] is not None:
+                         c.drawString(450, y, str(i[6]))
+                    y-=27
 
-               elif counter == 102:
+               elif counter == 147:
                     if counter != len(maskiner):
                          c.showPage()
-                         c.setFontSize(12)
-                         c.drawString(75, 641, s)
-                         y=580
+                         c.setFontSize(14)
+                         c.drawString(75, 650, s)
+                         y=590
                          pages += 1
 
-               elif counter > 102 and counter < 119:
+               elif counter > 168 and counter < 189:
                     c.setFontSize(10)
-                    c.drawString(75, y, str(i[0]))
+                    c.drawString(77, y, str(i[0]))
                     if i[3] == 1:
-                         c.drawString(136, y, str("Ja"))
+                         c.drawString(131, y, str("Ja"))
                     elif i[3] == 0:
-                         c.drawString(136, y, str("Nej"))
+                         c.drawString(131, y, str("Nej"))
+                    if i[4] == 1:
+                         c.drawString(167, y, str("Ja"))
+                    elif i[4] == 0:
+                         c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(178, y, str(i[1]))
+                         c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
-                         c.drawString(318, y, str(i[2]))
-                    c.drawString(362, y, "_____________________________")     
-                    y-=35
+                         c.drawString(340, y, str(i[2])) 
+                    if i[5] is not None:
+                         c.drawString(395, y, str(i[5]))
+                    if i[6] is not None:
+                         c.drawString(450, y, str(i[6]))
+                    y-=27
 
                counter+=1
 
@@ -497,19 +547,21 @@ def forsakringPerDelagareFraga(medlemsnummer):
           d.setFontSize(10)
 
           #Datum
-          c.drawString(490, 820, str(datetime.date(datetime.now())))
+          c.drawString(490, 800, str(datetime.date(datetime.now())))
 
           #Företag
-          c.drawString(71, 620, str(foretag[0]))
+          c.setFontSize(12)
+          c.drawString(40, 645, str(foretag[0]))
           if foretag[1] is not None:
-               c.drawString(270, 620, str(foretag[1]))
+               c.drawString(247, 645, str(foretag[1]))
           if foretag[1] is not None:
-               c.drawString(348, 620, str(foretag[2]))
-          c.drawString(480, 620, str(medlemsnummer))
+               c.drawString(348, 645, str(foretag[2]))
+          c.drawString(510, 645, str(medlemsnummer))
+          c.setFontSize(10)
 
           #Maskiner
-          y=560
-          dy=560
+          y=580
+          dy=580
           counter = 0
           dCounter = 0
           belopp = 0
@@ -522,189 +574,187 @@ def forsakringPerDelagareFraga(medlemsnummer):
                if i[4] == arsbelopp[0]:
 
                     if counter < 22: 
-                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         c.drawString(40, y, str(forsakringsgivare[0]))
                          c.setFontSize(7)
-                         c.drawString(175, y, str(i[2]))
-                         c.drawString(209, y, " - ")
-                         c.drawString(215, y, str(i[3]))
+                         c.drawString(140, y, str(i[2]))
+                         c.drawString(174, y, " - ")
+                         c.drawString(180, y, str(i[3]))
                          c.setFontSize(10)
-                         c.drawString(265, y, str(i[0]))
+                         c.drawString(240, y, str(i[0]))
                          if i[1] is not None:
                               if len(i[1]) > 22:
-                                   c.drawString(295, y, str(i[1]))
+                                   c.drawString(285, y, str(i[1]))
                               else:
-                                   c.drawString(310, y, str(i[1]))
+                                   c.drawString(300, y, str(i[1]))
                          if i[5] is not None:
                               if len(i[5]) > 10:
-                                   c.setFontSize(6)
+                                   c.setFontSize(8)
                                    c.drawString(430, y, str(i[5]))
                                    c.setFontSize(10)
                               else:
                                    c.drawString(430, y, str(i[5]))
-                         c.drawString(500, y, str(i[4]))
+                         c.drawString(530, y, str(i[4]))
                          y-=25
 
                     elif counter == 22:
                          if counter != len(maskiner):
                               c.showPage()
                               c.setFontSize(10)
-                              c.drawString(490, 820, str(datetime.date(datetime.now())))
-                              c.drawString(71, 620, str(foretag[0]))
+                              c.drawString(490, 800, str(datetime.date(datetime.now())))
+                              c.setFontSize(12)
+                              c.drawString(40, 645, str(foretag[0]))
                               if foretag[1] is not None:
-                                   c.drawString(270, 620, str(foretag[1]))
+                                   c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
-                                   c.drawString(348, 620, str(foretag[2]))
-                              c.drawString(480, 620, str(medlemsnummer))
-                              y = 560
+                                   c.drawString(348, 645, str(foretag[2]))
+                              c.drawString(510, 645, str(medlemsnummer))
+                              c.setFontSize(10)
+                              y = 580
                               pages += 1
 
                     elif counter > 22 and counter < 44:
-                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         c.drawString(40, y, str(forsakringsgivare[0]))
                          c.setFontSize(7)
-                         c.drawString(175, y, str(i[2]))
-                         c.drawString(209, y, " - ")
-                         c.drawString(215, y, str(i[3]))
+                         c.drawString(140, y, str(i[2]))
+                         c.drawString(174, y, " - ")
+                         c.drawString(180, y, str(i[3]))
                          c.setFontSize(10)
-                         c.drawString(265, y, str(i[0]))
+                         c.drawString(240, y, str(i[0]))
                          if i[1] is not None:
                               if len(i[1]) > 22:
-                                   c.drawString(295, y, str(i[1]))
+                                   c.drawString(285, y, str(i[1]))
                               else:
-                                   c.drawString(310, y, str(i[1]))
+                                   c.drawString(300, y, str(i[1]))
                          if i[5] is not None:
                               if len(i[5]) > 10:
-                                   c.setFontSize(6)
+                                   c.setFontSize(8)
                                    c.drawString(430, y, str(i[5]))
                                    c.setFontSize(10)
                               else:
                                    c.drawString(430, y, str(i[5]))
-                         c.drawString(500, y, str(i[4]))
+                         c.drawString(530, y, str(i[4]))
                          y-=25
 
                     elif counter == 44:
                          if counter != len(maskiner):
                               c.showPage()
                               c.setFontSize(10)
-                              c.drawString(490, 820, str(datetime.date(datetime.now())))
-                              c.drawString(71, 620, str(foretag[0]))
+                              c.drawString(490, 800, str(datetime.date(datetime.now())))
+                              c.setFontSize(12)
+                              c.drawString(40, 645, str(foretag[0]))
                               if foretag[1] is not None:
-                                   c.drawString(270, 620, str(foretag[1]))
+                                   c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
-                                   c.drawString(348, 620, str(foretag[2]))
-                              c.drawString(480, 620, str(medlemsnummer))
-                              y = 560
+                                   c.drawString(348, 645, str(foretag[2]))
+                              c.drawString(510, 645, str(medlemsnummer))
+                              c.setFontSize(10)
+                              y = 580
                               pages += 1
 
                     elif counter > 44 and counter < 66:
-                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         c.drawString(40, y, str(forsakringsgivare[0]))
                          c.setFontSize(7)
-                         c.drawString(175, y, str(i[2]))
-                         c.drawString(209, y, " - ")
-                         c.drawString(215, y, str(i[3]))
+                         c.drawString(140, y, str(i[2]))
+                         c.drawString(174, y, " - ")
+                         c.drawString(180, y, str(i[3]))
                          c.setFontSize(10)
-                         c.drawString(265, y, str(i[0]))
+                         c.drawString(240, y, str(i[0]))
                          if i[1] is not None:
                               if len(i[1]) > 22:
-                                   c.drawString(295, y, str(i[1]))
+                                   c.drawString(285, y, str(i[1]))
                               else:
-                                   c.drawString(310, y, str(i[1]))
+                                   c.drawString(300, y, str(i[1]))
                          if i[5] is not None:
                               if len(i[5]) > 10:
-                                   c.setFontSize(6)
+                                   c.setFontSize(8)
                                    c.drawString(430, y, str(i[5]))
                                    c.setFontSize(10)
                               else:
                                    c.drawString(430, y, str(i[5]))
-                         c.drawString(500, y, str(i[4]))
+                         c.drawString(530, y, str(i[4]))
                          y-=25
 
                     elif counter == 66:
                          if counter != len(maskiner):
                               c.showPage()
                               c.setFontSize(10)
-                              c.drawString(490, 820, str(datetime.date(datetime.now())))
-                              c.drawString(71, 620, str(foretag[0]))
+                              c.drawString(490, 800, str(datetime.date(datetime.now())))
+                              c.setFontSize(12)
+                              c.drawString(40, 645, str(foretag[0]))
                               if foretag[1] is not None:
-                                   c.drawString(270, 620, str(foretag[1]))
+                                   c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
-                                   c.drawString(348, 620, str(foretag[2]))
-                              c.drawString(480, 620, str(medlemsnummer))
-                              y = 560
+                                   c.drawString(348, 645, str(foretag[2]))
+                              c.drawString(510, 645, str(medlemsnummer))
+                              c.setFontSize(10)
+                              y = 580
                               pages += 1
 
                     elif counter > 66 and counter < 88:
-                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         c.drawString(40, y, str(forsakringsgivare[0]))
                          c.setFontSize(7)
-                         c.drawString(175, y, str(i[2]))
-                         c.drawString(209, y, " - ")
-                         c.drawString(215, y, str(i[3]))
+                         c.drawString(140, y, str(i[2]))
+                         c.drawString(174, y, " - ")
+                         c.drawString(180, y, str(i[3]))
                          c.setFontSize(10)
-                         c.drawString(265, y, str(i[0]))
+                         c.drawString(240, y, str(i[0]))
                          if i[1] is not None:
                               if len(i[1]) > 22:
-                                   c.drawString(295, y, str(i[1]))
+                                   c.drawString(285, y, str(i[1]))
                               else:
-                                   c.drawString(310, y, str(i[1]))
+                                   c.drawString(300, y, str(i[1]))
                          if i[5] is not None:
                               if len(i[5]) > 10:
-                                   c.setFontSize(6)
+                                   c.setFontSize(8)
                                    c.drawString(430, y, str(i[5]))
                                    c.setFontSize(10)
                               else:
                                    c.drawString(430, y, str(i[5]))
-                         c.drawString(500, y, str(i[4]))
+                         c.drawString(530, y, str(i[4]))
                          y-=25
                          
                     elif counter == 88:
                          if counter != len(maskiner):
                               c.showPage()
                               c.setFontSize(10)
-                              c.drawString(490, 820, str(datetime.date(datetime.now())))
-                              c.drawString(71, 620, str(foretag[0]))
+                              c.drawString(490, 800, str(datetime.date(datetime.now())))
+                              c.setFontSize(12)
+                              c.drawString(40, 645, str(foretag[0]))
                               if foretag[1] is not None:
-                                   c.drawString(270, 620, str(foretag[1]))
+                                   c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
-                                   c.drawString(348, 620, str(foretag[2]))
-                              c.drawString(480, 620, str(medlemsnummer))
-                              y = 560
+                                   c.drawString(348, 645, str(foretag[2]))
+                              c.drawString(510, 645, str(medlemsnummer))
+                              c.setFontSize(10)
+                              y = 580
                               pages += 1
 
                     elif counter > 88 and counter < 110:
-                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         c.drawString(40, y, str(forsakringsgivare[0]))
                          c.setFontSize(7)
-                         c.drawString(175, y, str(i[2]))
-                         c.drawString(209, y, " - ")
-                         c.drawString(215, y, str(i[3]))
+                         c.drawString(140, y, str(i[2]))
+                         c.drawString(174, y, " - ")
+                         c.drawString(180, y, str(i[3]))
                          c.setFontSize(10)
-                         c.drawString(265, y, str(i[0]))
+                         c.drawString(240, y, str(i[0]))
                          if i[1] is not None:
                               if len(i[1]) > 22:
-                                   c.drawString(295, y, str(i[1]))
+                                   c.drawString(285, y, str(i[1]))
                               else:
-                                   c.drawString(310, y, str(i[1]))
+                                   c.drawString(300, y, str(i[1]))
                          if i[5] is not None:
                               if len(i[5]) > 10:
-                                   c.setFontSize(6)
+                                   c.setFontSize(8)
                                    c.drawString(430, y, str(i[5]))
                                    c.setFontSize(10)
                               else:
                                    c.drawString(430, y, str(i[5]))
-                         c.drawString(500, y, str(i[4]))
+                         c.drawString(530, y, str(i[4]))
                          y-=25
 
 
                     belopp += i[4]
                     counter += 1
-                    if counter + dCounter == len(maskiner):
-                         if counter == 22 or counter == 44 or counter == 66 or counter == 88 or counter == 110:
-                              y-=2
-                         else:
-                              y-=15
-                         c.setFontSize(11)
-                         c.drawString(460, y, str("Total:"))
-                         c.drawString(500, y, str(belopp))
-                         y-=3
-                         c.drawString(459, y, "_____________")
                
                else:
 
@@ -742,7 +792,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
                               if foretag[1] is not None:
                                    d.drawString(348, 620, str(foretag[2]))
                               d.drawString(480, 620, str(medlemsnummer))
-                              dy = 560
+                              dy = 580
                               dPages += 1
 
                     elif dCounter > 22 and counter < 44:
@@ -792,6 +842,16 @@ def forsakringPerDelagareFraga(medlemsnummer):
                     dy-=3
                     d.drawString(459, dy, "_____________")
 
+          if counter + dCounter == len(maskiner):
+               if counter == 22 or counter == 44 or counter == 66 or counter == 88 or counter == 110:
+                    y-=4
+               else:
+                    y-=15
+               c.setFontSize(11)
+               c.drawString(460, y, str("Total:"))
+               c.drawString(500, y, str(belopp))
+               y-=3
+               c.drawString(459, y, "_____________")
 
           c.save()
           d.save()
@@ -865,19 +925,20 @@ def forsakringPerDelagare():
           foretag = cursor.fetchone()
 
           counter = 0
-          y=560
+          y=580
 
 
           if len(maskiner) != 0:
                c.setFontSize(10)
-               c.drawString(490, 820, str(datetime.date(datetime.now())))
-               c.drawString(71, 620, str(foretag[0]))
+               c.drawString(490, 800, str(datetime.date(datetime.now())))
+               c.setFontSize(12)
+               c.drawString(40, 645, str(foretag[0]))
                if foretag[1] is not None:
-                    c.drawString(270, 620, str(foretag[1]))
+                    c.drawString(247, 645, str(foretag[1]))
                if foretag[1] is not None:
-                    c.drawString(348, 620, str(foretag[2]))
-               c.drawString(480, 620, str(str(i[0])))
-
+                    c.drawString(348, 645, str(foretag[2]))
+               c.drawString(510, 645, str(str(i[0])))
+               c.setFontSize(10)
                pages+=1
           
           
@@ -887,149 +948,215 @@ def forsakringPerDelagare():
                          belopp += int(n[4])
 
                     if counter < 22: 
-                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         c.drawString(40, y, str(forsakringsgivare[0]))
                          if n[2] is not None and n[3] is not None:
                               c.setFontSize(7)
-                              c.drawString(175, y, str(n[2]))
-                              c.drawString(209, y, " - ")
-                              c.drawString(215, y, str(n[3]))
+                              c.drawString(140, y, str(n[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(n[3]))
                               c.setFontSize(10)
-                         c.drawString(265, y, str(n[0]))
+                         c.drawString(240, y, str(n[0]))
                          if n[1] is not None:
                               if len(n[1]) > 22:
-                                   c.drawString(295, y, str(n[1]))
+                                   c.drawString(285, y, str(n[1]))
                               else:
-                                   c.drawString(310, y, str(n[1]))
+                                   c.drawString(300, y, str(n[1]))
                          if n[5] is not None:
                               if len(n[5]) > 10:
-                                   c.setFontSize(6)
+                                   c.setFontSize(8)
                                    c.drawString(430, y, str(n[5]))
                                    c.setFontSize(10)
                               else:
                                    c.drawString(430, y, str(n[5]))
                          if n[4] is not None:
-                              c.drawString(500, y, str(n[4]))
+                              c.drawString(535, y, str(n[4]))
                          y-=25
                     elif counter == 22:
                          if counter != len(maskiner):
                               c.showPage()
                               c.setFontSize(10)
-                              c.drawString(490, 820, str(datetime.date(datetime.now())))
-                              c.drawString(71, 620, str(foretag[0]))
+                              c.drawString(490, 800, str(datetime.date(datetime.now())))
+                              c.setFontSize(12)
+                              c.drawString(40, 645, str(foretag[0]))
                               if foretag[1] is not None:
-                                   c.drawString(270, 620, str(foretag[1]))
+                                   c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
-                                   c.drawString(348, 620, str(foretag[2]))
-                              c.drawString(480, 620, str(str(i[0])))
-                              y = 560
+                                   c.drawString(348, 645, str(foretag[2]))
+                              c.drawString(510, 645, str(str(i[0])))
+                              c.setFontSize(10)
+                              y = 580
                               pages += 1
-                              c.drawString(71, y, str(forsakringsgivare[0]))
+                              c.drawString(40, y, str(forsakringsgivare[0]))
                               if n[2] is not None and n[3] is not None:
                                    c.setFontSize(7)
-                                   c.drawString(175, y, str(n[2]))
-                                   c.drawString(209, y, " - ")
-                                   c.drawString(215, y, str(n[3]))
+                                   c.drawString(140, y, str(n[2]))
+                                   c.drawString(174, y, " - ")
+                                   c.drawString(180, y, str(n[3]))
                                    c.setFontSize(10)
-                              c.drawString(265, y, str(n[0]))
+                              c.drawString(240, y, str(n[0]))
                               if n[1] is not None:
                                    if len(n[1]) > 22:
-                                        c.drawString(295, y, str(n[1]))
+                                        c.drawString(285, y, str(n[1]))
                                    else:
-                                        c.drawString(310, y, str(n[1]))
+                                        c.drawString(300, y, str(n[1]))
                               if n[5] is not None:
                                    if len(n[5]) > 10:
-                                        c.setFontSize(6)
+                                        c.setFontSize(8)
                                         c.drawString(430, y, str(n[5]))
                                         c.setFontSize(10)
                                    else:
                                         c.drawString(430, y, str(n[5]))
                               if n[4] is not None:
-                                   c.drawString(500, y, str(n[4]))
+                                   c.drawString(530, y, str(n[4]))
                               y-=25
                     elif counter > 22 and counter < 44:
-                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         c.drawString(40, y, str(forsakringsgivare[0]))
                          if n[2] is not None and n[3] is not None:
                               c.setFontSize(7)
-                              c.drawString(175, y, str(n[2]))
-                              c.drawString(209, y, " - ")
-                              c.drawString(215, y, str(n[3]))
+                              c.drawString(140, y, str(n[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(n[3]))
                               c.setFontSize(10)
-                         c.drawString(265, y, str(n[0]))
+                         c.drawString(240, y, str(n[0]))
                          if n[1] is not None:
                               if len(n[1]) > 22:
-                                   c.drawString(295, y, str(n[1]))
+                                   c.drawString(285, y, str(n[1]))
                               else:
-                                   c.drawString(310, y, str(n[1]))
+                                   c.drawString(300, y, str(n[1]))
                          if n[5] is not None:
                               if len(n[5]) > 10:
-                                   c.setFontSize(6)
+                                   c.setFontSize(8)
                                    c.drawString(430, y, str(n[5]))
                                    c.setFontSize(10)
                               else:
                                    c.drawString(430, y, str(n[5]))
                          if n[4] is not None:
-                              c.drawString(500, y, str(n[4]))
+                              c.drawString(530, y, str(n[4]))
                          y-=25
                     elif counter == 44:
                          if counter != len(maskiner):
                               c.showPage()
                               c.setFontSize(10)
-                              c.drawString(490, 820, str(datetime.date(datetime.now())))
-                              c.drawString(71, 620, str(foretag[0]))
+                              c.drawString(490, 800, str(datetime.date(datetime.now())))
+                              c.setFontSize(12)
+                              c.drawString(40, 645, str(foretag[0]))
                               if foretag[1] is not None:
-                                   c.drawString(270, 620, str(foretag[1]))
+                                   c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
-                                   c.drawString(348, 620, str(foretag[2]))
-                              c.drawString(480, 620, str(str(i[0])))
-                              y = 560
+                                   c.drawString(348, 645, str(foretag[2]))
+                              c.drawString(510, 645, str(str(i[0])))
+                              c.setFontSize(10)
+                              y = 580
                               pages += 1
-                              c.drawString(71, y, str(forsakringsgivare[0]))
+                              c.drawString(40, y, str(forsakringsgivare[0]))
                               if n[2] is not None and n[3] is not None:
                                    c.setFontSize(7)
-                                   c.drawString(175, y, str(n[2]))
-                                   c.drawString(209, y, " - ")
-                                   c.drawString(215, y, str(n[3]))
+                                   c.drawString(140, y, str(n[2]))
+                                   c.drawString(174, y, " - ")
+                                   c.drawString(180, y, str(n[3]))
                                    c.setFontSize(10)
-                              c.drawString(265, y, str(n[0]))
+                              c.drawString(240, y, str(n[0]))
                               if n[1] is not None:
                                    if len(n[1]) > 22:
-                                        c.drawString(295, y, str(n[1]))
+                                        c.drawString(285, y, str(n[1]))
                                    else:
-                                        c.drawString(310, y, str(n[1]))
+                                        c.drawString(300, y, str(n[1]))
                               if n[5] is not None:
                                    if len(n[5]) > 10:
-                                        c.setFontSize(6)
+                                        c.setFontSize(8)
                                         c.drawString(430, y, str(n[5]))
                                         c.setFontSize(10)
                                    else:
                                         c.drawString(430, y, str(n[5]))
                               if n[4] is not None:
-                                   c.drawString(500, y, str(n[4]))
+                                   c.drawString(530, y, str(n[4]))
                               y-=25
                     elif counter > 44 and counter < 66:
-                         c.drawString(71, y, str(forsakringsgivare[0]))
+                         c.drawString(40, y, str(forsakringsgivare[0]))
                          if n[2] is not None and n[3] is not None:
                               c.setFontSize(7)
-                              c.drawString(175, y, str(n[2]))
-                              c.drawString(209, y, " - ")
-                              c.drawString(215, y, str(n[3]))
+                              c.drawString(140, y, str(n[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(n[3]))
                               c.setFontSize(10)
-                         c.drawString(265, y, str(n[0]))
+                         c.drawString(240, y, str(n[0]))
                          if n[1] is not None:
                               if len(n[1]) > 22:
-                                   c.drawString(295, y, str(n[1]))
+                                   c.drawString(285, y, str(n[1]))
                               else:
-                                   c.drawString(310, y, str(n[1]))
+                                   c.drawString(300, y, str(n[1]))
                          if n[5] is not None:
                               if len(n[5]) > 10:
-                                   c.setFontSize(6)
+                                   c.setFontSize(8)
                                    c.drawString(430, y, str(n[5]))
                                    c.setFontSize(10)
                               else:
                                    c.drawString(430, y, str(n[5]))
                          if n[4] is not None:
-                              c.drawString(500, y, str(n[4]))
+                              c.drawString(530, y, str(n[4]))
                          y-=25
+                    elif counter == 66:
+                         if counter != len(maskiner):
+                              c.showPage()
+                              c.setFontSize(10)
+                              c.drawString(490, 800, str(datetime.date(datetime.now())))
+                              c.setFontSize(12)
+                              c.drawString(40, 645, str(foretag[0]))
+                              if foretag[1] is not None:
+                                   c.drawString(247, 645, str(foretag[1]))
+                              if foretag[1] is not None:
+                                   c.drawString(348, 645, str(foretag[2]))
+                              c.drawString(510, 645, str(str(i[0])))
+                              c.setFontSize(10)
+                              y = 580
+                              pages += 1
+                              c.drawString(40, y, str(forsakringsgivare[0]))
+                              if n[2] is not None and n[3] is not None:
+                                   c.setFontSize(7)
+                                   c.drawString(140, y, str(n[2]))
+                                   c.drawString(174, y, " - ")
+                                   c.drawString(180, y, str(n[3]))
+                                   c.setFontSize(10)
+                              c.drawString(240, y, str(n[0]))
+                              if n[1] is not None:
+                                   if len(n[1]) > 22:
+                                        c.drawString(285, y, str(n[1]))
+                                   else:
+                                        c.drawString(300, y, str(n[1]))
+                              if n[5] is not None:
+                                   if len(n[5]) > 10:
+                                        c.setFontSize(8)
+                                        c.drawString(430, y, str(n[5]))
+                                        c.setFontSize(10)
+                                   else:
+                                        c.drawString(430, y, str(n[5]))
+                              if n[4] is not None:
+                                   c.drawString(530, y, str(n[4]))
+                              y-=25
+                    elif counter > 66 and counter < 88:
+                         c.drawString(40, y, str(forsakringsgivare[0]))
+                         if n[2] is not None and n[3] is not None:
+                              c.setFontSize(7)
+                              c.drawString(140, y, str(n[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(n[3]))
+                              c.setFontSize(10)
+                         c.drawString(240, y, str(n[0]))
+                         if n[1] is not None:
+                              if len(n[1]) > 22:
+                                   c.drawString(285, y, str(n[1]))
+                              else:
+                                   c.drawString(300, y, str(n[1]))
+                         if n[5] is not None:
+                              if len(n[5]) > 10:
+                                   c.setFontSize(8)
+                                   c.drawString(430, y, str(n[5]))
+                                   c.setFontSize(10)
+                              else:
+                                   c.drawString(430, y, str(n[5]))
+                         if n[4] is not None:
+                              c.drawString(530, y, str(n[4]))
+                         y-=25     
                     
 
                     counter+=1
@@ -1038,8 +1165,9 @@ def forsakringPerDelagare():
                          c.showPage()
 
                if totalCounter == len(totaltMaskiner):
+                    c.setFontSize(14)
                     c.drawString(150, 350, "Totalt: ")
-                    c.drawString(185, 350, str(belopp))
+                    c.drawString(195, 350, str(belopp))
                     pages+=1
                     c.save()
                     packet.seek(0)
@@ -1056,6 +1184,98 @@ def forsakringPerDelagare():
                          outputStream.close()    
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
+
+def maskinerMedAndradeBelopp():
+     
+     cursor.execute("SELECT MAX(Arsbelopp) FROM maskinregister WHERE Forsakring = '1'")
+     arsbelopp = cursor.fetchone()
+
+     cursor.execute("SELECT Maskinnummer, Forsakring, Arsbelopp, Period_start, Period_slut, Medlemsnummer FROM maskinregister WHERE Arsbelopp != '"+ str(arsbelopp[0]) +"' AND Arsbelopp > 0")
+     maskiner = cursor.fetchall()
+     maskiner = list(maskiner)
+
+     packet = io.BytesIO()
+     c = canvas.Canvas(packet, pagesize=letter)
+     y=625
+     counter = 0
+     pages = 1
+
+     c.drawString(490, 800, str(datetime.date(datetime.now())))
+
+     for i in maskiner:
+
+          if counter < 25: 
+               c.drawString(60, y, str(i[0]))
+               if i[1] == 0:
+                    c.drawString(125, y, "Nej")
+               elif i[1] == 1:
+                    c.drawString(125, y, "Ja")
+               c.drawString(190, y, str(i[2]))
+               if i[3] is not None:
+                    c.drawString(285, y, str(i[3]))
+               if i[3] is not None:
+                    c.drawString(349, y, "-")
+                    c.drawString(360, y, str(i[4]))
+               c.drawString(485, y, str(i[5]))
+               y-=25
+          elif counter == 25:
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.drawString(490, 800, str(datetime.date(datetime.now())))
+                    y = 625
+                    pages += 1
+          elif counter > 26 and counter < 50:
+               c.drawString(60, y, str(i[0]))
+               if i[1] == 0:
+                    c.drawString(125, y, "Nej")
+               elif i[1] == 1:
+                    c.drawString(125, y, "Ja")
+               c.drawString(190, y, str(i[2]))
+               if i[3] is not None:
+                    c.drawString(285, y, str(i[3]))
+               if i[3] is not None:
+                    c.drawString(349, y, "-")
+                    c.drawString(360, y, str(i[4]))
+               c.drawString(485, y, str(i[5]))
+               y-=25
+          elif counter == 50:
+               if counter != len(maskiner):
+                    c.showPage()
+                    c.drawString(490, 800, str(datetime.date(datetime.now())))
+                    y = 625
+                    pages += 1
+          elif counter > 50 and counter < 75:
+               c.drawString(60, y, str(i[0]))
+               if i[1] == 0:
+                    c.drawString(125, y, "Nej")
+               elif i[1] == 1:
+                    c.drawString(125, y, "Ja")
+               c.drawString(190, y, str(i[2]))
+               if i[3] is not None:
+                    c.drawString(285, y, str(i[3]))
+               if i[3] is not None:
+                    c.drawString(349, y, "-")
+                    c.drawString(360, y, str(i[4]))
+               c.drawString(485, y, str(i[5]))
+               y-=25
+
+          counter += 1
+
+
+     c.save()
+     packet.seek(0)
+     new_pdf = PdfFileReader(packet)
+     output = PdfFileWriter()
+
+     for x in range(pages):
+               existing_pdf = PdfFileReader(open("MaskinerÄndradeBelopp.pdf", "rb"))
+               page = existing_pdf.getPage(0)
+               page.mergePage(new_pdf.getPage(x))
+               output.addPage(page)
+               outputStream = open("Maskiner med ändrade årsbelopp.pdf", "wb")
+               output.write(outputStream)
+               outputStream.close()
+     os.startfile("Maskiner med ändrade årsbelopp.pdf")
 
 #funktion som fyller delägarfönstret med data om maskinen
 def fyllMaskinInfo(self):
@@ -1766,19 +1986,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     if filePath is not None:                        
                          cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
                          
-               else:                   
-                    maskinnummerFinns = False
-                    valtMaskinNummer = entNyMaskinnummermaskininfo.get()
-                    cursor.execute('SELECT Maskinnummer FROM maskinregister')
-                    result = cursor.fetchall()
-                    print("Lite schyssta grejer")
 
-                    for x in result:
-                         if valtMaskinNummer== str(x[0]):
-                              maskinnummerFinns = True
-                              break
-                         else:
-                              pass
                else:
                     try:
                          maskinnummerFinns = False
@@ -3485,7 +3693,7 @@ def valideraSiffror(input):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "password",
+     password = "Not1but2",
      database = "tschakt"
 )
 cursor = db.cursor()
@@ -3530,6 +3738,9 @@ BtnForsakringFraga.grid(row=3, column=5, pady=(100,0))
 
 BtnForsakringLista = Button(home, text="Försäkringar", command = lambda: forsakringPerDelagare())
 BtnForsakringLista.grid(row=3, column=5, pady=(200,0))
+
+BtnMaskinerAndradeBelopp = Button(home, text="Maskiner med\nändrade belopp", command = lambda: maskinerMedAndradeBelopp())
+BtnMaskinerAndradeBelopp.grid(row=3, column=5, pady=(0,100))
 
 EntMedlemsnummer = Entry(home, width=5, text = "Medlemsnummer") 
 EntMedlemsnummer.grid(row=1, column=1, pady=(50,0), padx=(72,0), sticky=E)
