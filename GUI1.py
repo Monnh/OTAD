@@ -3238,7 +3238,7 @@ def taBortForare():
           forarid = "".join(stringSelectedForare)
           cursor.execute("SELECT forarid FROM maskinregister WHERE forarid = %s", (forarid,))
           kopplad = cursor.fetchall()
-
+          #Kollar om föraren är kopplad till en maskin.
           if len(kopplad) != 0:
                response = messagebox.askyesno("Varning", "Föraren är kopplad till en maskin.\nVill du ta bort föraren ändå?")
                if response == 1:  
@@ -3256,6 +3256,7 @@ def taBortForare():
                     
                elif response == 0:
                     pass
+          #Om föraren in är kopplad till en maskin
           else:
                response = messagebox.askyesno("Varning", "Är du säker på att du vill ta bort föraren? Hans referenser kommer också tas bort.")
                if response == 1:
@@ -3333,7 +3334,7 @@ def hamtaMaskinerFranEntry():
                s+=str(item[2])
 
           LbMaskiner.insert("end",s )
-#Byter försäkring.               
+#Byter försäkringsbolag.               
 def bytForsakring():
      nyForsakring=askstring("Försakring","Namnet på nya försäkringsgivaren.")
      if len(nyForsakring)!=0:
@@ -3432,7 +3433,7 @@ def kopplaMaskin():
           print("Maskinid: " +maskinidString)
 
      
-
+     #Återanvändningsbar metod för att koppla en forare till en maskin.
      def queryKopplaMaskin():
           try:
                cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
