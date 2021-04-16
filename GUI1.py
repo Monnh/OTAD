@@ -1717,6 +1717,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          nyMaskin.destroy()
                     except Exception:
                          db.rollback()
+                         nyMaskin.lift()
                          traceback.print_exc()
                     
                else:
@@ -1731,6 +1732,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          db.rollback()
                          traceback.print_exc()
                          print("Kunde inte ändra maskin")
+
 
      
 
@@ -1761,10 +1763,21 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          traceback.print_exc()
                     for x in tillbehorAttLaggaTill:
                          cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(maskinnummer) + ");" )
-                    if filePath is not None:
-                         try:
-                              cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
-                         except:
+                    if filePath is not None:                        
+                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
+                         
+               else:                   
+                    maskinnummerFinns = False
+                    valtMaskinNummer = entNyMaskinnummermaskininfo.get()
+                    cursor.execute('SELECT Maskinnummer FROM maskinregister')
+                    result = cursor.fetchall()
+                    print("Lite schyssta grejer")
+
+                    for x in result:
+                         if valtMaskinNummer== str(x[0]):
+                              maskinnummerFinns = True
+                              break
+                         else:
                               pass
                else:
                     try:
@@ -1905,7 +1918,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinnummermaskininfo = Label(nyMaskin, text= "Maskinnummer")
           lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(7,8))
-          entNyMaskinnummermaskininfo = Entry(nyMaskin, width = 5)
+          entNyMaskinnummermaskininfo = Entry(nyMaskin, width = 5 ,validate="key", validatecommand=(validera, "%P"))
           entNyMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(7,0))
 
           if Typ=="Ny":
@@ -1966,7 +1979,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinmotoreffekt = Label(nyMaskin, text="Motoreffekt/KW")
           lblMaskinmotoreffekt.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinmotoreffekt=Entry(nyMaskin, width = 32)
+          entMaskinmotoreffekt=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
           entMaskinmotoreffekt.grid(column=1, row=9, sticky=W, padx=(10,0))
 
           lblMaskinmotorvarmare = Label(nyMaskin, text="Motorvärmare")
@@ -2000,12 +2013,12 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinbullernivautv = Label(nyMaskin, text="Bullernivå utvändigt")
           lblMaskinbullernivautv.grid(column=0, row=15, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinbullernivautv=Entry(nyMaskin, width = 32)
+          entMaskinbullernivautv=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
           entMaskinbullernivautv.grid(column=1, row=15, sticky=W, padx=(10,0))
 
           lblMaskinbullernivainv = Label(nyMaskin, text="Bullernivå invändigt")
           lblMaskinbullernivainv.grid(column=0, row=16, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinbullernivainv=Entry(nyMaskin, width = 32)
+          entMaskinbullernivainv=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
           entMaskinbullernivainv.grid(column=1, row=16, sticky=W, padx=(10,0))
 
           lblMaskinsmorjfett = Label(nyMaskin, text="Smörjfett")
@@ -2020,7 +2033,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinbatteriAntal = Label(nyMaskin, text="Antal")
           lblMaskinbatteriAntal.grid(column=1, row=18, sticky=E, padx=(0,35))
-          entMaskinbatteriAntal = Entry(nyMaskin, width=5)
+          entMaskinbatteriAntal = Entry(nyMaskin, width=5, validate="key", validatecommand=(validera, "%P"))
           entMaskinbatteriAntal.grid(column=1, row=18, sticky=E)
 
           #checkbox
@@ -2044,7 +2057,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinarsbelopp = Label(nyMaskin, text="Årsbelopp")
           lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinarsbelopp=Entry(nyMaskin, width = 25)
+          entMaskinarsbelopp=Entry(nyMaskin, width = 25, validate="key", validatecommand=(validera, "%P"))
           entMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
 
           #Buttons
@@ -2063,12 +2076,12 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinarsmodell = Label(nyMaskin, text="Årsmodell")
           lblMaskinarsmodell.grid(column=2, row=1, sticky = W, padx=(10,0))
-          entMaskinarsmodell=Entry(nyMaskin, width = 32)
+          entMaskinarsmodell=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
           entMaskinarsmodell.grid(column=3, row=1, sticky=W, padx=(10,0))
 
           lblMaskinregistreringsnummer = Label(nyMaskin, text="Reg. nr/Ser. nr")
           lblMaskinregistreringsnummer.grid(column=2, row=2, sticky = W, padx=(10,0))
-          entMaskinregistreringsnummer=Entry(nyMaskin, width = 20)
+          entMaskinregistreringsnummer=Entry(nyMaskin, width = 20, validate="key", validatecommand=(validera, "%P"))
           entMaskinregistreringsnummer.grid(column=3, row=2, sticky=W, padx=(10,0))
 
           lblMaskintyp = Label(nyMaskin, text="Maskintyp")
@@ -2078,22 +2091,22 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinmotoroljevolym  = Label(nyMaskin, text="Motorolja volym/liter")
           lblMaskinmotoroljevolym.grid(column=2, row=5, sticky = W, padx=(10,0))
-          entMaskinmotoroljevolym=Entry(nyMaskin, width = 32)
+          entMaskinmotoroljevolym=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
           entMaskinmotoroljevolym.grid(column=3, row=5, sticky=W, padx=(10,0))
 
           lblMaskinvaxelladevolym = Label(nyMaskin, text="Växellåda volym/liter")
           lblMaskinvaxelladevolym.grid(column=2, row=6, sticky = W, padx=(10,0))
-          entMaskinvaxelladevolym=Entry(nyMaskin, width = 32)
+          entMaskinvaxelladevolym=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
           entMaskinvaxelladevolym.grid(column=3, row=6, sticky=W, padx=(10,0))
 
           lblMaskinhydraulsystemvolym = Label(nyMaskin, text="Hydraul volym/liter")
           lblMaskinhydraulsystemvolym.grid(column=2, row=7, sticky = W, padx=(10,0))
-          entMaskinhydraulsystemvolym=Entry(nyMaskin, width = 32)
+          entMaskinhydraulsystemvolym=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
           entMaskinhydraulsystemvolym.grid(column=3, row=7, sticky=W, padx=(10,0))
 
           lblMaskinkylvatskavolym = Label(nyMaskin, text="Kylvätska volym/liter")
           lblMaskinkylvatskavolym.grid(column=2, row=8, sticky = W, padx=(10,0))
-          entMaskinkylvatskavolym=Entry(nyMaskin, width = 32)
+          entMaskinkylvatskavolym=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
           entMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
 
           lblOvrigtext = Label(nyMaskin, text="Övrig Text")
@@ -2703,6 +2716,9 @@ def fetchMaskiner(self):
                     s+=str(item[2])
                                                
                LbMaskiner.insert("end",s )
+
+
+
 
      fyllDelagarInfo(medlemsnummer)
 
@@ -3469,7 +3485,7 @@ def valideraSiffror(input):
 db = mysql.connector.connect(
      host = "localhost",
      user = "root",
-     password = "Not1but2",
+     password = "password",
      database = "tschakt"
 )
 cursor = db.cursor()
