@@ -1460,7 +1460,7 @@ def fyllMaskinInfo(self):
                cbMaskinKollektivforsakring.state(['disabled'])
      except:
           pass
-     
+     #Hämtar bilden kopplad till maskinen, om detta inte går används en placeholder.
      try:
           cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " order by bildid desc LIMIT 1;")
           img = cursor.fetchone()
@@ -1677,6 +1677,7 @@ def taBortDelagare():
           else:
                pass
 
+#Skapar ett nytt fönster där man kan Lägga till ny maskin, ändra maskin eller byta maskin.
 def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
      if len(entrymedlemsnummer) == 1:
           messagebox.showerror(title="Ej valt delägare/maskin", message="Du måste välja en delägare och/eller en maskin innan du kan Lägga till ny/ändra/byta." )
@@ -1689,7 +1690,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           global filePath
           def sparaMaskin(Typ):              
                
-                                
+               #Bestämmer vilka funktioner som borde köras baserat på om man vill ändra/byta/lägga till                 
                if Typ=="Byt":
                     nyMaskin.lift()
                     response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
@@ -1737,7 +1738,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
 
      
-
+          #Insertar en ny maskin i databasen
           def bytOchNyMaskin():
                global maskinnummer
 
@@ -1777,6 +1778,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               break
                          else:
                               pass
+                    #Kollar om maskinnummret existerar sedan innan.
                     if maskinnummerFinns == False:                            
                          cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), entMaskinme_klass.get(), varCbKollektivForsakring, medlemsnummer, entMaskinarsbelopp.get(), entMaskinarsmodell.get(), deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotoreffekt.get(), varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
                             
@@ -1793,7 +1795,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
                     
 
-
+          #Ändrar maskin baserat på de nya inputsen/entrys.
           def andraMaskin(Typ, byteTillbehor):
                global filePath
                if byteTillbehor is True:
@@ -1883,6 +1885,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           nyMaskin = Toplevel(root)
 
+          #Bestämmer titel baserat på vilken knapp man tryckte på.
           if Typ=="Ny":
                nyMaskin.title("Lägg till ny maskin")
           elif Typ=="Byt":
@@ -1912,7 +1915,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           else:
                pass
 
-
+          #Skapar fälten för att kunna skriva i den nya informationen.
           lblMaskinbeteckning = Label(nyMaskin, text="Beteckning")
           lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(0,8))
           entMaskinbeteckning = Entry(nyMaskin, width = 32)
@@ -2102,6 +2105,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           img_Bild = Label(nyMaskin) 
           img_Bild.grid(row=15, column=2, columnspan=2, rowspan=6)
 
+          #Skapar fram en dialogruta där man får välja vilken bild det är man ska spara.
           def fileDialog():
                global filePath
                global img3
@@ -2118,6 +2122,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                img3 = ImageTk.PhotoImage(imgFixadBild)
                img_NyBild = Label(nyMaskin, image=img3) 
                img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
+          #Kollar om det finns en bild och isåfall sparas den i korrekt mapp.
           def fileSave():
                print("Maskinnummret är: "+str(maskinnummer))
                if imgNyBild is not None:
@@ -2216,9 +2221,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
      
           txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), tillbehorAttLaggaTill.append(txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
-          #txtMaskinreferens.bind('<Return>', lambda x: (lbMaskinreferens.insert('end', txtMaskinreferens.get('1.0', 'end')), txtMaskinreferens.delete('1.0','end')))
-          #txtMaskintillbehor.bind('<Return>', lambda x=None: addTillbehor())
 
+
+          #Försöker fylla all relevant information i korrekt entrys.
           if Typ == "Byt":
                try:
                     entNyMaskinnummermaskininfo.config(state=NORMAL)
@@ -2606,7 +2611,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                else:
                     for x in maskiner:
                          LbDelagaresMaskiner.insert("end", x)    
-
+#Fyller LbDelagare med innehåll.
 def fyllListboxDelagare():
 
      cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
@@ -2633,7 +2638,7 @@ def fyllListboxDelagare():
           s+=str(item[3])                              
                
           LbDelagare.insert("end", s)
-
+#Fyller LbMaskiner med innehåll.
 def fetchMaskiner(self):
      global medlemsnummer
 
@@ -2788,7 +2793,7 @@ def fyllDelagarInfo(medlemsnummer):
                txtTelefon.config(state=DISABLED)
           except:
                txtTelefon.config(state=DISABLED)
-
+#Tömmer alla entrys/checkboxes etc gällande Maskininfon.
 def tomMaskinInfo():
      
           entMaskinnummermaskininfo.config(state=NORMAL)
@@ -2940,7 +2945,7 @@ def tomMaskinInfo():
           lbMaskinreferens.delete(0, "end")
           lbMaskintillbehor.delete(0, "end")
           LbDelagaresMaskiner.delete(0, "end")
-
+#Tömmer alla entrys/texts etc gällande Delägare
 def tomDelagareInfo():
           
           txtMedlemsnummerDelagare.config(state=NORMAL)
@@ -3006,7 +3011,7 @@ def taBortBilder(listaAvBilder):
                os.remove(x[0])
           else:
                print("Finns inga bilder")      
-
+#Hämtar maskinerna som tillhör en viss Delägare och fyller LbDelagaresMaskiner med dem.
 def hamtaDelagarensMaskiner():
      global medlemsnummer
 
@@ -3166,7 +3171,7 @@ def hamtaReferenser(self):
 
      for item in referenser:                              
           lbReferenser.insert("end", item[0])
-
+#Lägger till en förare i databasen.
 def laggTillForare(forare):
      
      if len(forare) == 0:
@@ -3177,10 +3182,11 @@ def laggTillForare(forare):
           db.commit()
 
           entLaggTillForare.delete(0, 'end')
-
+#Lägger till referenser som är kopplade till en förare.
 def laggTillReferens(beskrivning):
      global forarid     
-     
+     print(forarid)
+     print(len(forarid))
      if len(beskrivning) == 0:
           messagebox.showerror("Fel", "Fyll i en referens.")
      
@@ -3199,7 +3205,7 @@ def laggTillReferens(beskrivning):
                
           for item in referenser:                              
                lbReferenser.insert("end", item[0])
-
+#Tar bort referenser som är kopplade till en förare.
 def taBortReferens():
      global forarid
 
@@ -3216,9 +3222,13 @@ def taBortReferens():
                
           for item in referenser:                              
                lbReferenser.insert("end", item[0])
-     
+#Tar bort referenser kopplade till en förare samt tar även bort föraren.     
 def taBortForare():
-
+     global forarid
+     def deleteForare(forarensId):
+          cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = %s", (forarensId,))
+          cursor.execute("Delete from referens where forarid =%s", (forarensId,))
+          cursor.execute("DELETE FROM forare WHERE forarid = %s", (forarensId,))
      if len(lbForare.curselection()) == 0:
           messagebox.showerror("Fel", "Välj föraren som skall tas bort.")
      else:
@@ -3226,19 +3236,45 @@ def taBortForare():
           indexSpace = selectedForare.index(" ")
           stringSelectedForare = str(selectedForare[0:indexSpace])
           forarid = "".join(stringSelectedForare)
-          cursor.execute("SELECT * FROM forare WHERE forarid = '"+ forarid +"'")
+          cursor.execute("SELECT forarid FROM maskinregister WHERE forarid = %s", (forarid,))
           kopplad = cursor.fetchall()
+
           if len(kopplad) != 0:
                response = messagebox.askyesno("Varning", "Föraren är kopplad till en maskin.\nVill du ta bort föraren ändå?")
                if response == 1:  
-                    cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " + forarid +";")
-                    cursor.execute("DELETE FROM forare WHERE forarid = '"+ forarid +"'")
-                    db.commit()
+                    try:
+                         deleteForare(forarid)
+                         db.commit()
+                    except Exception:
+                         traceback.print_exc()
                     entKoppladMaskin.config(state=NORMAL)
                     entKoppladMaskin.delete(0, 'end')
+                    lbReferenser.delete(0,'end')
                     hamtaForare()
+                    lbForare.selection_clear(0, END)
+                    forarid = ""
+                    
                elif response == 0:
                     pass
+          else:
+               response = messagebox.askyesno("Varning", "Är du säker på att du vill ta bort föraren? Hans referenser kommer också tas bort.")
+               if response == 1:
+                    try:
+                         deleteForare(forarid)
+                         db.commit()
+                    except Exception:
+                         traceback.print_exc()
+                    entKoppladMaskin.config(state=NORMAL)
+                    entKoppladMaskin.delete(0, 'end')
+                    lbReferenser.delete(0,'end')
+                    hamtaForare()
+                    lbForare.selection_clear(0, END)
+                    forarid = ""
+                    
+               elif response == 0:
+                    pass 
+
+
 
 def hamtaDelagareFranEntry():
 
@@ -3297,7 +3333,7 @@ def hamtaMaskinerFranEntry():
                s+=str(item[2])
 
           LbMaskiner.insert("end",s )
-               
+#Byter försäkring.               
 def bytForsakring():
      nyForsakring=askstring("Försakring","Namnet på nya försäkringsgivaren.")
      if len(nyForsakring)!=0:
@@ -3325,7 +3361,7 @@ def hamtaForsakring():
      txtNuvarandeForsakring.delete(1.0, END)
      txtNuvarandeForsakring.insert(END, forsakringsGivare[0])
      txtNuvarandeForsakring.config(state=DISABLED)
-
+#Uppdaterar försäkringsinformationen gällande Startdatum, Slutdatum och Årspremien
 def uppdateraForsakring():
      print(denyttStartDatum.get())
      if len(denyttStartDatum.get())==0:
@@ -3375,7 +3411,7 @@ def hamtaForareMaskin():
                s+=str(item[2])
                       
                LbForareDelagaresMaskiner.insert("end",s )
-
+#Kopplar ihop en förare och en maskin.
 def kopplaMaskin():
 
      if len(lbForare.curselection()) == 0:
@@ -3417,7 +3453,7 @@ def kopplaMaskin():
             pass   
      else:
           queryKopplaMaskin()
-
+#Kopplar isär en förare och en maskin.
 def kopplaBortMaskin():
      if len(lbForare.curselection()) == 0:
           messagebox.showerror("Fel", "Ingen förare vald")
@@ -3439,7 +3475,7 @@ def kopplaBortMaskin():
           except Exception:
                traceback.print_exc()
                db.rollback()
-
+#Uppdaterar rutan som visar vilken maskin en förare är kopplad till.
 def refreshKoppladMaskin(forarId):
      cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = " +forarId +" LIMIT 1;")
      koppladMaskin = cursor.fetchone()
@@ -3450,7 +3486,7 @@ def refreshKoppladMaskin(forarId):
           entKoppladMaskin.insert(0, koppladMaskin[0])
      
      entKoppladMaskin.config(state=DISABLED)
-
+#Validerar entrys så att endast siffror går att använda i dem.
 def valideraSiffror(input):
      if input.isdigit() and len(input) < 7 or len(input)==0 :
           return True
