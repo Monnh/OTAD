@@ -3494,13 +3494,15 @@ def valideraSiffror(input):
      else:
           return False
 # skapar en databasanslutning
-db = mysql.connector.connect(
-     host = "localhost",
-     user = "root",
-     password = "password",
-     database = "tschakt"
-)
-cursor = db.cursor()
+def connectDB():
+     global cursor
+     db = mysql.connector.connect(
+          host = "localhost",
+          user = "root",
+          password = "password",
+          database = "tschakt"
+     )
+     cursor = db.cursor()
 
 # skapar och namnger fönster samt bestämmer storlek på fönstret
 root = Tk()
@@ -4079,11 +4081,15 @@ entnyArsPremie.grid(column=0, row=3, pady=(10,10))
 btnUppdateraForsakringsInformation = Button(forsakringNyPremieFrame, text="Uppdatera försäkringsinfot.", command=lambda:uppdateraForsakring())
 btnUppdateraForsakringsInformation.grid(column=0, row=4, pady=(0,10), columnspan=2, sticky=W)
 #Funktioner som körs på uppstart
-hamtaForare()
-fyllListboxDelagare()
-hamtaMaskinerFranEntry()
-hamtaForsakring()
-hamtaForareMaskin()
+try:
+     connectDB()
+     hamtaForare()
+     fyllListboxDelagare()
+     hamtaMaskinerFranEntry()
+     hamtaForsakring()
+     hamtaForareMaskin()
+except Exception:
+     traceback.print_exc()
 
 # kör fönstret
 root.mainloop()
