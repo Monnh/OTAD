@@ -1,0 +1,4 @@
+localhost
+root
+Not1but2
+tschakt
