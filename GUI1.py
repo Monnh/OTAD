@@ -22,7 +22,7 @@ imgNyBild = None
 def clickButton():
      pass
 
-#funktion som skapar rapporten miljödeklaration
+#Funktion som skapar PDF-rapporten miljödeklaration
 def miljodeklaration(maskinnummer):
 
      if len(maskinnummer) == 0:
@@ -165,6 +165,7 @@ def miljodeklaration(maskinnummer):
           outputStream.close()
           os.startfile("Miljödeklaration - " + str(maskinnummer) + ".pdf" )
 
+#Funktion som skapar PDF-rapporten maskinpresentation
 def maskinpresentation(maskinnummer):     
 
      if len(maskinnummer) == 0:
@@ -274,6 +275,7 @@ def maskinpresentation(maskinnummer):
           #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
           os.startfile("Maskinpresentation - " + maskinnummer + ".pdf" )
 
+#Funktion som skapar PDF-rapporten maskininnehav
 def maskininnehav(medlemsnummer):
 
      if len(medlemsnummer) == 0:
@@ -518,6 +520,7 @@ def maskininnehav(medlemsnummer):
           
           os.startfile("Maskininnehav - " + medlemsnummer + ".pdf" )
 
+#Funktion som skapar PDF-rapporten försäkring per delägare (fråga)
 def forsakringPerDelagareFraga(medlemsnummer):
 
      if len(medlemsnummer) == 0:
@@ -895,6 +898,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
 
           os.startfile("Kollektivförsäkring - " + medlemsnummer + ".pdf" )
 
+#Funktion som skapar PDF-rapporten försäkring per delägare
 def forsakringPerDelagare():
 
      cursor.execute("SELECT Medlemsnummer FROM foretagsregister")
@@ -931,8 +935,8 @@ def forsakringPerDelagare():
           if len(maskiner) != 0:
                c.setFontSize(10)
                c.drawString(490, 800, str(datetime.date(datetime.now())))
-               c.setFontSize(12)
                c.drawString(40, 645, str(foretag[0]))
+               c.setFontSize(12)
                if foretag[1] is not None:
                     c.drawString(247, 645, str(foretag[1]))
                if foretag[1] is not None:
@@ -976,8 +980,8 @@ def forsakringPerDelagare():
                               c.showPage()
                               c.setFontSize(10)
                               c.drawString(490, 800, str(datetime.date(datetime.now())))
-                              c.setFontSize(12)
                               c.drawString(40, 645, str(foretag[0]))
+                              c.setFontSize(12)
                               if foretag[1] is not None:
                                    c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
@@ -1007,7 +1011,7 @@ def forsakringPerDelagare():
                                    else:
                                         c.drawString(430, y, str(n[5]))
                               if n[4] is not None:
-                                   c.drawString(530, y, str(n[4]))
+                                   c.drawString(535, y, str(n[4]))
                               y-=25
                     elif counter > 22 and counter < 44:
                          c.drawString(40, y, str(forsakringsgivare[0]))
@@ -1031,15 +1035,15 @@ def forsakringPerDelagare():
                               else:
                                    c.drawString(430, y, str(n[5]))
                          if n[4] is not None:
-                              c.drawString(530, y, str(n[4]))
+                              c.drawString(535, y, str(n[4]))
                          y-=25
                     elif counter == 44:
                          if counter != len(maskiner):
                               c.showPage()
                               c.setFontSize(10)
                               c.drawString(490, 800, str(datetime.date(datetime.now())))
-                              c.setFontSize(12)
                               c.drawString(40, 645, str(foretag[0]))
+                              c.setFontSize(12)
                               if foretag[1] is not None:
                                    c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
@@ -1069,7 +1073,7 @@ def forsakringPerDelagare():
                                    else:
                                         c.drawString(430, y, str(n[5]))
                               if n[4] is not None:
-                                   c.drawString(530, y, str(n[4]))
+                                   c.drawString(535, y, str(n[4]))
                               y-=25
                     elif counter > 44 and counter < 66:
                          c.drawString(40, y, str(forsakringsgivare[0]))
@@ -1093,15 +1097,15 @@ def forsakringPerDelagare():
                               else:
                                    c.drawString(430, y, str(n[5]))
                          if n[4] is not None:
-                              c.drawString(530, y, str(n[4]))
+                              c.drawString(535, y, str(n[4]))
                          y-=25
                     elif counter == 66:
                          if counter != len(maskiner):
                               c.showPage()
                               c.setFontSize(10)
                               c.drawString(490, 800, str(datetime.date(datetime.now())))
-                              c.setFontSize(12)
                               c.drawString(40, 645, str(foretag[0]))
+                              c.setFontSize(12)
                               if foretag[1] is not None:
                                    c.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
@@ -1131,7 +1135,7 @@ def forsakringPerDelagare():
                                    else:
                                         c.drawString(430, y, str(n[5]))
                               if n[4] is not None:
-                                   c.drawString(530, y, str(n[4]))
+                                   c.drawString(535, y, str(n[4]))
                               y-=25
                     elif counter > 66 and counter < 88:
                          c.drawString(40, y, str(forsakringsgivare[0]))
@@ -1155,7 +1159,7 @@ def forsakringPerDelagare():
                               else:
                                    c.drawString(430, y, str(n[5]))
                          if n[4] is not None:
-                              c.drawString(530, y, str(n[4]))
+                              c.drawString(535, y, str(n[4]))
                          y-=25     
                     
 
@@ -1185,6 +1189,7 @@ def forsakringPerDelagare():
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
 
+#Funktion som skapar PDF-rapporten maskiner med ändrade belopp
 def maskinerMedAndradeBelopp():
      
      cursor.execute("SELECT MAX(Arsbelopp) FROM maskinregister WHERE Forsakring = '1'")
@@ -1277,7 +1282,7 @@ def maskinerMedAndradeBelopp():
                outputStream.close()
      os.startfile("Maskiner med ändrade årsbelopp.pdf")
 
-#funktion som fyller delägarfönstret med data om maskinen
+#Funktion som fyller delägarfönstret med data om maskinen
 def fyllMaskinInfo(self):
      global maskinnummer
      global medlemsnummer
@@ -1715,8 +1720,9 @@ def fyllMaskinInfo(self):
      
           fyllDelagarInfo(medlemsnummer)
      tabControl.select(delagare)
-     
-def nyDelagare(Typ):
+
+#Funktion för att lägga till nya och ändra information på befintliga delägare 
+def laggTillAndraDelagare(Typ):
      global medlemsnummer
 
      if Typ == "Ändra":
@@ -1872,6 +1878,7 @@ def nyDelagare(Typ):
           except:
                pass
 
+#Funktion för att ta bort delägare
 def taBortDelagare():
      global medlemsnummer
 
@@ -2843,7 +2850,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                else:
                     for x in maskiner:
                          LbDelagaresMaskiner.insert("end", x)    
-#Fyller LbDelagare med innehåll.
+#Fyller LbDelagare (Listboxen på Home-fliken) med innehåll.
 def fyllListboxDelagare():
 
      cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
@@ -2870,8 +2877,8 @@ def fyllListboxDelagare():
           s+=str(item[3])                              
                
           LbDelagare.insert("end", s)
-#Fyller LbMaskiner med innehåll.
-def fetchMaskiner(self):
+#Fyller LbMaskiner (Listboxen på Home-fliken) med innehåll.
+def hamtaAllaMaskiner(self):
      global medlemsnummer
 
      selectedDelagare = LbDelagare.get(LbDelagare.curselection())
@@ -2952,6 +2959,7 @@ def fyllDelagarInfoMedNummer(self):
 
      tabControl.select(delagare)
 
+#Funktion för att fylla delägarens info i Delägare-fliken
 def fyllDelagarInfo(medlemsnummer):
      #global medlemsnummer
 
@@ -3025,6 +3033,7 @@ def fyllDelagarInfo(medlemsnummer):
                txtTelefon.config(state=DISABLED)
           except:
                txtTelefon.config(state=DISABLED)
+
 #Tömmer alla entrys/checkboxes etc gällande Maskininfon.
 def tomMaskinInfo():
      
@@ -3177,6 +3186,7 @@ def tomMaskinInfo():
           lbMaskinreferens.delete(0, "end")
           lbMaskintillbehor.delete(0, "end")
           LbDelagaresMaskiner.delete(0, "end")
+
 #Tömmer alla entrys/texts etc gällande Delägare
 def tomDelagareInfo():
           
@@ -3212,6 +3222,7 @@ def tomDelagareInfo():
           txtTelefon.delete('1.0', 'end')
           txtTelefon.config(state=DISABLED)   
 
+#Funktion för att ta bort maskiner
 def taBortMaskin(maskinnummer):
      global medlemsnummer
      
@@ -3237,12 +3248,14 @@ def taBortMaskin(maskinnummer):
           else:
                pass
 
+#Funktion för att ta bort bilder
 def taBortBilder(listaAvBilder):     
      for x in listaAvBilder:
           if os.path.exists(x[0]):
                os.remove(x[0])
           else:
                print("Finns inga bilder")      
+
 #Hämtar maskinerna som tillhör en viss Delägare och fyller LbDelagaresMaskiner med dem.
 def hamtaDelagarensMaskiner():
      global medlemsnummer
@@ -3260,7 +3273,8 @@ def hamtaDelagarensMaskiner():
                     LbDelagaresMaskiner.insert("end", x)   
           LbDelagaresMaskiner.selection_set(0)
           fyllMaskinInfo("endastDelagare")
-     
+
+
 def hamtaDelagare(medlemsnr):
      global medlemsnummer
 
@@ -3790,12 +3804,12 @@ EntMaskinnummer = Entry(home, width=5, text ="Maskinnummer")
 EntMaskinnummer.grid(row=1, column=3, pady=(50,0), padx=(22,0), sticky=W)
 EntMaskinnummer.bind("<KeyRelease>", lambda args: hamtaMaskinerFranEntry())
 
-BtnNyDelagare = Button (home, text ="Lägg till delägare", height = 1, command = lambda: nyDelagare("Ny"))
+BtnNyDelagare = Button (home, text ="Lägg till delägare", height = 1, command = lambda: laggTillAndraDelagare("Ny"))
 BtnNyDelagare.grid(row = 4, column = 2, pady=(5,0))
 
 LbDelagare = Listbox(home, width = 60, height = 30, exportselection=0)
 LbDelagare.grid(row = 2, column = 1, columnspan = 2, rowspan = 2, padx=(300,0), pady=(5,0))
-LbDelagare.bind('<<ListboxSelect>>', fetchMaskiner)
+LbDelagare.bind('<<ListboxSelect>>', hamtaAllaMaskiner)
 LbDelagare.bind('<Double-Button>', fyllDelagarInfoMedNummer)
 
 LbMaskiner = Listbox(home, width = 60, height = 30, exportselection=0)
@@ -3907,7 +3921,7 @@ txtTelefon = Text(frameDelagare, width = 25, height=0.1)
 txtTelefon.grid(row = 8, column =1, sticky = W, padx=(0,4))
 txtTelefon.config(state=DISABLED)
 
-btnAndraDelagare = Button(frameDelagare, text ="Ändra", command = lambda: nyDelagare("Ändra"))
+btnAndraDelagare = Button(frameDelagare, text ="Ändra", command = lambda: laggTillAndraDelagare("Ändra"))
 btnAndraDelagare.grid(row=9, column=1, sticky=W, padx=(55,0), pady=(0,5))
 
 btnTaBortDelagare = Button(frameDelagare, text="Ta bort delägare", command = lambda: taBortDelagare())
@@ -4317,6 +4331,7 @@ entnyArsPremie.grid(column=0, row=3, pady=(10,10))
 
 btnUppdateraForsakringsInformation = Button(forsakringNyPremieFrame, text="Uppdatera försäkringsinfot.", command=lambda:uppdateraForsakring())
 btnUppdateraForsakringsInformation.grid(column=0, row=4, pady=(0,10), columnspan=2, sticky=W)
+
 #Funktioner som körs på uppstart
 hamtaForare()
 fyllListboxDelagare()
