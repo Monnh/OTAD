@@ -3271,73 +3271,77 @@ def hamtaDelagare(medlemsnr):
 
 def historikFonster(maskinnummer):
 
-     historikFonster = Toplevel(root)
+     if len(maskinnummer) == 0:
+          messagebox.showerror("Fel", "Välj en maskin att se historiken för.")
+     
+     else:
+          historikFonster = Toplevel(root)
 
-     historikFonster.title("Historik")
+          historikFonster.title("Historik")
 
-     historikFonster.geometry("475x280")
+          historikFonster.geometry("475x280")
 
-     def hamtaHistorik():
+          def hamtaHistorik():
 
-          if maskinnummer is not None and maskinnummer != "":
-               cursor.execute('SELECT Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik WHERE Maskinnummer = ' + str(maskinnummer) + ';')
-               result = cursor.fetchall()
+               if maskinnummer is not None and maskinnummer != "":
+                    cursor.execute('SELECT Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik WHERE Maskinnummer = ' + str(maskinnummer) + ';')
+                    result = cursor.fetchall()
 
-               count = 0
+                    count = 0
 
-               for x in result:                           
-                    LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4]))
-                    count += 1
-               
-               if len(result) == 0:
-                    btnTaBortHistorik["state"] = DISABLED
+                    for x in result:                           
+                         LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4]))
+                         count += 1
+                    
+                    if len(result) == 0:
+                         btnTaBortHistorik["state"] = DISABLED
+                    else:
+                         btnTaBortHistorik["state"] = NORMAL
                else:
-                    btnTaBortHistorik["state"] = NORMAL
-          else:
-               btnTaBortHistorik["state"] = DISABLED
+                    btnTaBortHistorik["state"] = DISABLED
 
-     def taBortHistorik():
-          maskinnummer=  ""
-          datum = ""
-          for item in LbHistorik.selection():
-               id = LbHistorik.item(item, "values")
-               maskinnummer = id[0]
-               datum = (id[4])
-               LbHistorik.delete(item)
+          def taBortHistorik():
+               maskinnummer=  ""
+               datum = ""
+               for item in LbHistorik.selection():
+                    id = LbHistorik.item(item, "values")
+                    maskinnummer = id[0]
+                    datum = (id[4])
+                    LbHistorik.delete(item)
 
-          cursor.execute("SELECT historikid FROM historik WHERE Maskinnummer = " + str(maskinnummer) + " and Datum = '" + datum + "'")
-          historikid = cursor.fetchone()
+               cursor.execute("SELECT historikid FROM historik WHERE Maskinnummer = " + str(maskinnummer) + " and Datum = '" + datum + "'")
+               historikid = cursor.fetchone()
 
-          try:
-               cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
-               db.commit()
-          except Exception:
-               traceback.print_exc()
-               db.rollback()
-     
-     LbHistorik = ttk.Treeview(historikFonster)
-     LbHistorik.grid(row=1, column=1, padx=(10,0), pady=(10,0))
-     LbHistorik['columns'] = ("Maskinnummer", "Beteckning", "Reg.nr", "ME-klass", "Datum")
-     LbHistorik.column('#0', width=0)
-     LbHistorik.column("Maskinnummer", anchor=W, width=65)
-     LbHistorik.column("Beteckning", anchor=W, width=135)
-     LbHistorik.column("Reg.nr", anchor=W, width=75)
-     LbHistorik.column("ME-klass", anchor=W, width=75)
-     LbHistorik.column("Datum", anchor=W, width=100)
+               try:
+                    cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
+                    db.commit()
+               except Exception:
+                    traceback.print_exc()
+                    db.rollback()
+          
+          LbHistorik = ttk.Treeview(historikFonster)
+          LbHistorik.grid(row=1, column=1, padx=(10,0), pady=(10,0))
+          LbHistorik['columns'] = ("Maskinnummer", "Beteckning", "Reg.nr", "ME-klass", "Datum")
+          LbHistorik.column('#0', width=0)
+          LbHistorik.column("Maskinnummer", anchor=W, width=65)
+          LbHistorik.column("Beteckning", anchor=W, width=135)
+          LbHistorik.column("Reg.nr", anchor=W, width=75)
+          LbHistorik.column("ME-klass", anchor=W, width=75)
+          LbHistorik.column("Datum", anchor=W, width=100)
 
-     LbHistorik.heading('#0', text="")
-     LbHistorik.heading("Maskinnummer", text="Maskinnr.", anchor=W)
-     LbHistorik.heading("Beteckning", text="Beteckning", anchor=W)
-     LbHistorik.heading("Reg.nr", text="Reg.nr", anchor=W)
-     LbHistorik.heading("ME-klass", text="ME-klass", anchor=W)
-     LbHistorik.heading("Datum", text="Datum", anchor=W)
+          LbHistorik.heading('#0', text="")
+          LbHistorik.heading("Maskinnummer", text="Maskinnr.", anchor=W)
+          LbHistorik.heading("Beteckning", text="Beteckning", anchor=W)
+          LbHistorik.heading("Reg.nr", text="Reg.nr", anchor=W)
+          LbHistorik.heading("ME-klass", text="ME-klass", anchor=W)
+          LbHistorik.heading("Datum", text="Datum", anchor=W)
 
-     btnTaBortHistorik = Button(historikFonster, text="Ta bort", command=lambda: taBortHistorik())
-     btnTaBortHistorik.grid(row=2, column=1, sticky=E, pady=(5,0))
+          btnTaBortHistorik = Button(historikFonster, text="Ta bort", command=lambda: taBortHistorik())
+          btnTaBortHistorik.grid(row=2, column=1, sticky=E, pady=(5,0))
 
-     
+          
 
-     hamtaHistorik()
+          hamtaHistorik()
 
 def sparaHistorik(maskinnummer):
 
