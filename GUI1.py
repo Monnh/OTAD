@@ -3717,14 +3717,34 @@ def valideraSiffror(input):
           return True
      else:
           return False
+
+def readAFile():
+     global filelist
+     file = open("test.txt", "r")
+     filelist = file.readlines()
+     file.close()
+
 # skapar en databasanslutning
-db = mysql.connector.connect(
-     host = "localhost",
-     user = "root",
-     password = "Not1but2",
-     database = "tschakt"
-)
-cursor = db.cursor()
+global filelist
+readAFile()
+h = str(filelist[0])
+_h = h[:-1]
+u = str(filelist[1])
+_u = u[:-1]
+p = str(filelist[2])
+_p = p[:-1]
+_d = str(filelist[3])
+
+try:
+     db = mysql.connector.connect(
+          host =  _h ,
+          user = _u ,
+          password = _p ,
+          database = str(filelist[3])
+     )
+     cursor = db.cursor()
+except Exception:
+     print("Databasuppkopplingen misslyckades!")
 
 # skapar och namnger fönster samt bestämmer storlek på fönstret
 root = Tk()
@@ -4307,6 +4327,31 @@ entnyArsPremie.grid(column=0, row=3, pady=(10,10))
 
 btnUppdateraForsakringsInformation = Button(forsakringNyPremieFrame, text="Uppdatera försäkringsinfot.", command=lambda:uppdateraForsakring())
 btnUppdateraForsakringsInformation.grid(column=0, row=4, pady=(0,10), columnspan=2, sticky=W)
+
+#Inställningar
+lblLocalHost=Label(installningar, text="Local host")
+lblLocalHost.grid(row=0, column=0, padx=(10,0), pady=(10,0), sticky=W)
+
+entLocalHost=Entry(installningar, width=20)
+entLocalHost.grid(row=0, column=1, padx=(10,0), pady=(10,0))
+
+lblUsername=Label(installningar, text="Användarnamn")
+lblUsername.grid(row=1, column=0, padx=(10,0), pady=(10,0), sticky=W)
+
+entUsername=Entry(installningar, width=20)
+entUsername.grid(row=1, column=1, padx=(10,0), pady=(10,0))
+
+lblPassword=Label(installningar, text="Lösenord")
+lblPassword.grid(row=2, column=0, padx=(10,0), pady=(10,0), sticky=W)
+
+entPassword=Entry(installningar, width=20)
+entPassword.grid(row=2, column=1, padx=(10,0), pady=(10,0))
+
+lblDatabas=Label(installningar, text="Databas")
+lblDatabas.grid(row=3, column=0, padx=(10,0), pady=(10,0), sticky=W)
+
+entDtabas=Entry(installningar, width=20)
+entDtabas.grid(row=3, column=1, padx=(10,0), pady=(10,0))
 
 #Funktioner som körs på uppstart
 hamtaForare()
