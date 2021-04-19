@@ -1165,10 +1165,7 @@ def forsakringPerDelagare():
                          c.showPage()
 
                if totalCounter == len(totaltMaskiner):
-<<<<<<< HEAD
                     c.setFontSize(14)
-=======
->>>>>>> stridis
                     c.drawString(150, 350, "Totalt: ")
                     c.drawString(195, 350, str(belopp))
                     pages+=1
@@ -1184,12 +1181,7 @@ def forsakringPerDelagare():
                          output.addPage(page)
                          outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
                          output.write(outputStream)
-<<<<<<< HEAD
                          outputStream.close()    
-=======
-                         outputStream.close()
-    
->>>>>>> stridis
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
 
@@ -3731,22 +3723,12 @@ def refreshKoppladMaskin(forarId):
           entKoppladMaskin.insert(0, koppladMaskin[0])
      
      entKoppladMaskin.config(state=DISABLED)
-<<<<<<< HEAD
 #Validerar entrys så att endast siffror går att använda i dem.
 def valideraSiffror(input):
      if input.isdigit() and len(input) < 7 or len(input)==0 :
           return True
      else:
           return False
-# skapar en databasanslutning
-db = mysql.connector.connect(
-     host = "localhost",
-     user = "root",
-     password = "Not1but2",
-     database = "tschakt"
-)
-cursor = db.cursor()
-=======
 
 def readAFile():
      global filelist
@@ -3775,7 +3757,6 @@ try:
      cursor = db.cursor()
 except Exception:
      print("Databasuppkopplingen misslyckades!")
->>>>>>> stridis
 
 # skapar och namnger fönster samt bestämmer storlek på fönstret
 root = Tk()
