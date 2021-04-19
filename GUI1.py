@@ -15,13 +15,9 @@ from datetime import datetime,date
 import os
 import traceback
 
-#funktioner
-filePath = None
-imgNyBild = None
 
 def clickButton():
      pass
-
 #Funktion som skapar PDF-rapporten miljödeklaration
 def miljodeklaration(maskinnummer):
 
@@ -153,7 +149,7 @@ def miljodeklaration(maskinnummer):
           packet.seek(0)
           new_pdf = PdfFileReader(packet)
 
-          existing_pdf = PdfFileReader(open("Miljödeklaration.pdf", "rb"))
+          existing_pdf = PdfFileReader(open("PDFMallar/Miljödeklaration.pdf", "rb"))
           output = PdfFileWriter()
 
           page = existing_pdf.getPage(0)
@@ -164,7 +160,6 @@ def miljodeklaration(maskinnummer):
           output.write(outputStream)
           outputStream.close()
           os.startfile("Miljödeklaration - " + str(maskinnummer) + ".pdf" )
-
 #Funktion som skapar PDF-rapporten maskinpresentation
 def maskinpresentation(maskinnummer):     
 
@@ -262,7 +257,7 @@ def maskinpresentation(maskinnummer):
           packet.seek(0)
           new_pdf = PdfFileReader(packet)
 
-          existing_pdf = PdfFileReader(open("Maskinpresentation.pdf", "rb"))
+          existing_pdf = PdfFileReader(open("PDFMallar/Maskinpresentation.pdf", "rb"))
           output = PdfFileWriter()
 
           page = existing_pdf.getPage(0)
@@ -274,7 +269,6 @@ def maskinpresentation(maskinnummer):
           outputStream.close()
           #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
           os.startfile("Maskinpresentation - " + maskinnummer + ".pdf" )
-
 #Funktion som skapar PDF-rapporten maskininnehav
 def maskininnehav(medlemsnummer):
 
@@ -510,7 +504,7 @@ def maskininnehav(medlemsnummer):
           output = PdfFileWriter()
 
           for x in range(pages):
-               existing_pdf = PdfFileReader(open("Maskininnehav.pdf", "rb"))
+               existing_pdf = PdfFileReader(open("PDFMallar/Maskininnehav.pdf", "rb"))
                page = existing_pdf.getPage(0)
                page.mergePage(new_pdf.getPage(x))
                output.addPage(page)
@@ -519,7 +513,6 @@ def maskininnehav(medlemsnummer):
                outputStream.close()
           
           os.startfile("Maskininnehav - " + medlemsnummer + ".pdf" )
-
 #Funktion som skapar PDF-rapporten försäkring per delägare (fråga)
 def forsakringPerDelagareFraga(medlemsnummer):
 
@@ -867,7 +860,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
           dOutput = PdfFileWriter()
 
           for x in range(pages):
-               existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
+               existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
                page = existing_pdf.getPage(0)
                page.mergePage(new_pdf.getPage(x))
                output.addPage(page)
@@ -878,7 +871,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
           if dCounter > 0:
                if dPages > 0:
                     for x in range(dPages):
-                         existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
+                         existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
                          page = existing_pdf.getPage(0)
                          page.mergePage(andradeBelopp_pdf.getPage(x))
                          dOutput.addPage(page)
@@ -886,7 +879,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
                          dOutput.write(outputStream)
                          outputStream.close()
                else:
-                    existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
+                    existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
                     page = existing_pdf.getPage(0)
                     page.mergePage(andradeBelopp_pdf.getPage(0))
                     dOutput.addPage(page)
@@ -897,7 +890,6 @@ def forsakringPerDelagareFraga(medlemsnummer):
 
 
           os.startfile("Kollektivförsäkring - " + medlemsnummer + ".pdf" )
-
 #Funktion som skapar PDF-rapporten försäkring per delägare
 def forsakringPerDelagare():
 
@@ -1179,7 +1171,7 @@ def forsakringPerDelagare():
                     output = PdfFileWriter()
 
                     for x in range(pages):
-                         existing_pdf = PdfFileReader(open("Kollektivförsäkring.pdf", "rb"))
+                         existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
                          page = existing_pdf.getPage(0)
                          page.mergePage(new_pdf.getPage(x))
                          output.addPage(page)
@@ -1188,7 +1180,6 @@ def forsakringPerDelagare():
                          outputStream.close()    
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
-
 #Funktion som skapar PDF-rapporten maskiner med ändrade belopp
 def maskinerMedAndradeBelopp():
      
@@ -1273,7 +1264,7 @@ def maskinerMedAndradeBelopp():
      output = PdfFileWriter()
 
      for x in range(pages):
-               existing_pdf = PdfFileReader(open("MaskinerÄndradeBelopp.pdf", "rb"))
+               existing_pdf = PdfFileReader(open("PDFMallar/MaskinerÄndradeBelopp.pdf", "rb"))
                page = existing_pdf.getPage(0)
                page.mergePage(new_pdf.getPage(x))
                output.addPage(page)
@@ -1281,8 +1272,7 @@ def maskinerMedAndradeBelopp():
                output.write(outputStream)
                outputStream.close()
      os.startfile("Maskiner med ändrade årsbelopp.pdf")
-
-#Funktion som fyller delägarfönstret med data om maskinen
+#Fyller delägarfönstret med maskinens data
 def fyllMaskinInfo(self):
      global maskinnummer
      global medlemsnummer
@@ -1720,8 +1710,7 @@ def fyllMaskinInfo(self):
      
           fyllDelagarInfo(medlemsnummer)
      tabControl.select(delagare)
-
-#Funktion för att lägga till nya och ändra information på befintliga delägare 
+#Funktion för att ägga till nya delägare och ändra information på befintliga delägare 
 def laggTillAndraDelagare(Typ):
      global medlemsnummer
 
@@ -1877,7 +1866,6 @@ def laggTillAndraDelagare(Typ):
                entNyTelefon.insert('end', delagarInformation[5])
           except:
                pass
-
 #Funktion för att ta bort delägare
 def taBortDelagare():
      global medlemsnummer
@@ -1897,14 +1885,9 @@ def taBortDelagare():
 
           else:
                pass
-
 #Skapar ett nytt fönster där man kan Lägga till ny maskin, ändra maskin eller byta maskin.
 def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
-     # print("test: "+entrymaskinnummer+entrymedlemsnummer)
-     # print(len(entrymedlemsnummer))
-     # print(len(entrymaskinnummer))
-     # print(Typ)
-     # print(Typ.isdigit())
+
      if len(entrymedlemsnummer) == 1:
           messagebox.showerror(title="Ej valt delägare/maskin", message="Du måste välja en delägare och/eller en maskin innan du kan Lägga till ny/ändra/byta." )
      elif Typ =="Byt" and len (entrymaskinnummer) ==0:
@@ -2850,7 +2833,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                else:
                     for x in maskiner:
                          LbDelagaresMaskiner.insert("end", x)    
-#Fyller LbDelagare (Listboxen på Home-fliken) med innehåll.
+#Fyller LbDelagare (Listboxen på Home-fliken) med delägarna ifrån databsen
 def fyllListboxDelagare():
 
      cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
@@ -2877,7 +2860,7 @@ def fyllListboxDelagare():
           s+=str(item[3])                              
                
           LbDelagare.insert("end", s)
-#Fyller LbMaskiner (Listboxen på Home-fliken) med innehåll.
+#Fyller LbMaskiner (Listboxen på Home-fliken) med maskinerna ifrån databasen
 def hamtaAllaMaskiner(self):
      global medlemsnummer
 
@@ -2940,7 +2923,7 @@ def hamtaAllaMaskiner(self):
 
 
      fyllDelagarInfo(medlemsnummer)
-
+#Fyller delägarens info i Delägare-fliken när delägaren väljs via Listboxen (LbDelagare)
 def fyllDelagarInfoMedNummer(self):
      global medlemsnummer
 
@@ -2958,8 +2941,7 @@ def fyllDelagarInfoMedNummer(self):
           traceback.print_exc()
 
      tabControl.select(delagare)
-
-#Funktion för att fylla delägarens info i Delägare-fliken
+#Fyller delägarens info i Delägare-fliken
 def fyllDelagarInfo(medlemsnummer):
      #global medlemsnummer
 
@@ -3033,7 +3015,6 @@ def fyllDelagarInfo(medlemsnummer):
                txtTelefon.config(state=DISABLED)
           except:
                txtTelefon.config(state=DISABLED)
-
 #Tömmer alla entrys/checkboxes etc gällande Maskininfon.
 def tomMaskinInfo():
      
@@ -3186,7 +3167,6 @@ def tomMaskinInfo():
           lbMaskinreferens.delete(0, "end")
           lbMaskintillbehor.delete(0, "end")
           LbDelagaresMaskiner.delete(0, "end")
-
 #Tömmer alla entrys/texts etc gällande Delägare
 def tomDelagareInfo():
           
@@ -3221,7 +3201,6 @@ def tomDelagareInfo():
           txtTelefon.config(state=NORMAL)
           txtTelefon.delete('1.0', 'end')
           txtTelefon.config(state=DISABLED)   
-
 #Funktion för att ta bort maskiner
 def taBortMaskin(maskinnummer):
      global medlemsnummer
@@ -3247,7 +3226,6 @@ def taBortMaskin(maskinnummer):
                     traceback.print_exc()
           else:
                pass
-
 #Funktion för att ta bort bilder
 def taBortBilder(listaAvBilder):     
      for x in listaAvBilder:
@@ -3255,7 +3233,6 @@ def taBortBilder(listaAvBilder):
                os.remove(x[0])
           else:
                print("Finns inga bilder")      
-
 #Hämtar maskinerna som tillhör en viss Delägare och fyller LbDelagaresMaskiner med dem.
 def hamtaDelagarensMaskiner():
      global medlemsnummer
@@ -3273,8 +3250,7 @@ def hamtaDelagarensMaskiner():
                     LbDelagaresMaskiner.insert("end", x)   
           LbDelagaresMaskiner.selection_set(0)
           fyllMaskinInfo("endastDelagare")
-
-
+#Hämtar delägare ifrån Delägare-flikens sökfunktion
 def hamtaDelagare(medlemsnr):
      global medlemsnummer
 
@@ -3286,7 +3262,7 @@ def hamtaDelagare(medlemsnr):
           tomMaskinInfo()
           fyllDelagarInfo(medlemsnummer)
           hamtaDelagarensMaskiner()
-
+#Skapar ett fönster med historiken kopplad till en maskin
 def historikFonster(maskinnummer):
 
      if len(maskinnummer) == 0:
@@ -3360,7 +3336,7 @@ def historikFonster(maskinnummer):
           
 
           hamtaHistorik()
-
+#Sparar historik i databasen
 def sparaHistorik(maskinnummer):
 
      cursor.execute("SELECT MarkeModell, Registreringsnummer, ME_Klass FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
@@ -3390,7 +3366,7 @@ def sparaHistorik(maskinnummer):
      else:
           cursor.execute("INSERT INTO historik (Maskinnummer, Beteckning, Datum, Registreringsnummer, ME_klass, Foretag) VALUES (%s, %s, %s, %s, %s, %s)", (maskinnummer, beteckning, datum, regnr, me_klass, foretag))
      db.commit()
-
+#Hämtar förare ur databasen och lägger dessa i LbForare på Förare-fliken
 def hamtaForare():
 
      cursor.execute("SELECT Forarid, Namn FROM forare")
@@ -3524,9 +3500,7 @@ def taBortForare():
                     
                elif response == 0:
                     pass 
-
-
-
+#Hämtar delägare efter det medlemsnummer som söks på i Home-fliken
 def hamtaDelagareFranEntry():
 
      cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister WHERE Medlemsnummer LIKE '" + EntMedlemsnummer.get() + "%'")
@@ -3554,7 +3528,7 @@ def hamtaDelagareFranEntry():
           s+=str(item[3])                              
                
           LbDelagare.insert("end", s)
-
+#Hämta maskiner efter det maskinnummer som söks på i Home-fliken
 def hamtaMaskinerFranEntry():
 
      cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
@@ -3600,7 +3574,7 @@ def bytForsakring():
                     db.rollback()
      else:
           messagebox.showerror(title="Ej godkännt försäkringsnamn.", message="Du måste skriva i ett giltigt försäkringsnamn.")
-          
+#Hämtar det försäkringsbolag som är inlagt i databasen      
 def hamtaForsakring():
      forsakringsGivare=""
      try:
@@ -3634,7 +3608,7 @@ def uppdateraForsakring():
                except Exception:
                     db.rollback()
                     traceback.print_exc()
-
+#Hämtar alla maskiner i databasen och lägger dessa i Listboxen på Förare-fliken
 def hamtaForareMaskin():
      cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
      result = cursor.fetchall()
@@ -3774,8 +3748,10 @@ tabControl.add(installningar, text='Inställningar')
 tabControl.grid(column=0, row=0)
 
 
-#Variabler
+#Globala variabler
 
+filePath = None
+imgNyBild = None
 medlemsnummer = ""
 maskinnummer = ""
 forarid = ""
