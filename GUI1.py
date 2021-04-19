@@ -1972,6 +1972,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                varCbGasolanlaggning = cbMaskingasolanlaggning.instate(['selected'])
                varCbSaneringsvatska = cbMaskinSaneringsvatska.instate(['selected'])
                varCbMaskininsatserlagd = cbMaskininsatserlagd.instate(['selected'])
+
+               #Hämtar värdet i dessa entries för att sedan kolla om det är tomt. Ifall det är tomt görs det om till None då
+               #Int i databasen inte kan konvertera en tom sträng till None av sig självt. 
                varMeKlass = entMaskinme_klass.get()
                varArsbelopp = entMaskinarsbelopp.get()
                varMotoreffekt = entMaskinmotoreffekt.get()
