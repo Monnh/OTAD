@@ -1,8 +1,4 @@
 localhost
 root
-<<<<<<< HEAD
-sennaa66
-=======
 Not1but2
->>>>>>> main
 tschakt

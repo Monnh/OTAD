@@ -1707,7 +1707,7 @@ def fyllMaskinInfo(self):
      
           fyllDelagarInfo(medlemsnummer)
      tabControl.select(delagare)
-#Funktion för att ägga till nya delägare och ändra information på befintliga delägare 
+#Funktion för att lägga till nya delägare och ändra information på befintliga delägare 
 def laggTillAndraDelagare(Typ):
      global medlemsnummer
 
