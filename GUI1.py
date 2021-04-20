@@ -15,9 +15,6 @@ from datetime import datetime,date
 import os
 import traceback
 
-
-def clickButton():
-     pass
 #Funktion som skapar PDF-rapporten miljödeklaration
 def miljodeklaration(maskinnummer):
 
@@ -3724,7 +3721,7 @@ def readAFile():
      filelist = file.readlines()
      file.close()
 
-# skapar en databasanslutning
+#Skapar databasanslutningen
 global filelist
 readAFile()
 h = str(filelist[0])
@@ -3746,14 +3743,13 @@ try:
 except Exception:
      print("Databasuppkopplingen misslyckades!")
 
-# skapar och namnger fönster samt bestämmer storlek på fönstret
+#Skapar och namnger huvudfönstret samt sätter storleken på fönstret
 root = Tk()
 root.title("T-schakts delägarregister")
 root.geometry("1365x750")
 root.resizable(False, False)
  
-#tabs
-
+#Flikarna som finns i GUI:t
 tabControl = ttk.Notebook(root)
 home = ttk.Frame(tabControl)
 delagare = ttk.Frame(tabControl)
@@ -3778,7 +3774,7 @@ forarid = ""
 
 validera = root.register(valideraSiffror)
 
-#skapar textfält och textboxar
+#Skapar de widgets vi har på Home-fliken
 
 BtnMaskinnehav = Button(home, text="Maskininnehav", command = lambda: maskininnehav(medlemsnummer))
 BtnMaskinnehav.grid(row=3, column = 5)
@@ -3823,7 +3819,7 @@ ScbDMaskiner.config(command =LbMaskiner.yview)
 LbDelagare.config(yscrollcommand=ScbDelagare.set)
 LbMaskiner.config(yscrollcommand=ScbDMaskiner.set)
 
-#frames
+#Frames som används i GUI:t
 
 delagare.columnconfigure(1, weight=1)
 delagare.rowconfigure(0, weight=1)
@@ -3837,7 +3833,7 @@ frameOvrigText.grid(row=2, column=0, sticky=NSEW, padx=(10,0), pady=(10,0))
 frameMaskininfo = Frame(delagare)
 frameMaskininfo.grid(row = 0, column =1, rowspan = 3, sticky = NSEW, pady=(10,0))
 
-#Listbox, maskiner tillhörande delägare
+#Listbox med maskiner tillhörande valda delägaren
 LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45, height = 12, exportselection=0)
 LbDelagaresMaskiner.grid(row = 1, column = 0)
 LbDelagaresMaskiner.grid_rowconfigure(1, weight=1)
@@ -3847,14 +3843,12 @@ LbDelagaresMaskiner.bind('<<ListboxSelect>>', lambda x=None: fyllMaskinInfo("fra
 lblDelagareMaskiner = Label(frameMaskiner, text = "Delägarens maskiner")
 lblDelagareMaskiner.grid(row=0, column=0, sticky=NW)
 
-#Scrollbar
 ScbLbDelagaresMaskiner = Scrollbar(frameMaskiner, orient="vertical")
 ScbLbDelagaresMaskiner.grid(row = 1, column = 0, sticky = N+S+E)
 ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
-
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
-#Maskinbild
+#Bilden kopplad till maskinen
 img = Image.open("1.jpg")  
 img = img.resize((225,200), Image. ANTIALIAS)
 img4 = ImageTk.PhotoImage(img)
@@ -3862,7 +3856,7 @@ img_label = Label(frameOvrigText, image=img4)
 img_label.grid(row=0, column=0, sticky = NW)
 
 
-#Delägareinfo
+#Delägarens data
 
 lblMedlemsnummer = Label(frameDelagare, text = "Medlemsnr.")
 lblMedlemsnummer.grid(row = 1, column = 0, sticky=W, pady=(0,8))
@@ -3923,7 +3917,7 @@ btnAndraDelagare.grid(row=9, column=1, sticky=W, padx=(55,0), pady=(0,5))
 btnTaBortDelagare = Button(frameDelagare, text="Ta bort delägare", command = lambda: taBortDelagare())
 btnTaBortDelagare.grid(row=9, column =1, sticky=E, padx=(0,5), pady=(0,5))
 
-#Maskininfo
+#Maskinens data 
 
 lblMaskinnummermaskininfo = Label(frameMaskininfo, text= "Maskinnummer")
 lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(0,8))
@@ -4045,7 +4039,7 @@ entMaskinBatteriantal = Entry(frameMaskininfo, width=5)
 entMaskinBatteriantal.grid(column=1, row=18, sticky=E)
 entMaskinBatteriantal.config(state=DISABLED)
 
-#checkbox
+#Checkboxar för maskinens boolean-värden i databasen
 lblMaskinKollektivforsakring = Label(frameMaskininfo, text="Kollektiv försäkring")
 lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0), pady=(0,8))
 cbMaskinKollektivforsakring = ttk.Checkbutton(frameMaskininfo)
@@ -4058,11 +4052,9 @@ deMaskinperiod1 = DateEntry(frameMaskininfo, values="Text", date_pattern="yyyy-m
 deMaskinperiod1.delete(0, 'end')
 deMaskinperiod1.grid(column=1, row=20, sticky=W, padx=(10,0))
 
-
 deMaskinperiod2 = DateEntry(frameMaskininfo, values="Text", date_pattern="yyyy-mm-dd")
 deMaskinperiod2.delete(0, 'end')
 deMaskinperiod2.grid(column=1, row=20, sticky=E)
-
 
 lblMaskinarsbelopp = Label(frameMaskininfo, text="Årsbelopp")
 lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
@@ -4070,7 +4062,7 @@ entMaskinarsbelopp=Entry(frameMaskininfo, width = 32)
 entMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
 entMaskinarsbelopp.config(state=DISABLED)
 
-#Buttons
+#Knapparna/Buttons i fliken Delägare
 
 btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation(entMaskinnummermaskininfo()))
 btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
@@ -4328,7 +4320,7 @@ entnyArsPremie.grid(column=0, row=3, pady=(10,10))
 btnUppdateraForsakringsInformation = Button(forsakringNyPremieFrame, text="Uppdatera försäkringsinfot.", command=lambda:uppdateraForsakring())
 btnUppdateraForsakringsInformation.grid(column=0, row=4, pady=(0,10), columnspan=2, sticky=W)
 
-#Inställningar
+#Widgets på Inställningar-fliken
 lblLocalHost=Label(installningar, text="Local host")
 lblLocalHost.grid(row=0, column=0, padx=(10,0), pady=(10,0), sticky=W)
 
@@ -4353,12 +4345,12 @@ lblDatabas.grid(row=3, column=0, padx=(10,0), pady=(10,0), sticky=W)
 entDtabas=Entry(installningar, width=20)
 entDtabas.grid(row=3, column=1, padx=(10,0), pady=(10,0))
 
-#Funktioner som körs på uppstart
+#Funktionerna som körs på uppstart
 hamtaForare()
 fyllListboxDelagare()
 hamtaMaskinerFranEntry()
 hamtaForsakring()
 hamtaForareMaskin()
 
-# kör fönstret
+#Håller fönstret igång, ta ej bort eller flytta!
 root.mainloop()
