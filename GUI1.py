@@ -3722,26 +3722,25 @@ def readAFile():
      file.close()
 
 #Skapar databasanslutningen
-global filelist
-readAFile()
-h = str(filelist[0])
-_h = h[:-1]
-u = str(filelist[1])
-_u = u[:-1]
-p = str(filelist[2])
-_p = p[:-1]
-_d = str(filelist[3])
-
+# global filelist
+# readAFile()
+# h = str(filelist[0])
+# _h = h[:-1]
+# u = str(filelist[1])
+# _u = u[:-1]
+# p = str(filelist[2])
+# _p = p[:-1]
+# _d = str(filelist[3])
 try:
      db = mysql.connector.connect(
-          host =  _h ,
-          user = _u ,
-          password = _p ,
-          database = str(filelist[3])
-     )
+     host = "https://home3.wavecom.se",
+     user = "tschakt",
+     password = "tKet23E5ZaaY",
+     database = "maskinregister")
+     
      cursor = db.cursor()
 except Exception:
-     print("Databasuppkopplingen misslyckades!")
+     traceback.print_exc()
 
 #Skapar och namnger huvudfönstret samt sätter storleken på fönstret
 root = Tk()
