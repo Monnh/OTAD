@@ -3786,6 +3786,7 @@ try:
      cursor = db.cursor()
 except Exception:
      print("Databasuppkopplingen misslyckades!")
+     traceback.print_exc()
 
 # skapar och namnger fönster samt bestämmer storlek på fönstret
 root = Tk()
