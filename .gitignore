@@ -7,7 +7,11 @@ __pycache__/
 *.so
 
 # Databas inlogg
-test.txt 
+<<<<<<< HEAD
+*.txt 
+=======
+test.txt
+>>>>>>> Styris-branch
 
 # Distribution / packaging
 .Python
