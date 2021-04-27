@@ -1696,7 +1696,6 @@ def fyllMaskinInfo(self):
      if self == "franDelagare":
           cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
           maskiner = cursor.fetchall()
-
           if LbDelagaresMaskiner.index("end") != 0:
                LbDelagaresMaskiner.delete(0, "end")
                for x in maskiner:
@@ -1724,7 +1723,7 @@ def laggTillAndraDelagare(Typ):
                     messagebox.showerror("Fel", "Delägaren måste ha ett företagsnamn.")
                     nyDelagare.lift() 
                else:
-                    cursor.execute("UPDATE foretagsregister SET Foretagsnamn = '" + entNyForetag.get() + "', Fornamn = '" + entNyFornamn.get() + "', Efternamn = '" + entNyEfternamn.get() + "', Gatuadress = '" + entNyGatuadress.get() + "', Postnummer = '" + entNyPostnummer.get() + "', Postadress = '" + entNyPostadress.get() + "', Telefon = '" + entNyTelefon.get() + "' WHERE Medlemsnummer = " + medlemsnummer +";")
+                    cursor.execute("UPDATE foretagsregister SET Foretagsnamn = %s, Fornamn = %s, Efternamn = %s, Gatuadress = %s, Postnummer = %s, Postadress = %s, Telefon = %s WHERE Medlemsnummer = %s", (entNyForetag.get(), entNyFornamn.get(), entNyEfternamn.get(), entNyGatuadress.get(), entNyPostnummer.get(), entNyPostadress.get(), entNyTelefon.get(), medlemsnummer))
                     db.commit()
                     fyllDelagarInfo(medlemsnummer)
                     nyDelagare.destroy()
@@ -1749,7 +1748,7 @@ def laggTillAndraDelagare(Typ):
                               upptaget = True
                               break
                     if upptaget == False:
-                         cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES ('" + entNyMedlemsnummer.get() + "', '" + entNyForetag.get() + "', '" + entNyFornamn.get() + "', '" + entNyEfternamn.get() + "', '" + entNyGatuadress.get() + "', '" + entNyPostnummer.get() + "', '" + entNyPostadress.get() + "', '" + entNyTelefon.get() + "');")
+                         cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (entNyMedlemsnummer.get(), entNyForetag.get(), entNyFornamn.get(), entNyEfternamn.get(), entNyGatuadress.get(), entNyPostnummer.get(), entNyPostadress.get(), entNyTelefon.get()))
                          db.commit()
                          medlemsnummer = entNyMedlemsnummer.get()
                          nyDelagare.destroy()
@@ -1967,16 +1966,12 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                varMotoreffekt = entMaskinmotoreffekt.get()
                varArsModell = entMaskinarsmodell.get()
                if len(entMaskinme_klass.get()) == 0:
-                    print(len(entMaskinme_klass.get()))
                     varMeKlass = None
                if len(entMaskinarsbelopp.get()) == 0:
-                    print(len(entMaskinarsbelopp.get()))
                     varArsbelopp = None
                if len(entMaskinmotoreffekt.get()) == 0:
-                    print(len(entMaskinmotoreffekt.get()))
                     varMotoreffekt = None
                if len(entMaskinarsmodell.get())== 0:
-                    print(len(entMaskinarsmodell.get()))
                     varArsModell = None
 
 
@@ -1992,7 +1987,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     except Exception:
                          raise ValueError("Insert 1 error")
                     for x in tillbehorAttLaggaTill:
-                         cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + str(maskinnummer) + ");" )
+                         cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, str(maskinnummer)))
                     if filePath is not None:                        
                          cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
                          
@@ -2020,8 +2015,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          except Exception:
                               raise ValueError("Insert 2 error")                            
                          for x in tillbehorAttLaggaTill:
-                              print(x)
-                              cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + entNyMaskinnummermaskininfo.get() + ");")
+                              cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, entNyMaskinnummermaskininfo.get()))
                          if filePath is not None:
                               try:
                                    cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
@@ -2104,15 +2098,29 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     
                else:              
                     cursor.execute("UPDATE maskinregister SET Saneringsvatska = 0 WHERE Maskinnummer = " + Typ +";")
-               cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entNyMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + entMaskinme_klass.get() + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + entMaskinmotoreffekt.get() + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + entMaskinarsbelopp.get() + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + entMaskinarsmodell.get() + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "', Batteriantal = '" + entMaskinbatteriAntal.get() + "' WHERE Maskinnummer = " + Typ +";")            
+
+               varMeKlass = entMaskinme_klass.get()
+               varArsbelopp = entMaskinarsbelopp.get()
+               varMotoreffekt = entMaskinmotoreffekt.get()
+               varArsModell = entMaskinarsmodell.get()
+               if len(entMaskinme_klass.get()) == 0:
+                    varMeKlass = None
+               if len(entMaskinarsbelopp.get()) == 0:
+                    varArsbelopp = None
+               if len(entMaskinmotoreffekt.get()) == 0:
+                    varMotoreffekt = None
+               if len(entMaskinarsmodell.get())== 0:
+                    varArsModell = None
+
+               cursor.execute("UPDATE maskinregister SET Maskinnummer = %s, MarkeModell= %s, ME_Klass= %s, Motorfabrikat= %s, Motortyp= %s, Motorolja= %s, Vaxelladsolja= %s, Hydraulolja= %s, Kylvatska= %s, Motoreffekt= %s, Kylmedia= %s, Bullernivaute= %s, Bullernivainne= %s, Smorjfett= %s, Batterityp= %s, Arsbelopp= %s, Miljostatus= %s, Arsmodell= %s, Registreringsnummer= %s, Maskintyp= %s, Motorvolymolja= %s, Vaxelladavolym= %s, Hydraulvolym= %s, Kylvatskavolym= %s, Ovrig_text= %s, Bransle= %s, Dackfabrikat= %s, Dimension= %s, Batteriantal= %s WHERE Maskinnummer = %s", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), entMaskinbatteriAntal.get(), Typ)) 
+               #cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entNyMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + varMeKlass + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + varMotoreffekt + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + varArsbelopp + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + varArsModell + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "', Batteriantal = '" + entMaskinbatteriAntal.get() + "' WHERE Maskinnummer = " + Typ +";")            
                cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
                cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
           
                for x in tillbehorAttTaBort:
                     cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")                   
                for x in tillbehorAttLaggaTill:
-                    print(x)
-                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values ('" + x + "', " + Typ + ");" )
+                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, Typ))
                
                if filePath is not None:
                     try:                         
@@ -2957,7 +2965,6 @@ def fyllDelagarInfoMedNummer(self):
      stringSelectedDelagare = str(selectedDelagare[0:indexSpace])
      medlemsnummer = "".join(stringSelectedDelagare)
 
-     tomMaskinInfo()
      fyllDelagarInfo(medlemsnummer)
      try:
           hamtaDelagarensMaskiner()
@@ -2968,12 +2975,10 @@ def fyllDelagarInfoMedNummer(self):
      tabControl.select(delagare)
 #Fyller delägarens info i Delägare-fliken
 def fyllDelagarInfo(medlemsnummer):
-     #global medlemsnummer
 
-     cursor.execute('SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = ' + medlemsnummer + ';')
+     cursor.execute("SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = %s", (medlemsnummer,))
      delagarInfo = cursor.fetchone()
      if delagarInfo is None:
-          tomDelagareInfo()
           messagebox.showerror("Fel", "Def finns ingen delägare med det numret.")
      else:
           delagarInfo = list(delagarInfo)
@@ -3246,6 +3251,7 @@ def taBortMaskin(maskinnummer):
                     tomMaskinInfo()
                     hamtaDelagarensMaskiner()
                     fyllMaskinInfo("franMaskiner")
+                    hamtaMaskinerFranEntry()
                except Exception:
                     db.rollback()
                     traceback.print_exc()
@@ -3284,32 +3290,29 @@ def hamtaDelagare(medlemsnr):
      else:
           medlemsnummer = medlemsnr
 
-          tomMaskinInfo()
           fyllDelagarInfo(medlemsnummer)
           hamtaDelagarensMaskiner()
 #Skapar ett fönster med historiken kopplad till en maskin
 def historikFonster(maskinnummer):
 
      if len(maskinnummer) == 0:
-          messagebox.showerror("Fel", "Välj en maskin att se historiken för.")
+          messagebox.showerror("Fel", "Välj den maskin du vill se historiken för.")
      
      else:
           historikFonster = Toplevel(root)
-
           historikFonster.title("Historik")
-
-          historikFonster.geometry("475x280")
+          historikFonster.geometry("570x290")
 
           def hamtaHistorik():
 
                if maskinnummer is not None and maskinnummer != "":
-                    cursor.execute('SELECT Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik WHERE Maskinnummer = ' + str(maskinnummer) + ';')
+                    cursor.execute('SELECT HistorikID, Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik WHERE Maskinnummer = ' + str(maskinnummer) + ';')
                     result = cursor.fetchall()
 
                     count = 0
 
                     for x in result:                           
-                         LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4]))
+                         LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4], x[5]))
                          count += 1
                     
                     if len(result) == 0:
@@ -3320,19 +3323,13 @@ def historikFonster(maskinnummer):
                     btnTaBortHistorik["state"] = DISABLED
 
           def taBortHistorik():
-               maskinnummer=  ""
-               datum = ""
                for item in LbHistorik.selection():
                     id = LbHistorik.item(item, "values")
-                    maskinnummer = id[0]
-                    datum = (id[4])
+                    historikid = id[0]
                     LbHistorik.delete(item)
 
-               cursor.execute("SELECT historikid FROM historik WHERE Maskinnummer = " + str(maskinnummer) + " and Datum = '" + datum + "'")
-               historikid = cursor.fetchone()
-
                try:
-                    cursor.execute("DELETE FROM historik WHERE historikid = '" + str(historikid[0]) + "'")
+                    cursor.execute("DELETE FROM historik WHERE historikid = '" + historikid + "'")
                     db.commit()
                except Exception:
                     traceback.print_exc()
@@ -3340,15 +3337,17 @@ def historikFonster(maskinnummer):
           
           LbHistorik = ttk.Treeview(historikFonster)
           LbHistorik.grid(row=1, column=1, padx=(10,0), pady=(10,0))
-          LbHistorik['columns'] = ("Maskinnummer", "Beteckning", "Reg.nr", "ME-klass", "Datum")
+          LbHistorik['columns'] = ("ID", "Maskinnummer", "Beteckning", "Reg.nr", "ME-klass", "Datum")
           LbHistorik.column('#0', width=0)
+          LbHistorik.column("ID", anchor=W, width=35)
           LbHistorik.column("Maskinnummer", anchor=W, width=65)
-          LbHistorik.column("Beteckning", anchor=W, width=135)
-          LbHistorik.column("Reg.nr", anchor=W, width=75)
+          LbHistorik.column("Beteckning", anchor=W, width=150)
+          LbHistorik.column("Reg.nr", anchor=W, width=115)
           LbHistorik.column("ME-klass", anchor=W, width=75)
           LbHistorik.column("Datum", anchor=W, width=100)
 
           LbHistorik.heading('#0', text="")
+          LbHistorik.heading("ID", text="ID", anchor=W)
           LbHistorik.heading("Maskinnummer", text="Maskinnr.", anchor=W)
           LbHistorik.heading("Beteckning", text="Beteckning", anchor=W)
           LbHistorik.heading("Reg.nr", text="Reg.nr", anchor=W)
@@ -3428,7 +3427,7 @@ def laggTillForare(forare):
      if len(forare) == 0:
           messagebox.showerror("Fel", "Fyll i ett namn på föraren.")
      else:
-          cursor.execute("INSERT INTO forare (Namn) VALUES ('"+ forare +"')")
+          cursor.execute("INSERT INTO forare (Namn) VALUES (%s)", (forare,))
           hamtaForare()
           db.commit()
 
@@ -3445,12 +3444,12 @@ def laggTillReferens(beskrivning):
           messagebox.showerror("Fel", "Välj en förare.")
 
      else:
-          cursor.execute("INSERT INTO referens (Beskrivning, Forarid) VALUES ('" + beskrivning + "', " + forarid +")")
+          cursor.execute("INSERT INTO referens (Beskrivning, Forarid) VALUES (%s, %s)", (beskrivning, forarid))
           db.commit()
           
           entLaggTillReferens.delete(0, 'end')
 
-          cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
+          cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = %s", (forarid,))
           referenser = cursor.fetchall()
           lbReferenser.delete(0, 'end')
                
@@ -3490,6 +3489,7 @@ def taBortForare():
           cursor.execute("SELECT forarid FROM maskinregister WHERE forarid = %s", (forarid,))
           kopplad = cursor.fetchall()
           #Kollar om föraren är kopplad till en maskin.
+
           if len(kopplad) != 0:
                response = messagebox.askyesno("Varning", "Föraren är kopplad till en maskin.\nVill du ta bort föraren ändå?")
                if response == 1:  
@@ -3500,6 +3500,7 @@ def taBortForare():
                          traceback.print_exc()
                     entKoppladMaskin.config(state=NORMAL)
                     entKoppladMaskin.delete(0, 'end')
+                    entKoppladMaskin.config(state=DISABLED)
                     lbReferenser.delete(0,'end')
                     hamtaForare()
                     lbForare.selection_clear(0, END)
@@ -3518,6 +3519,7 @@ def taBortForare():
                          traceback.print_exc()
                     entKoppladMaskin.config(state=NORMAL)
                     entKoppladMaskin.delete(0, 'end')
+                    entKoppladMaskin.config(state=DISABLED)
                     lbReferenser.delete(0,'end')
                     hamtaForare()
                     lbForare.selection_clear(0, END)
@@ -3591,7 +3593,7 @@ def bytForsakring():
           print(nyForsakring)
           if nyForsakring is not None:
                try:
-                    cursor.execute("update forsakringsgivare set forsakringsgivare ='"+nyForsakring+"' where idforsakringsgivare=1")
+                    cursor.execute("update forsakringsgivare set forsakringsgivare = %s where idforsakringsgivare=1", (nyForsakring,))
                     db.commit()
                     hamtaForsakring()
                except Exception:
@@ -3673,19 +3675,17 @@ def kopplaMaskin():
           index2 = forarid.index(" ")
           stringforarid = str(forarid[0:index2])
           foraridString = "".join(stringforarid)
-          print("Forarid: " +foraridString)
 
           maskinid = LbForareDelagaresMaskiner.get(LbForareDelagaresMaskiner.curselection())
           index3 = maskinid.index(" ")
           stringmaskinid = str(maskinid[0:index3])
           maskinidString = "".join(stringmaskinid)
-          print("Maskinid: " +maskinidString)
 
      
      #Återanvändningsbar metod för att koppla en forare till en maskin.
      def queryKopplaMaskin():
           try:
-               cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
+               cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = %s", (foraridString,))
                cursor.execute("UPDATE maskinregister SET Forarid =" +foraridString + " WHERE Maskinnummer =" +maskinidString +";")
                db.commit()
                refreshKoppladMaskin(foraridString)
@@ -3693,7 +3693,7 @@ def kopplaMaskin():
                traceback.print_exc()
                db.rollback()
 
-     cursor.execute("SELECT Forarid FROM maskinregister WHERE Maskinnummer = " +maskinidString +";")
+     cursor.execute("SELECT Forarid FROM maskinregister WHERE Maskinnummer = %s", (maskinidString,))
      x=cursor.fetchone()
      if x[0] is not None:
           response = messagebox.askyesno("Varning!", "Det finns redan en förare registrerad på maskin nummer "+maskinidString +" \nVill du fortsätta ändå?")
@@ -3712,16 +3712,18 @@ def kopplaBortMaskin():
           index2 = forarid.index(" ")
           stringforarid = str(forarid[0:index2])
           foraridString = "".join(stringforarid)
-          print("Forarid: " +foraridString)
 
           try:
-               cursor.execute("SELECT Namn from forare WHERE Forarid = '" +foraridString +"';")
-               forarNamn = cursor.fetchone()
-               response = messagebox.askyesno("Varning", "Är du säker att du vill kopplingen mellan " + str(forarNamn[0]) +" och maskin " + entKoppladMaskin.get() + "?")
-               if response == 1:
-                    cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
-                    db.commit()
-                    refreshKoppladMaskin(foraridString)
+               if len(entKoppladMaskin.get()) > 0:
+                    cursor.execute("SELECT Namn from forare WHERE Forarid = '" +foraridString +"';")
+                    forarNamn = cursor.fetchone()
+                    response = messagebox.askyesno("Varning", "Är du säker att du vill ta bort kopplingen mellan " + str(forarNamn[0]) +" och maskin " + entKoppladMaskin.get() + "?")
+                    if response == 1:
+                         cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
+                         db.commit()
+                         refreshKoppladMaskin(foraridString)
+               else: 
+                    messagebox.showerror("Fel", "Föraren är inte kopplad till en maskin.")
           except Exception:
                traceback.print_exc()
                db.rollback()
@@ -3816,11 +3818,11 @@ BtnForsakringLista.grid(row=3, column=5, pady=(200,0))
 BtnMaskinerAndradeBelopp = Button(home, text="Maskiner med\nändrade belopp", command = lambda: maskinerMedAndradeBelopp())
 BtnMaskinerAndradeBelopp.grid(row=3, column=5, pady=(0,100))
 
-EntMedlemsnummer = Entry(home, width=5, text = "Medlemsnummer") 
+EntMedlemsnummer = Entry(home, width=5, validate="key", validatecommand=(validera, "%P")) 
 EntMedlemsnummer.grid(row=1, column=1, pady=(50,0), padx=(72,0), sticky=E)
 EntMedlemsnummer.bind("<KeyRelease>", lambda args: hamtaDelagareFranEntry())
 
-EntMaskinnummer = Entry(home, width=5, text ="Maskinnummer") 
+EntMaskinnummer = Entry(home, width=5, validate="key", validatecommand=(validera, "%P")) 
 EntMaskinnummer.grid(row=1, column=3, pady=(50,0), padx=(22,0), sticky=W)
 EntMaskinnummer.bind("<KeyRelease>", lambda args: hamtaMaskinerFranEntry())
 
@@ -3892,7 +3894,7 @@ txtMedlemsnummerDelagare = Text(frameDelagare, width = 5, height=0.1)
 txtMedlemsnummerDelagare.grid(row = 1, column =1, sticky = W)
 txtMedlemsnummerDelagare.config(state=DISABLED)
 
-entSokMedlem = Entry(frameDelagare, width = 5)
+entSokMedlem = Entry(frameDelagare, width = 5, validate="key", validatecommand=(validera, "%P"))
 entSokMedlem.grid(row = 1, column =1, sticky=E, padx=(40, 50))
 btnSokMedlem = Button(frameDelagare, text = "Sök", command= lambda: hamtaDelagare(entSokMedlem.get()))
 btnSokMedlem.grid(row =1, column = 1, sticky=E, padx=(0,10))
@@ -4307,6 +4309,7 @@ lblKoppladMaskin = Label(forare, text ="Markerad förare är kopplad till maskin
 lblKoppladMaskin.grid(row=0, column=3, pady=(10,0), padx=(10,0))
 entKoppladMaskin = Entry(forare, width = 5)
 entKoppladMaskin.grid(row=1, column=3, pady=(10,0), padx=(10,0), sticky=NW)
+entKoppladMaskin.config(state=DISABLED)
 
 #Försäkring
 
