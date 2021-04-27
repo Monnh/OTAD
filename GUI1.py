@@ -1,4 +1,4 @@
-# importerar Tkinter, PIL och MySQL Connector
+#Importerar Tkinter (GUI), PIL (Bilder), PyPDF2 (För att läsa & skriva PDF), reportlab (För att skapa PDF), tkcalendar (Datepicker) och MySQL Connector (SQL)
 from tkinter import *
 from tkinter import ttk, messagebox
 from PIL import ImageTk,Image
@@ -4064,7 +4064,7 @@ entMaskinarsbelopp.config(state=DISABLED)
 
 #Knapparna/Buttons i fliken Delägare
 
-btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation(entMaskinnummermaskininfo()))
+btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation(entMaskinnummermaskininfo.get()))
 btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
 
 btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration(entMaskinnummermaskininfo.get()))
