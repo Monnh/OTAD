@@ -3744,13 +3744,13 @@ def valideraSiffror(input):
           return True
      else:
           return False
-
+#Funktion för att läsa filer
 def readAFile():
      global filelist
      file = open("test.txt", "r")
      filelist = file.readlines()
      file.close()
-
+#Sparar inställningar för databasen när man klickar på btnSparaInstallningar
 def sparaInstallningar():
      f = open("test.txt", "w")
      f.writelines([str(entLocalHost.get()), "\n" + str(entUsername.get()), "\n" + str(entPassword.get()), "\n" + str(entDatabas.get())])
