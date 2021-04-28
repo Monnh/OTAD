@@ -267,11 +267,11 @@ def maskinpresentation(maskinnummer):
                     rad1+=s      
 
           
-          c.drawString(142, 562, str(rad1))
-          c.drawString(142, 542, str(rad2))
-          c.drawString(142, 522, str(rad3))
-          c.drawString(142, 502, str(rad4))
-          c.drawString(142, 482, str(rad5))
+          c.drawString(142, 561, str(rad1))
+          c.drawString(142, 541, str(rad2))
+          c.drawString(142, 521, str(rad3))
+          c.drawString(142, 501, str(rad4))
+          c.drawString(142, 481, str(rad5))
           if referenser is not None and len(referenser) != 0:
                c.drawString(152, 112, str(referenser[0][0]))
                c.drawString(152, 86, str(referenser[1][0]))
@@ -288,11 +288,11 @@ def maskinpresentation(maskinnummer):
           page.mergePage(new_pdf.getPage(0))
           output.addPage(page)
           #Fixa i framtiden så att man kan använda sig av custom paths (till servern) för att spara dokumenten på andra ställen.
-          outputStream = open( "Maskinpresentation - " + maskinnummer + ".pdf", "wb")
+          outputStream = open("Maskinpresentationer/Maskinpresentation - " + maskinnummer + ".pdf", "wb")
           output.write(outputStream)
           outputStream.close()
           #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
-          os.startfile("Maskinpresentation - " + maskinnummer + ".pdf" )
+          os.startfile("Maskinpresentationer\Maskinpresentation - " + maskinnummer + ".pdf")
 #Funktion som skapar PDF-rapporten maskininnehav
 def maskininnehav(medlemsnummer):
 
@@ -567,11 +567,11 @@ def maskininnehav(medlemsnummer):
                page = existing_pdf.getPage(0)
                page.mergePage(new_pdf.getPage(x))
                output.addPage(page)
-               outputStream = open( "Maskininnehav - " + medlemsnummer + ".pdf", "wb")
+               outputStream = open("Maskininnehav\Maskininnehav - " + medlemsnummer + ".pdf", "wb")
                output.write(outputStream)
                outputStream.close()
           
-          os.startfile("Maskininnehav - " + medlemsnummer + ".pdf" )
+          os.startfile("Maskininnehav\Maskininnehav - " + medlemsnummer + ".pdf" )
 #Funktion som skapar PDF-rapporten försäkring per delägare (fråga)
 def forsakringPerDelagareFraga(medlemsnummer):
 
@@ -969,7 +969,12 @@ def forsakringPerDelagare():
      totalCounter = 0
      pages = 0
      belopp = 0
-     
+
+     dPacket = io.BytesIO()
+     d = canvas.Canvas(dPacket, pagesize=letter)
+     d.setFontSize(10)
+     d.drawString(490, 800, str(datetime.date(datetime.now())))
+     d.setFontSize(16)
 
      for i in medlemmar:
           cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + str(i[0]) + " and Forsakring = '1';")
@@ -1220,14 +1225,16 @@ def forsakringPerDelagare():
                          c.showPage()
 
                if totalCounter == len(totaltMaskiner):
-                    c.setFontSize(14)
-                    c.drawString(150, 350, "Totalt: ")
-                    c.drawString(195, 350, str(belopp))
-                    pages+=1
+                    d.drawString(215, 600, "Totalt: ")
+                    d.drawString(265, 600, str(belopp) + " :-")
                     c.save()
+                    d.save()
                     packet.seek(0)
+                    dPacket.seek(0)
                     new_pdf = PdfFileReader(packet)
+                    total_pdf = PdfFileReader(dPacket)
                     output = PdfFileWriter()
+                    count = 0
 
                     for x in range(pages):
                          existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
@@ -1236,7 +1243,16 @@ def forsakringPerDelagare():
                          output.addPage(page)
                          outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
                          output.write(outputStream)
-                         outputStream.close()    
+                           
+                         count+=1
+                         
+                         if count == pages:
+                              existing_pdf2 = PdfFileReader(open("PDFMallar/FörsäkringsspecTotal.pdf", "rb"))
+                              page2 = existing_pdf2.getPage(0)
+                              page2.mergePage(total_pdf.getPage(0))
+                              output.addPage(page2)                              
+                              output.write(outputStream)
+                              outputStream.close()
                
      os.startfile("AllaFörsäkradeMaskiner.pdf")
 #Funktion som skapar PDF-rapporten maskiner med ändrade belopp
