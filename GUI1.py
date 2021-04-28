@@ -814,63 +814,63 @@ def forsakringPerDelagareFraga(medlemsnummer):
                else:
 
                     if dCounter < 22: 
-                         d.drawString(71, dy, str(forsakringsgivare[0]))
+                         d.drawString(40, dy, str(forsakringsgivare[0]))
                          d.setFontSize(7)
-                         d.drawString(175, dy, str(i[2]))
-                         d.drawString(209, dy, " - ")
-                         d.drawString(215, dy, str(i[3]))
+                         d.drawString(140, dy, str(i[2]))
+                         d.drawString(174, dy, " - ")
+                         d.drawString(180, dy, str(i[3]))
                          d.setFontSize(10)
-                         d.drawString(265, dy, str(i[0]))
+                         d.drawString(240, dy, str(i[0]))
                          if i[1] is not None:
                               if len(i[1]) > 22:
-                                   d.drawString(295, dy, str(i[1]))
+                                   d.drawString(285, dy, str(i[1]))
                               else:
-                                   d.drawString(310, dy, str(i[1]))
+                                   d.drawString(300, dy, str(i[1]))
                          if i[5] is not None:
                               if len(i[5]) > 10:
-                                   d.setFontSize(6)
+                                   d.setFontSize(8)
                                    d.drawString(430, dy, str(i[5]))
                                    d.setFontSize(10)
                               else:
                                    d.drawString(430, dy, str(i[5]))
-                         d.drawString(500, dy, str(i[4]))
+                         d.drawString(530, dy, str(i[4]))
                          dy-=25
 
                     elif dCounter == 22:
                          if dCounter != len(maskiner):
                               d.showPage()
                               d.setFontSize(10)
-                              d.drawString(490, 820, str(datetime.date(datetime.now())))
-                              d.drawString(71, 620, str(foretag[0]))
+                              d.drawString(490, 800, str(datetime.date(datetime.now())))
+                              d.drawString(40, 645, str(foretag[0]))
                               if foretag[1] is not None:
-                                   d.drawString(270, 620, str(foretag[1]))
+                                   d.drawString(247, 645, str(foretag[1]))
                               if foretag[1] is not None:
-                                   d.drawString(348, 620, str(foretag[2]))
-                              d.drawString(480, 620, str(medlemsnummer))
+                                   d.drawString(348, 645, str(foretag[2]))
+                              d.drawString(510, 620, str(medlemsnummer))
                               dy = 580
                               dPages += 1
 
                     elif dCounter > 22 and counter < 44:
-                         d.drawString(71, dy, str(forsakringsgivare[0]))
+                         d.drawString(40, dy, str(forsakringsgivare[0]))
                          d.setFontSize(7)
-                         d.drawString(175, dy, str(i[2]))
-                         d.drawString(209, dy, " - ")
-                         d.drawString(215, dy, str(i[3]))
+                         d.drawString(140, dy, str(i[2]))
+                         d.drawString(174, dy, " - ")
+                         d.drawString(180, dy, str(i[3]))
                          d.setFontSize(10)
-                         d.drawString(265, dy, str(i[0]))
+                         d.drawString(240, dy, str(i[0]))
                          if i[1] is not None:
                               if len(i[1]) > 22:
-                                   d.drawString(295, dy, str(i[1]))
+                                   d.drawString(285, dy, str(i[1]))
                               else:
-                                   d.drawString(310, dy, str(i[1]))
+                                   d.drawString(300, dy, str(i[1]))
                          if i[5] is not None:
                               if len(i[5]) > 10:
-                                   d.setFontSize(6)
+                                   d.setFontSize(8)
                                    d.drawString(430, dy, str(i[5]))
                                    d.setFontSize(10)
                               else:
                                    d.drawString(430, dy, str(i[5]))
-                         d.drawString(500, y, str(i[4]))
+                         d.drawString(530, dy, str(i[4]))
                          dy-=25
 
                     dBelopp += i[4]
@@ -878,13 +878,13 @@ def forsakringPerDelagareFraga(medlemsnummer):
 
           if dCounter > 0:
                
-               d.drawString(490, 820, str(datetime.date(datetime.now())))
-               d.drawString(71, 620, str(foretag[0]))
+               d.drawString(490, 800, str(datetime.date(datetime.now())))
+               d.drawString(40, 645, str(foretag[0]))
                if foretag[1] is not None:
-                    d.drawString(270, 620, str(foretag[1]))
+                    d.drawString(247, 645, str(foretag[1]))
                if foretag[1] is not None:
-                    d.drawString(348, 620, str(foretag[2]))
-               d.drawString(480, 620, str(medlemsnummer))
+                    d.drawString(348, 645, str(foretag[2]))
+               d.drawString(510, 620, str(medlemsnummer))
 
                if counter + dCounter == len(maskiner):
                     if dCounter == 22:
@@ -923,7 +923,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
                page = existing_pdf.getPage(0)
                page.mergePage(new_pdf.getPage(x))
                output.addPage(page)
-               outputStream = open("Kollektivförsäkring - " + medlemsnummer + ".pdf", "wb")
+               outputStream = open("Kollektiv försäkring\Kollektivförsäkring - " + medlemsnummer + ".pdf", "wb")
                output.write(outputStream)
                outputStream.close()
 
@@ -934,7 +934,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
                          page = existing_pdf.getPage(0)
                          page.mergePage(andradeBelopp_pdf.getPage(x))
                          dOutput.addPage(page)
-                         outputStream = open("Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
+                         outputStream = open("Kollektiv försäkring - ändrade beloppKollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
                          dOutput.write(outputStream)
                          outputStream.close()
                else:
@@ -942,13 +942,13 @@ def forsakringPerDelagareFraga(medlemsnummer):
                     page = existing_pdf.getPage(0)
                     page.mergePage(andradeBelopp_pdf.getPage(0))
                     dOutput.addPage(page)
-                    outputStream = open("Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
+                    outputStream = open("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
                     dOutput.write(outputStream)
                     outputStream.close()
-               os.startfile("Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf")
+               os.startfile("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf")
 
 
-          os.startfile("Kollektivförsäkring - " + medlemsnummer + ".pdf" )
+          os.startfile("Kollektiv försäkring\Kollektivförsäkring - " + medlemsnummer + ".pdf" )
 #Funktion som skapar PDF-rapporten försäkring per delägare
 def forsakringPerDelagare():
 
