@@ -3751,6 +3751,11 @@ def readAFile():
      filelist = file.readlines()
      file.close()
 
+def sparaInstallningar():
+     f = open("test.txt", "w")
+     f.writelines([str(entLocalHost.get()), "\n" + str(entUsername.get()), "\n" + str(entPassword.get()), "\n" + str(entDatabas.get())])
+     f.close()
+
 #Skapar databasanslutningen
 global filelist
 readAFile()
@@ -4373,8 +4378,11 @@ entPassword.grid(row=2, column=1, padx=(10,0), pady=(10,0))
 lblDatabas=Label(installningar, text="Databas")
 lblDatabas.grid(row=3, column=0, padx=(10,0), pady=(10,0), sticky=W)
 
-entDtabas=Entry(installningar, width=20)
-entDtabas.grid(row=3, column=1, padx=(10,0), pady=(10,0))
+entDatabas=Entry(installningar, width=20)
+entDatabas.grid(row=3, column=1, padx=(10,0), pady=(10,0))
+
+btnSparaInstallningar=Button(installningar, text="Spara", command=lambda:sparaInstallningar())
+btnSparaInstallningar.grid(row=4, column=1, padx=(10,0), pady=(10,0), sticky=E)
 
 #Funktionerna som körs på uppstart
 hamtaForare()
