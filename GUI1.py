@@ -45,6 +45,8 @@ def miljodeklaration(maskinnummer):
                if delagarInfoLista[item] == None:
                     delagarInfoLista[item] = ""
 
+          c.setFontSize(11)
+
           #Översta delen
           c.drawString(130, 722, str(maskinInfo[4]))
           c.drawString(130, 702, str(delagarInfoLista[2]))
@@ -92,13 +94,33 @@ def miljodeklaration(maskinnummer):
           c.drawString(430, 482, str(maskinInfo[31]))
 
           #Oljor och smörjmedel - Volym, liter
-          c.drawString(50, 420, str(maskinInfo[16])) 
-          c.drawString(205, 420, str(maskinInfo[17]))
-          c.drawString(50, 390, str(maskinInfo[18]))
-          c.drawString(205, 390, str(maskinInfo[19]))
-          c.drawString(50, 360, str(maskinInfo[20]))
-          c.drawString(205, 360, str(maskinInfo[21]))
+          if len(maskinInfo[16]) < 25:
+               c.drawString(50, 417, str(maskinInfo[16]))
+          else:
+               c.setFontSize(9)
+               c.drawString(50, 417, str(maskinInfo[16]))
+               c.setFontSize(11)
+
+          if len(maskinInfo[18]) < 25:
+               c.drawString(50, 385, str(maskinInfo[18]))
+          else:
+               c.setFontSize(9)
+               c.drawString(50, 385, str(maskinInfo[18]))
+               c.setFontSize(11)
+
+          if len(maskinInfo[20]) < 25:
+               c.drawString(50, 355, str(maskinInfo[20]))
+          else:
+               c.setFontSize(9)
+               c.drawString(50, 355, str(maskinInfo[20]))
+               c.setFontSize(11)
+               
+               
           c.drawString(50, 325, str(maskinInfo[24]))
+          c.drawString(205, 420, str(maskinInfo[17]))
+          c.drawString(205, 390, str(maskinInfo[19]))
+          c.drawString(205, 360, str(maskinInfo[21]))
+          
 
           #Miljöklassificering
           c.drawString(340, 420, str(maskinInfo[30]))
@@ -119,7 +141,12 @@ def miljodeklaration(maskinnummer):
           elif maskinInfo[35] == 0:
                c.drawString(375, 244, "Nej")
           c.drawString(470, 210, str(maskinInfo[38]))
-          c.drawString(50, 210, str(maskinInfo[33]))
+          if len(maskinInfo[33]) > 25:
+               c.setFontSize(9)
+               c.drawString(50, 210, str(maskinInfo[33]))
+               c.setFontSize(11)
+          else:
+               c.drawString(50, 210, str(maskinInfo[33]))
           c.drawString(205, 210, str(maskinInfo[34]))
           if maskinInfo[36] == 1:
                c.drawString(375, 210, "Ja")
@@ -213,7 +240,7 @@ def maskinpresentation(maskinnummer):
           if forarnamn is not None:
                c.drawString(133, 670, str(forarnamn[0]))
           c.drawString(133, 690, str(foretag[0]))
-          c.drawString(467, 710, str(maskinnummer))
+          c.drawString(470, 712, str(maskinnummer))
           
           counter = 0
           for x in tillbehor:
@@ -240,11 +267,11 @@ def maskinpresentation(maskinnummer):
                     rad1+=s      
 
           
-          c.drawString(140, 558, str(rad1))
-          c.drawString(140, 538, str(rad2))
-          c.drawString(140, 518, str(rad3))
-          c.drawString(140, 498, str(rad4))
-          c.drawString(140, 478, str(rad5))
+          c.drawString(142, 562, str(rad1))
+          c.drawString(142, 542, str(rad2))
+          c.drawString(142, 522, str(rad3))
+          c.drawString(142, 502, str(rad4))
+          c.drawString(142, 482, str(rad5))
           if referenser is not None and len(referenser) != 0:
                c.drawString(152, 112, str(referenser[0][0]))
                c.drawString(152, 86, str(referenser[1][0]))
@@ -310,7 +337,12 @@ def maskininnehav(medlemsnummer):
                     elif i[4] == 0:
                          c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(215, y, str(i[1]))
+                         if len(i[1]) > 25:
+                              c.setFontSize(8)
+                              c.drawString(215, y, str(i[1]))
+                              c.setFontSize(10)
+                         else:
+                              c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
                          c.drawString(340, y, str(i[2])) 
                     if i[5] is not None:
@@ -339,7 +371,12 @@ def maskininnehav(medlemsnummer):
                     elif i[4] == 0:
                          c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(215, y, str(i[1]))
+                         if len(i[1]) > 25:
+                              c.setFontSize(8)
+                              c.drawString(215, y, str(i[1]))
+                              c.setFontSize(10)
+                         else:
+                              c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
                          c.drawString(340, y, str(i[2])) 
                     if i[5] is not None:
@@ -368,7 +405,12 @@ def maskininnehav(medlemsnummer):
                     elif i[4] == 0:
                          c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(215, y, str(i[1]))
+                         if len(i[1]) > 25:
+                              c.setFontSize(8)
+                              c.drawString(215, y, str(i[1]))
+                              c.setFontSize(10)
+                         else:
+                              c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
                          c.drawString(340, y, str(i[2])) 
                     if i[5] is not None:
@@ -397,7 +439,12 @@ def maskininnehav(medlemsnummer):
                     elif i[4] == 0:
                          c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(215, y, str(i[1]))
+                         if len(i[1]) > 25:
+                              c.setFontSize(8)
+                              c.drawString(215, y, str(i[1]))
+                              c.setFontSize(10)
+                         else:
+                              c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
                          c.drawString(340, y, str(i[2])) 
                     if i[5] is not None:
@@ -426,7 +473,12 @@ def maskininnehav(medlemsnummer):
                     elif i[4] == 0:
                          c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(215, y, str(i[1]))
+                         if len(i[1]) > 25:
+                              c.setFontSize(8)
+                              c.drawString(215, y, str(i[1]))
+                              c.setFontSize(10)
+                         else:
+                              c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
                          c.drawString(340, y, str(i[2])) 
                     if i[5] is not None:
@@ -455,7 +507,12 @@ def maskininnehav(medlemsnummer):
                     elif i[4] == 0:
                          c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(215, y, str(i[1]))
+                         if len(i[1]) > 25:
+                              c.setFontSize(8)
+                              c.drawString(215, y, str(i[1]))
+                              c.setFontSize(10)
+                         else:
+                              c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
                          c.drawString(340, y, str(i[2])) 
                     if i[5] is not None:
@@ -484,7 +541,12 @@ def maskininnehav(medlemsnummer):
                     elif i[4] == 0:
                          c.drawString(167, y, str("Nej"))
                     if i[1] is not None:
-                         c.drawString(215, y, str(i[1]))
+                         if len(i[1]) > 25:
+                              c.setFontSize(8)
+                              c.drawString(215, y, str(i[1]))
+                              c.setFontSize(10)
+                         else:
+                              c.drawString(215, y, str(i[1]))
                     if i[2] is not None:
                          c.drawString(340, y, str(i[2])) 
                     if i[5] is not None:
