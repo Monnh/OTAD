@@ -2429,8 +2429,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
      
           lblMaskintillbehor = Label(nyMaskin, text="Tillbehör")
           lblMaskintillbehor.grid(column=4, row=9, sticky = W, padx=(10,0))
-          txtMaskintillbehor=Text(nyMaskin, width = 25, height=0.1)
-          txtMaskintillbehor.grid(column=5, row=9, sticky=W, padx=(10,0))
+          entMaskinTillbehor=Entry(nyMaskin, width = 25)
+          entMaskinTillbehor.grid(column=5, row=9, sticky=W, padx=(10,0))
 
           tillbehorAttTaBort=[]
           tillbehorAttLaggaTill=[]
@@ -2465,7 +2465,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
           lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
      
-          txtMaskintillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', txtMaskintillbehor.get('1.0', 'end')), tillbehorAttLaggaTill.append(txtMaskintillbehor.get('1.0', 'end')), txtMaskintillbehor.delete('1.0','end')))
+          entMaskinTillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', entMaskinTillbehor.get()), tillbehorAttLaggaTill.append(entMaskinTillbehor.get()), entMaskinTillbehor.delete(0,'end')))
           deMaskinperiod1.bind('<Button-3>', lambda x: rensaDatum(1))
           deMaskinperiod2.bind('<Button-3>', lambda x: rensaDatum(2))
 
