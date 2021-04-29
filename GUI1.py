@@ -1974,7 +1974,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           
                #Bestämmer vilka funktioner som borde köras baserat på om man vill ändra/byta/lägga till                 
           def sparaMaskin(Typ):
-               global maskinnummer 
+               global maskinnummer, filePath 
 
                if Typ=="Byt":
                     response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
@@ -1995,6 +1995,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          pass
                elif Typ=="Ny":
                     try:
+                         
                          bytOchNyMaskin()
                          print("nyMaskin Ny")
                          db.commit()
@@ -2025,7 +2026,14 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           #Insertar en ny maskin i databasen
           def bytOchNyMaskin():
                global maskinnummer
-
+               filePath =""
+               
+               try:
+                    filePath = entSokvag.get()
+                    filePath = filePath.rsplit("/",1)
+                    filePath = filePath[1]
+               except:
+                    filePath = None
                varCbMotorvarmare = cbMaskinmotorvarmare.instate(['selected'])
                varCbKatalysator = cbMaskinkatalysator.instate(['selected'])
                varCbPartikelfilter = cbMaskinpartikelfilter.instate(['selected'])
@@ -2036,6 +2044,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                varCbGasolanlaggning = cbMaskingasolanlaggning.instate(['selected'])
                varCbSaneringsvatska = cbMaskinSaneringsvatska.instate(['selected'])
                varCbMaskininsatserlagd = cbMaskininsatserlagd.instate(['selected'])
+               
 
                #Hämtar värdet i dessa entries för att sedan kolla om det är tomt. Ifall det är tomt görs det om till None då
                #Int i databasen inte kan konvertera en tom sträng till None av sig självt. 
@@ -2066,6 +2075,11 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          raise ValueError("Insert 1 error")
                     for x in tillbehorAttLaggaTill:
                          cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, str(maskinnummer)))
+                    try:
+                         print (str(maskinnummer)+filePath)
+                    except:
+                         pass
+                    
                     if filePath is not None:                        
                          cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
                          
@@ -2108,6 +2122,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           #Ändrar maskin baserat på de nya inputsen/entrys.
           def andraMaskin(Typ, byteTillbehor):
                global filePath
+               filePath = None
                if byteTillbehor is True:
                     cursor.execute("Delete from tillbehor where maskinnummer ="+Typ+";")
                     cursor.execute("Delete from bilder where maskinnummer ="+Typ+";")
@@ -2225,6 +2240,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           entNyMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(7,0))
 
           if Typ=="Ny":
+               
                lblMaskinnummerVal = Label(nyMaskin, text = "Autogen eller ej?")
                lblMaskinnummerVal.grid(column = 1, row = 0, sticky = E, padx=(0,23))
                cbMaskinnummer = ttk.Checkbutton(nyMaskin, command = lambda: autogenEllerEj())
@@ -2437,9 +2453,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
                sparSokVag = filename.rsplit("/", 1)
                filePath=sparSokVag[1]
-               txtSokvag = Text(nyMaskin, width = 20, height=0.1)
-               txtSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
-               txtSokvag.insert('end', filename)
+               entSokvag.grid()
+               entSokvag.delete(0, 'end')
+               entSokvag.insert(0, filename)
                nyMaskin.lift()
                imgNyBild = Image.open(filename)  
                imgFixadBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
@@ -2448,7 +2464,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
           #Kollar om det finns en bild och isåfall sparas den i korrekt mapp.
           def fileSave():
-               print("Maskinnummret är: "+str(maskinnummer))
                if imgNyBild is not None:
                     imgNyBild.save('pics/'+str(maskinnummer)+filePath)
           
@@ -2458,6 +2473,10 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           btnNyBild.grid(column=2, row=21, sticky=W, padx=(10,0))
 
           #------------------------
+
+          entSokvag = Entry(nyMaskin, width = 20)
+          entSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
+          entSokvag.grid_remove()
 
           lblMaskinbransle = Label(nyMaskin, text="Bränsle")
           lblMaskinbransle.grid(column=4, row=0, sticky = W, padx=(10,0), pady=(7,0))
