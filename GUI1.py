@@ -1872,7 +1872,7 @@ def laggTillAndraDelagare(Typ):
 
      lblNyPostnummer = Label(nyDelagare, text= "Postnummer")
      lblNyPostnummer.grid(row = 5, column = 0, sticky = W, padx = (10, 0), pady=(7, 0))
-     entNyPostnummer = Entry(nyDelagare, width = 25, validate="key", validatecommand=(validera, "%P"))
+     entNyPostnummer = Entry(nyDelagare, width = 25)
      entNyPostnummer.grid(row = 5, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
      lblNyPostadress = Label(nyDelagare, text= "Postadress")
