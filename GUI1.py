@@ -94,26 +94,27 @@ def miljodeklaration(maskinnummer):
           c.drawString(430, 482, str(maskinInfo[31]))
 
           #Oljor och smörjmedel - Volym, liter
-          if len(maskinInfo[16]) < 25:
-               c.drawString(50, 417, str(maskinInfo[16]))
-          else:
-               c.setFontSize(9)
-               c.drawString(50, 417, str(maskinInfo[16]))
-               c.setFontSize(11)
-
-          if len(maskinInfo[18]) < 25:
-               c.drawString(50, 385, str(maskinInfo[18]))
-          else:
-               c.setFontSize(9)
-               c.drawString(50, 385, str(maskinInfo[18]))
-               c.setFontSize(11)
-
-          if len(maskinInfo[20]) < 25:
-               c.drawString(50, 355, str(maskinInfo[20]))
-          else:
-               c.setFontSize(9)
-               c.drawString(50, 355, str(maskinInfo[20]))
-               c.setFontSize(11)
+          if maskinInfo[16] is not None:
+               if len(maskinInfo[16]) < 25:
+                    c.drawString(50, 417, str(maskinInfo[16]))
+               else:
+                    c.setFontSize(9)
+                    c.drawString(50, 417, str(maskinInfo[16]))
+                    c.setFontSize(11)
+          if maskinInfo[18] is not None:
+               if len(maskinInfo[18]) < 25:
+                    c.drawString(50, 385, str(maskinInfo[18]))
+               else:
+                    c.setFontSize(9)
+                    c.drawString(50, 385, str(maskinInfo[18]))
+                    c.setFontSize(11)
+          if maskinInfo[20] is not None:
+               if len(maskinInfo[20]) < 25:
+                    c.drawString(50, 355, str(maskinInfo[20]))
+               else:
+                    c.setFontSize(9)
+                    c.drawString(50, 355, str(maskinInfo[20]))
+                    c.setFontSize(11)
                
                
           c.drawString(50, 325, str(maskinInfo[24]))
@@ -141,12 +142,13 @@ def miljodeklaration(maskinnummer):
           elif maskinInfo[35] == 0:
                c.drawString(375, 244, "Nej")
           c.drawString(470, 210, str(maskinInfo[38]))
-          if len(maskinInfo[33]) > 25:
-               c.setFontSize(9)
-               c.drawString(50, 210, str(maskinInfo[33]))
-               c.setFontSize(11)
-          else:
-               c.drawString(50, 210, str(maskinInfo[33]))
+          if maskinInfo[33] is not None:
+               if len(maskinInfo[33]) > 25:
+                    c.setFontSize(9)
+                    c.drawString(50, 210, str(maskinInfo[33]))
+                    c.setFontSize(11)
+               else:
+                    c.drawString(50, 210, str(maskinInfo[33]))
           c.drawString(205, 210, str(maskinInfo[34]))
           if maskinInfo[36] == 1:
                c.drawString(375, 210, "Ja")
@@ -231,16 +233,24 @@ def maskinpresentation(maskinnummer):
 
           if bild is not None:
                c.drawImage(bild[0], 72, 134, 450, 340)
-          c.drawString(133, 710, str(maskinInfo[0])) 
-          c.drawString(455, 690, str(maskinInfo[1]))
-          c.drawString(455, 670, str(maskinInfo[2]))
-          c.drawString(455, 650, str(maskinInfo[3]))
-          c.drawString(455, 630, str(maskinInfo[4]))
-          c.drawString(455, 610, str(maskinInfo[5]))
+          if maskinInfo[0] is not None:
+               c.drawString(133, 710, str(maskinInfo[0])) 
+          if maskinInfo[1] is not None:
+               c.drawString(455, 690, str(maskinInfo[1]))
+          if maskinInfo[2] is not None:
+               c.drawString(455, 670, str(maskinInfo[2]))
+          if maskinInfo[3] is not None:
+               c.drawString(455, 650, str(maskinInfo[3]))
+          if maskinInfo[4] is not None:
+               c.drawString(455, 630, str(maskinInfo[4]))
+          if maskinInfo[5] is not None:
+               c.drawString(455, 610, str(maskinInfo[5]))
           if forarnamn is not None:
                c.drawString(133, 670, str(forarnamn[0]))
-          c.drawString(133, 690, str(foretag[0]))
-          c.drawString(470, 712, str(maskinnummer))
+          if foretag[0] is not None:
+               c.drawString(133, 690, str(foretag[0]))
+          if maskinnummer is not None:
+               c.drawString(470, 712, str(maskinnummer))
           
           counter = 0
           for x in tillbehor:
