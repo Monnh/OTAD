@@ -957,8 +957,10 @@ def forsakringPerDelagareFraga(medlemsnummer):
                     outputStream.close()
                os.startfile("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf")
 
-
-          os.startfile("Kollektiv försäkring\Kollektivförsäkring - " + medlemsnummer + ".pdf" )
+          try:
+               os.startfile("Kollektiv försäkring\Kollektivförsäkring - " + medlemsnummer + ".pdf")
+          except:
+               pass
 #Funktion som skapar PDF-rapporten försäkring per delägare
 def forsakringPerDelagare():
 
@@ -1990,9 +1992,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
                     nyMaskin.lift()
                     if response == 1:
-                         try:                        
+                         try:  
+                              sparaHistorik(maskinnummer)                       
                               andraMaskin(maskinnummer, True)
-                              sparaHistorik(maskinnummer) 
                               db.commit()
                               fileSave()
                               maskinnummer = entNyMaskinnummermaskininfo.get()                       
@@ -2006,7 +2008,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                elif Typ=="Ny":
                     try:
                          bytOchNyMaskin()
-                         print("nyMaskin Ny")
                          db.commit()
                          fileSave()
                          fyllMaskinInfo("empty")
@@ -2018,7 +2019,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          traceback.print_exc()
                     
                else:
-                    print("nyMaskin Ändra")
                     try:
                          andraMaskin(Typ, False)
                          db.commit()
@@ -2202,8 +2202,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
                cursor.execute("UPDATE maskinregister SET Maskinnummer = %s, MarkeModell= %s, ME_Klass= %s, Motorfabrikat= %s, Motortyp= %s, Motorolja= %s, Vaxelladsolja= %s, Hydraulolja= %s, Kylvatska= %s, Motoreffekt= %s, Kylmedia= %s, Bullernivaute= %s, Bullernivainne= %s, Smorjfett= %s, Batterityp= %s, Arsbelopp= %s, Miljostatus= %s, Arsmodell= %s, Registreringsnummer= %s, Maskintyp= %s, Motorvolymolja= %s, Vaxelladavolym= %s, Hydraulvolym= %s, Kylvatskavolym= %s, Ovrig_text= %s, Bransle= %s, Dackfabrikat= %s, Dimension= %s, Batteriantal= %s WHERE Maskinnummer = %s", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), entMaskinbatteriAntal.get(), Typ)) 
                #cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entNyMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + varMeKlass + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + varMotoreffekt + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + varArsbelopp + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + varArsModell + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "', Batteriantal = '" + entMaskinbatteriAntal.get() + "' WHERE Maskinnummer = " + Typ +";")            
-               cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
-               cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+               if len(deMaskinperiod1.get()) != 0 or len(deMaskinperiod2.get()) != 0:
+                    cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
+                    cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
           
                for x in tillbehorAttTaBort:
                     cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")                   
@@ -2214,7 +2215,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     try:                         
                          cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+maskinnummer+filePath+"', '"+maskinnummer+"');")
                     except Exception:
-                         traceback.print_exc()    
+                         traceback.print_exc()
                
 
           nyMaskin = Toplevel(root)
@@ -2394,7 +2395,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           lblMaskinregistreringsnummer = Label(nyMaskin, text="Reg. nr/Ser. nr")
           lblMaskinregistreringsnummer.grid(column=2, row=2, sticky = W, padx=(10,0))
-          entMaskinregistreringsnummer=Entry(nyMaskin, width = 20, validate="key", validatecommand=(validera, "%P"))
+          entMaskinregistreringsnummer=Entry(nyMaskin, width = 20)
           entMaskinregistreringsnummer.grid(column=3, row=2, sticky=W, padx=(10,0))
 
           lblMaskintyp = Label(nyMaskin, text="Maskintyp")
@@ -2426,7 +2427,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           lblOvrigtext.grid(column=2, row=9, sticky = W, padx=(10,0))
           TxtOvrigtext = Text(nyMaskin, width = 32, height=3)
           TxtOvrigtext.grid(row=10, column=2, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,15))
-          TxtOvrigtext.config(state=DISABLED)
 
           #Scrollbar
           ScbTxtOvrigText = Scrollbar(nyMaskin, orient="vertical")
@@ -2650,7 +2650,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     TxtOvrigtext.config(state=NORMAL)
                     TxtOvrigtext.delete('1.0', 'end')
                     TxtOvrigtext.insert(END, maskinInfo[41])
-                    #TxtOvrigtext.config(state=DISABLED)
                except:
                     pass
 
@@ -2874,7 +2873,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     entMaskinforare.insert(0, forarnamn[0])
                     entMaskinforare.config(state=DISABLED)
                except:
-                    pass
+                    entMaskinforare.config(state=DISABLED)
                
                referenser = []     
                referenser.clear()
@@ -3396,10 +3395,16 @@ def historikFonster(maskinnummer):
                if maskinnummer is not None and maskinnummer != "":
                     cursor.execute('SELECT HistorikID, Maskinnummer, Beteckning, Registreringsnummer, ME_klass, Datum FROM historik WHERE Maskinnummer = ' + str(maskinnummer) + ';')
                     result = cursor.fetchall()
+                    result = list(result)
 
                     count = 0
-
-                    for x in result:                           
+                    
+                    for x in result:
+                         x = list(x)       
+                         if x[4] is None:
+                              x[4] = ""
+                         if x[3] is None:
+                              x[3] = ""
                          LbHistorik.insert(parent='', index="end", iid=count, text="", values=(x[0], x[1], x[2], x[3], x[4], x[5]))
                          count += 1
                     
@@ -3736,21 +3741,22 @@ def hamtaForareMaskin():
                item[1] = ""
           if item[2] == None:
                item[2] = ""
-          
+
           s=""
           s += str(item[0])
+
           if item[1] == "":
-               s+= ""
+               s+= " "
           else:
                s+= " - "
                s+=str(item[1])
           if item[2] == "":
-               s+= ""
+               s+= " "
           else:
                s+= " - "
                s+=str(item[2])
-                      
-               LbForareDelagaresMaskiner.insert("end",s )
+
+          LbForareDelagaresMaskiner.insert("end",s )
 #Kopplar ihop en förare och en maskin.
 def kopplaMaskin():
 
@@ -3769,7 +3775,6 @@ def kopplaMaskin():
           stringmaskinid = str(maskinid[0:index3])
           maskinidString = "".join(stringmaskinid)
 
-     
      #Återanvändningsbar metod för att koppla en forare till en maskin.
      def queryKopplaMaskin():
           try:
@@ -3780,6 +3785,13 @@ def kopplaMaskin():
           except Exception:
                traceback.print_exc()
                db.rollback()
+     
+
+     try:
+          cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = %s", (foraridString,))
+          y=cursor.fetchone()
+     except:
+          y = None    
 
      cursor.execute("SELECT Forarid FROM maskinregister WHERE Maskinnummer = %s", (maskinidString,))
      x=cursor.fetchone()
@@ -3789,6 +3801,12 @@ def kopplaMaskin():
                queryKopplaMaskin()
           else: 
             pass   
+     elif y is not None:
+          response = messagebox.askyesno("Varning!", "Föraren är redan kopplad till maskin nummer "+str(y[0]) +"\nVill du fortsätta ändå?")
+          if response == 1:
+               queryKopplaMaskin()
+          else:
+               pass
      else:
           queryKopplaMaskin()
 #Kopplar isär en förare och en maskin.
