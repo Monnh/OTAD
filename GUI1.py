@@ -8,6 +8,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import PIL
 import mysql.connector
+import pyodbc
 from tkinter.simpledialog import askstring
 from tkinter import filedialog
 from tkcalendar import DateEntry
@@ -23,15 +24,15 @@ def miljodeklaration(maskinnummer):
      
      else:
 
-          cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
+          cursor.execute('SELECT * FROM tschakt.maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
           maskinInfo = cursor.fetchone()
           maskinInfo = list(maskinInfo)
           
-          cursor.execute('SELECT Fornamn, Efternamn, Foretagsnamn, Gatuadress, Postnummer, Postadress FROM foretagsregister WHERE Medlemsnummer = ' + str(maskinInfo[4]) + ';')
+          cursor.execute('SELECT Fornamn, Efternamn, Foretagsnamn, Gatuadress, Postnummer, Postadress FROM tschakt.foretagsregister WHERE Medlemsnummer = ' + str(maskinInfo[4]) + ';')
           delagarInfoLista = cursor.fetchone()
           delagarInfoLista = list(delagarInfoLista)
 
-          cursor.execute('SELECT forsakringsgivare FROM forsakringsgivare WHERE idforsakringsgivare = "1"')
+          cursor.execute('SELECT forsakringsgivare FROM tschakt.forsakringsgivare WHERE idforsakringsgivare = "1"')
           forsakring = cursor.fetchone()
 
           packet = io.BytesIO()
@@ -194,27 +195,27 @@ def maskinpresentation(maskinnummer):
      
      else:
 
-          cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forarid FROM maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
+          cursor.execute('SELECT Medlemsnummer, MarkeModell, Arsmodell, Registreringsnummer, ME_Klass, Maskintyp, Forarid FROM tschakt.maskinregister WHERE Maskinnummer = ' + maskinnummer + ';')
           maskinInfo = cursor.fetchone()
           maskinInfo = list(maskinInfo)
 
-          cursor.execute('SELECT Foretagsnamn FROM foretagsregister WHERE medlemsnummer = ' + str(maskinInfo[0]) + ';')
+          cursor.execute('SELECT Foretagsnamn FROM tschakt.foretagsregister WHERE medlemsnummer = ' + str(maskinInfo[0]) + ';')
           foretag = cursor.fetchone()
           foretag = list(foretag)
 
-          cursor.execute('SELECT tillbehor FROM tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
+          cursor.execute('SELECT tillbehor FROM tschakt.tillbehor WHERE Maskinnummer = ' + maskinnummer + ';')
           tillbehor = cursor.fetchall()
           tillbehor = list(tillbehor)
 
-          cursor.execute('SELECT sokvag FROM bilder WHERE Maskinnummer = ' + maskinnummer + ' order by bildid desc LIMIT 1;')
+          cursor.execute('SELECT TOP 1 sokvag FROM tschakt.bilder WHERE Maskinnummer = ' + maskinnummer + ' order by bildid desc;')
           bild = cursor.fetchone()
 
           if maskinInfo[6] is not None:
-               cursor.execute('select namn from forare where forarid = '+ str(maskinInfo[6])+';')
+               cursor.execute('select namn from tschakt.forare where forarid = '+ str(maskinInfo[6])+';')
                forarnamn = cursor.fetchone()
                forarnamn = list(forarnamn)
 
-               cursor.execute('SELECT Beskrivning FROM referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
+               cursor.execute('SELECT Beskrivning FROM tschakt.referens WHERE forarid = ' + str(maskinInfo[6]) + ';')
                referenser = cursor.fetchall()
                referenser = list(referenser)
 
@@ -310,11 +311,11 @@ def maskininnehav(medlemsnummer):
           messagebox.showerror("Fel", "Ingen delägare är vald.")
      
      else:
-          cursor.execute("SELECT Maskinnummer, MarkeModell, ME_Klass, Maskininsats, Forsakring, Arsmodell, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + "")
+          cursor.execute("SELECT Maskinnummer, MarkeModell, ME_Klass, Maskininsats, Forsakring, Arsmodell, Registreringsnummer FROM tschakt.maskinregister WHERE Medlemsnummer = " + medlemsnummer + "")
           maskiner = cursor.fetchall()
           maskiner = list(maskiner)
 
-          cursor.execute("SELECT Foretagsnamn FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + "")
+          cursor.execute("SELECT Foretagsnamn FROM tschakt.foretagsregister WHERE Medlemsnummer = " + medlemsnummer + "")
           foretag = cursor.fetchone()
           
           packet = io.BytesIO()
@@ -590,18 +591,18 @@ def forsakringPerDelagareFraga(medlemsnummer):
      
      else:
 
-          cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + " and Forsakring = '1'")
+          cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM tschakt.maskinregister WHERE Medlemsnummer = " + medlemsnummer + " and Forsakring = '1'")
           maskiner = cursor.fetchall()
           maskiner = list(maskiner)
 
-          cursor.execute("SELECT Foretagsnamn, Fornamn, Efternamn FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + "")
+          cursor.execute("SELECT Foretagsnamn, Fornamn, Efternamn FROM tschakt.foretagsregister WHERE Medlemsnummer = " + medlemsnummer + "")
           foretag = cursor.fetchone()
 
-          cursor.execute("SELECT forsakringsgivare FROM forsakringsgivare WHERE idforsakringsgivare = 1")
+          cursor.execute("SELECT forsakringsgivare FROM tschakt.forsakringsgivare WHERE idforsakringsgivare = 1")
           forsakringsgivare = cursor.fetchone()
 
-          cursor.execute("SELECT MAX(Arsbelopp) FROM maskinregister WHERE Forsakring = '1'")
-          arsbelopp = cursor.fetchone()
+          cursor.execute("SELECT arspremie FROM tschakt.forsakringsgivare WHERE idforsakringsgivare = 1")
+          arspremie = cursor.fetchone()
 
           packet = io.BytesIO()
           c = canvas.Canvas(packet, pagesize=letter)
@@ -636,7 +637,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
 
           for i in maskiner:
 
-               if i[4] == arsbelopp[0]:
+               if i[4] == arspremie[0]:
 
                     if counter < 22: 
                          c.drawString(40, y, str(forsakringsgivare[0]))
@@ -889,13 +890,14 @@ def forsakringPerDelagareFraga(medlemsnummer):
           if dCounter > 0:
                
                d.drawString(490, 800, str(datetime.date(datetime.now())))
+               d.setFontSize(12)
                d.drawString(40, 645, str(foretag[0]))
                if foretag[1] is not None:
                     d.drawString(247, 645, str(foretag[1]))
                if foretag[1] is not None:
                     d.drawString(348, 645, str(foretag[2]))
-               d.drawString(510, 620, str(medlemsnummer))
-
+               d.drawString(510, 645, str(medlemsnummer))
+               
                if counter + dCounter == len(maskiner):
                     if dCounter == 22:
                          dy-=2
@@ -906,6 +908,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
                     d.drawString(500, dy, str(dBelopp))
                     dy-=3
                     d.drawString(459, dy, "_____________")
+               d.setFontSize(10)
 
           if counter + dCounter == len(maskiner):
                if counter == 22 or counter == 44 or counter == 66 or counter == 88 or counter == 110:
@@ -944,7 +947,7 @@ def forsakringPerDelagareFraga(medlemsnummer):
                          page = existing_pdf.getPage(0)
                          page.mergePage(andradeBelopp_pdf.getPage(x))
                          dOutput.addPage(page)
-                         outputStream = open("Kollektiv försäkring - ändrade beloppKollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
+                         outputStream = open("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
                          dOutput.write(outputStream)
                          outputStream.close()
                else:
@@ -964,14 +967,14 @@ def forsakringPerDelagareFraga(medlemsnummer):
 #Funktion som skapar PDF-rapporten försäkring per delägare
 def forsakringPerDelagare():
 
-     cursor.execute("SELECT Medlemsnummer FROM foretagsregister")
+     cursor.execute("SELECT Medlemsnummer FROM tschakt.foretagsregister")
      medlemmar = cursor.fetchall()
      medlemmar = list(medlemmar)
 
-     cursor.execute("SELECT forsakringsgivare FROM forsakringsgivare WHERE idforsakringsgivare = 1")
+     cursor.execute("SELECT forsakringsgivare FROM tschakt.forsakringsgivare WHERE idforsakringsgivare = 1")
      forsakringsgivare = cursor.fetchone()
      
-     cursor.execute("SELECT Maskinnummer FROM maskinregister where Forsakring = '1'")
+     cursor.execute("SELECT Maskinnummer FROM tschakt.maskinregister where Forsakring = '1'")
      totaltMaskiner = cursor.fetchall()
      totaltMaskiner = list(totaltMaskiner)
 
@@ -989,11 +992,11 @@ def forsakringPerDelagare():
      d.setFontSize(16)
 
      for i in medlemmar:
-          cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM maskinregister WHERE Medlemsnummer = " + str(i[0]) + " and Forsakring = '1';")
+          cursor.execute("SELECT Maskinnummer, MarkeModell, Period_start, Period_slut, Arsbelopp, Registreringsnummer FROM tschakt.maskinregister WHERE Medlemsnummer = " + str(i[0]) + " and Forsakring = '1';")
           maskiner = cursor.fetchall()
           maskiner = list(maskiner)
 
-          cursor.execute("SELECT Foretagsnamn, Fornamn, Efternamn FROM foretagsregister WHERE Medlemsnummer = " + str(i[0]) + "")
+          cursor.execute("SELECT Foretagsnamn, Fornamn, Efternamn FROM tschakt.foretagsregister WHERE Medlemsnummer = " + str(i[0]) + "")
           foretag = cursor.fetchone()
 
           counter = 0
@@ -1270,10 +1273,10 @@ def forsakringPerDelagare():
 #Funktion som skapar PDF-rapporten maskiner med ändrade belopp
 def maskinerMedAndradeBelopp():
      
-     cursor.execute("SELECT MAX(Arsbelopp) FROM maskinregister WHERE Forsakring = '1'")
+     cursor.execute("SELECT Arspremie FROM tschakt.forsakringsgivare WHERE Forsakring = 1")
      arsbelopp = cursor.fetchone()
 
-     cursor.execute("SELECT Maskinnummer, Forsakring, Arsbelopp, Period_start, Period_slut, Medlemsnummer FROM maskinregister WHERE Arsbelopp != '"+ str(arsbelopp[0]) +"' AND Arsbelopp > 0")
+     cursor.execute("SELECT Maskinnummer, Forsakring, Arsbelopp, Period_start, Period_slut, Medlemsnummer FROM tschakt.maskinregister WHERE Arsbelopp != '"+ str(arsbelopp[0]) +"' AND Arsbelopp > 0")
      maskiner = cursor.fetchall()
      maskiner = list(maskiner)
 
@@ -1361,8 +1364,8 @@ def maskinerMedAndradeBelopp():
      os.startfile("Maskiner med ändrade årsbelopp.pdf")
 #Fyller delägarfönstret med maskinens data
 def fyllMaskinInfo(self):
-     global maskinnummer
-     global medlemsnummer
+     global maskinnummer, medlemsnummer
+
      if self == "franDelagare":
           selectedMaskin = LbMaskiner.get(LbMaskiner.curselection())
           index2 = selectedMaskin.index(" ")
@@ -1370,14 +1373,14 @@ def fyllMaskinInfo(self):
           maskinnummer = "".join(stringSelectedMaskin)
      elif self =="franMaskiner":
           maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
-          maskinnummer = maskinnummer[0]
           maskinnummer = str(maskinnummer) 
+          
      elif self =="endastDelagare":
           LbDelagaresMaskiner.selection_set(0)
           maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
-          maskinnummer = maskinnummer[0]
           maskinnummer = str(maskinnummer) 
-     cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
+
+     cursor.execute('SELECT * FROM tschakt.maskinregister WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      maskinInfo = cursor.fetchone()
      maskinInfo = list(maskinInfo)
      medlemsnummer = str(maskinInfo[4])
@@ -1687,7 +1690,7 @@ def fyllMaskinInfo(self):
 
      forarnamn=""
      if maskinInfo[40] != None:
-          cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+          cursor.execute('SELECT Namn FROM tschakt.forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
           forarnamn = cursor.fetchone()
 
      try:
@@ -1701,7 +1704,7 @@ def fyllMaskinInfo(self):
      referenser = []     
      referenser.clear()
      if maskinInfo[40] != None:
-          cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+          cursor.execute('SELECT Beskrivning FROM tschakt.referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
           referenser = cursor.fetchall()
           
      try:
@@ -1758,7 +1761,7 @@ def fyllMaskinInfo(self):
           pass
      #Hämtar bilden kopplad till maskinen, om detta inte går används en placeholder.
      try:
-          cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + str(maskinnummer) + " order by bildid desc LIMIT 1;")
+          cursor.execute("SELECT TOP 1 Sokvag FROM tschakt.bilder WHERE Maskinnummer = " + str(maskinnummer) + " order by bildid desc;")
           img = cursor.fetchone()
           img = Image.open(img[0])  
           img = img.resize((225,200), Image. ANTIALIAS)
@@ -1773,7 +1776,7 @@ def fyllMaskinInfo(self):
           img_label.image=img2
           #traceback.print_exc()
 
-     cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
+     cursor.execute('SELECT Tillbehor FROM tschakt.tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
      tillbehor = cursor.fetchall()
      
      if lbMaskintillbehor.index("end") != 0:
@@ -1784,15 +1787,15 @@ def fyllMaskinInfo(self):
           for x in tillbehor:
                lbMaskintillbehor.insert("end", x[0])
      if self == "franDelagare":
-          cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+          cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
           maskiner = cursor.fetchall()
           if LbDelagaresMaskiner.index("end") != 0:
                LbDelagaresMaskiner.delete(0, "end")
                for x in maskiner:
-                    LbDelagaresMaskiner.insert("end", x)
+                    LbDelagaresMaskiner.insert("end", x[0])
           else:
                for x in maskiner:
-                    LbDelagaresMaskiner.insert("end", x)    
+                    LbDelagaresMaskiner.insert("end", x[0])    
      
           fyllDelagarInfo(medlemsnummer)
      tabControl.select(delagare)
@@ -1813,7 +1816,7 @@ def laggTillAndraDelagare(Typ):
                     messagebox.showerror("Fel", "Delägaren måste ha ett företagsnamn.")
                     nyDelagare.lift() 
                else:
-                    cursor.execute("UPDATE foretagsregister SET Foretagsnamn = %s, Fornamn = %s, Efternamn = %s, Gatuadress = %s, Postnummer = %s, Postadress = %s, Telefon = %s WHERE Medlemsnummer = %s", (entNyForetag.get(), entNyFornamn.get(), entNyEfternamn.get(), entNyGatuadress.get(), entNyPostnummer.get(), entNyPostadress.get(), entNyTelefon.get(), medlemsnummer))
+                    cursor.execute("UPDATE tschakt.foretagsregister SET Foretagsnamn = ?, Fornamn = ?, Efternamn = ?, Gatuadress = ?, Postnummer = ?, Postadress = ?, Telefon = ? WHERE Medlemsnummer = ?", (entNyForetag.get(), entNyFornamn.get(), entNyEfternamn.get(), entNyGatuadress.get(), entNyPostnummer.get(), entNyPostadress.get(), entNyTelefon.get(), medlemsnummer))
                     db.commit()
                     fyllDelagarInfo(medlemsnummer)
                     nyDelagare.destroy()
@@ -1821,7 +1824,7 @@ def laggTillAndraDelagare(Typ):
                     fyllListboxDelagare()
 
           elif Typ == "Ny":
-               cursor.execute("SELECT Medlemsnummer FROM foretagsregister")
+               cursor.execute("SELECT Medlemsnummer FROM tschakt.foretagsregister")
                upptagnaMedlemsnummer = cursor.fetchall()
                upptagnaMedlemsnummer = list(upptagnaMedlemsnummer)
                upptaget = False
@@ -1838,7 +1841,7 @@ def laggTillAndraDelagare(Typ):
                               upptaget = True
                               break
                     if upptaget == False:
-                         cursor.execute("INSERT INTO foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (entNyMedlemsnummer.get(), entNyForetag.get(), entNyFornamn.get(), entNyEfternamn.get(), entNyGatuadress.get(), entNyPostnummer.get(), entNyPostadress.get(), entNyTelefon.get()))
+                         cursor.execute("INSERT INTO tschakt.foretagsregister (Medlemsnummer, Foretagsnamn, Fornamn, Efternamn, Gatuadress, Postnummer, Postadress, Telefon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (entNyMedlemsnummer.get(), entNyForetag.get(), entNyFornamn.get(), entNyEfternamn.get(), entNyGatuadress.get(), entNyPostnummer.get(), entNyPostadress.get(), entNyTelefon.get()))
                          db.commit()
                          medlemsnummer = entNyMedlemsnummer.get()
                          nyDelagare.destroy()
@@ -1908,7 +1911,7 @@ def laggTillAndraDelagare(Typ):
           messagebox.showerror("Fel", "Välj en delägare att ändra.")
 
      elif Typ == "Ändra":
-          cursor.execute('SELECT * FROM foretagsregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+          cursor.execute('SELECT * FROM tschakt.foretagsregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
           delagarInformation = cursor.fetchone()
           delagarInformation = list(delagarInformation)
 
@@ -1961,8 +1964,8 @@ def taBortDelagare():
      else:
           response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort delägare nr. " + medlemsnummer + "? \nDetta tar även bort alla maskiner på detta medlemsnummer.")
           if response == 1:
-               cursor.execute("DELETE FROM maskinregister WHERE Medlemsnummer = " + medlemsnummer + ";")
-               cursor.execute("DELETE FROM foretagsregister WHERE Medlemsnummer = " + medlemsnummer + ";" )
+               cursor.execute("DELETE FROM tschakt.maskinregister WHERE Medlemsnummer = " + medlemsnummer + ";")
+               cursor.execute("DELETE FROM tschakt.foretagsregister WHERE Medlemsnummer = " + medlemsnummer + ";" )
                db.commit()
                medlemsnummer = ""
                tomMaskinInfo()
@@ -2067,23 +2070,23 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                if cbMaskinnummer.instate(['selected']) == True:
                     try:
                          if len(deMaskinperiod1.get()) == 0 or len(deMaskinperiod2.get()) == 0:
-                              cursor.execute("INSERT INTO maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end')))
+                              cursor.execute("INSERT INTO tschakt.maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end')))
                               maskinnummer=cursor.lastrowid
                          else:
-                              cursor.execute("INSERT INTO maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+                              cursor.execute("INSERT INTO tschakt.maskinregister (MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
                               maskinnummer=cursor.lastrowid
                     except Exception:
                          raise ValueError("Insert 1 error")
                     for x in tillbehorAttLaggaTill:
-                         cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, str(maskinnummer)))
+                         cursor.execute("INSERT INTO tschakt.tillbehor (Tillbehor, Maskinnummer) values (?, ?)", (x, str(maskinnummer)))
                     if filePath is not None:                        
-                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
+                         cursor.execute("insert into tschakt.bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
                          
 
                else:
                     maskinnummerFinns = False
                     valtMaskinNummer = entNyMaskinnummermaskininfo.get()
-                    cursor.execute('SELECT Maskinnummer FROM maskinregister')
+                    cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister')
                     result = cursor.fetchall()
 
                     for x in result:
@@ -2097,16 +2100,16 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          try:
                               maskinnummer = valtMaskinNummer
                               if len(deMaskinperiod1.get()) == 0 or len(deMaskinperiod2.get()) == 0:
-                                   cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end')))
+                                   cursor.execute("INSERT INTO tschakt.maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end')))
                               else:
-                                   cursor.execute("INSERT INTO maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+                                   cursor.execute("INSERT INTO tschakt.maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinbatteriAntal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
                          except Exception:
                               raise ValueError("Insert 2 error")                            
                          for x in tillbehorAttLaggaTill:
-                              cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, entNyMaskinnummermaskininfo.get()))
+                              cursor.execute("INSERT INTO tschakt.tillbehor (Tillbehor, Maskinnummer) values (?, ?)", (x, entNyMaskinnummermaskininfo.get()))
                          if filePath is not None:
                               try:
-                                   cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
+                                   cursor.execute("insert into tschakt.bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
                               except:
                                    pass
                     else:
@@ -2119,62 +2122,62 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           def andraMaskin(Typ, byteTillbehor):
                global filePath
                if byteTillbehor is True:
-                    cursor.execute("Delete from tillbehor where maskinnummer ="+Typ+";")
-                    cursor.execute("Delete from bilder where maskinnummer ="+Typ+";")
+                    cursor.execute("Delete from tschakt.tillbehor where maskinnummer ="+Typ+";")
+                    cursor.execute("Delete from tschakt.bilder where maskinnummer ="+Typ+";")
 
 
                if cbMaskinregummerbara.instate(['selected']) == True:                    
-                    cursor.execute("UPDATE maskinregister SET regummerbar = 1 WHERE Maskinnummer = " + Typ +";")                   
+                    cursor.execute("UPDATE tschakt.maskinregister SET regummerbar = 1 WHERE Maskinnummer = " + Typ +";")                   
                else:                   
-                    cursor.execute("UPDATE maskinregister SET regummerbar = 0 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET regummerbar = 0 WHERE Maskinnummer = " + Typ +";")
                     
                
                if cbMaskinregummerade.instate(['selected']) == True:                   
-                    cursor.execute("UPDATE maskinregister SET regummerad = 1 WHERE Maskinnummer = " + Typ +";")                
+                    cursor.execute("UPDATE tschakt.maskinregister SET regummerad = 1 WHERE Maskinnummer = " + Typ +";")                
                else:                   
-                    cursor.execute("UPDATE maskinregister SET regummerad = 0 WHERE Maskinnummer = " + Typ +";")           
+                    cursor.execute("UPDATE tschakt.maskinregister SET regummerad = 0 WHERE Maskinnummer = " + Typ +";")           
                if cbMaskinKollektivforsakring.instate(['selected']) == True:                 
-                    cursor.execute("UPDATE maskinregister SET Forsakring = 1 WHERE Maskinnummer = " + Typ +";")            
+                    cursor.execute("UPDATE tschakt.maskinregister SET Forsakring = 1 WHERE Maskinnummer = " + Typ +";")            
                else:             
-                    cursor.execute("UPDATE maskinregister SET Forsakring = 0 WHERE Maskinnummer = " + Typ +";")      
+                    cursor.execute("UPDATE tschakt.maskinregister SET Forsakring = 0 WHERE Maskinnummer = " + Typ +";")      
                if cbMaskininsatserlagd.instate(['selected']) == True:              
                     cursor.execute("UPDATE maskinregister SET Maskininsats = 1 WHERE Maskinnummer = " + Typ +";")      
                else:               
-                    cursor.execute("UPDATE maskinregister SET Maskininsats = 0 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Maskininsats = 0 WHERE Maskinnummer = " + Typ +";")
                if cbMaskinmotorvarmare.instate(['selected']) == True:              
-                    cursor.execute("UPDATE maskinregister SET Motorvarmare = 1 WHERE Maskinnummer = " + Typ +";")         
+                    cursor.execute("UPDATE tschakt.maskinregister SET Motorvarmare = 1 WHERE Maskinnummer = " + Typ +";")         
                else:            
-                    cursor.execute("UPDATE maskinregister SET Motorvarmare = 0 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Motorvarmare = 0 WHERE Maskinnummer = " + Typ +";")
                     
 
                if cbMaskinkatalysator.instate(['selected']) == True:   
-                    cursor.execute("UPDATE maskinregister SET Katalysator = 1 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Katalysator = 1 WHERE Maskinnummer = " + Typ +";")
                     
                else:
-                         cursor.execute("UPDATE maskinregister SET Katalysator = 0 WHERE Maskinnummer = " + Typ +";")
+                         cursor.execute("UPDATE tschakt.maskinregister SET Katalysator = 0 WHERE Maskinnummer = " + Typ +";")
                     
 
                if cbMaskinpartikelfilter.instate(['selected']) == True:
                     
-                    cursor.execute("UPDATE maskinregister SET Partikelfilter = 1 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Partikelfilter = 1 WHERE Maskinnummer = " + Typ +";")
                     
                else:
                     
-                    cursor.execute("UPDATE maskinregister SET Partikelfilter = 0 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Partikelfilter = 0 WHERE Maskinnummer = " + Typ +";")
                     
 
                if cbMaskinvattenbaseradlack.instate(['selected']) == True:
                     
-                    cursor.execute("UPDATE maskinregister SET Vattenbaseradlack = 1 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Vattenbaseradlack = 1 WHERE Maskinnummer = " + Typ +";")
                     
                else:
                     
-                    cursor.execute("UPDATE maskinregister SET Vattenbaseradlack = 0 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Vattenbaseradlack = 0 WHERE Maskinnummer = " + Typ +";")
                     
 
                if cbMaskingasolanlaggning.instate(['selected']) == True:
                     
-                    cursor.execute("UPDATE maskinregister SET Gasol = 1 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Gasol = 1 WHERE Maskinnummer = " + Typ +";")
                     
                else:
                     
@@ -2182,10 +2185,10 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     
 
                if cbMaskinSaneringsvatska.instate(['selected']) == True:             
-                    cursor.execute("UPDATE maskinregister SET Saneringsvatska = 1 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Saneringsvatska = 1 WHERE Maskinnummer = " + Typ +";")
                     
                else:              
-                    cursor.execute("UPDATE maskinregister SET Saneringsvatska = 0 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Saneringsvatska = 0 WHERE Maskinnummer = " + Typ +";")
 
                varMeKlass = entMaskinme_klass.get()
                varArsbelopp = entMaskinarsbelopp.get()
@@ -2200,20 +2203,20 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                if len(entMaskinarsmodell.get())== 0:
                     varArsModell = None
 
-               cursor.execute("UPDATE maskinregister SET Maskinnummer = %s, MarkeModell= %s, ME_Klass= %s, Motorfabrikat= %s, Motortyp= %s, Motorolja= %s, Vaxelladsolja= %s, Hydraulolja= %s, Kylvatska= %s, Motoreffekt= %s, Kylmedia= %s, Bullernivaute= %s, Bullernivainne= %s, Smorjfett= %s, Batterityp= %s, Arsbelopp= %s, Miljostatus= %s, Arsmodell= %s, Registreringsnummer= %s, Maskintyp= %s, Motorvolymolja= %s, Vaxelladavolym= %s, Hydraulvolym= %s, Kylvatskavolym= %s, Ovrig_text= %s, Bransle= %s, Dackfabrikat= %s, Dimension= %s, Batteriantal= %s WHERE Maskinnummer = %s", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), entMaskinbatteriAntal.get(), Typ)) 
+               cursor.execute("UPDATE tschakt.maskinregister SET Maskinnummer = ?, MarkeModell= ?, ME_Klass= ?, Motorfabrikat= ?, Motortyp= ?, Motorolja= ?, Vaxelladsolja= ?, Hydraulolja= ?, Kylvatska= ?, Motoreffekt= ?, Kylmedia= ?, Bullernivaute= ?, Bullernivainne= ?, Smorjfett= ?, Batterityp= ?, Arsbelopp= ?, Miljostatus= ?, Arsmodell= ?, Registreringsnummer= ?, Maskintyp= ?, Motorvolymolja= ?, Vaxelladavolym= ?, Hydraulvolym= ?, Kylvatskavolym= ?, Ovrig_text= ?, Bransle= ?, Dackfabrikat= ?, Dimension= ?, Batteriantal= ? WHERE Maskinnummer = ?", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), entMaskinbatteriAntal.get(), Typ)) 
                #cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entNyMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + varMeKlass + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + varMotoreffekt + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + varArsbelopp + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + varArsModell + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "', Batteriantal = '" + entMaskinbatteriAntal.get() + "' WHERE Maskinnummer = " + Typ +";")            
                if len(deMaskinperiod1.get()) != 0 or len(deMaskinperiod2.get()) != 0:
-                    cursor.execute("UPDATE maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
-                    cursor.execute("UPDATE maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
+                    cursor.execute("UPDATE tschakt.maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
           
                for x in tillbehorAttTaBort:
-                    cursor.execute("DELETE tillbehor FROM Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")                   
+                    cursor.execute("DELETE tillbehor FROM tschakt.Tillbehor WHERE Maskinnummer = " + Typ +" AND Tillbehor = '" + x +"';")                   
                for x in tillbehorAttLaggaTill:
-                    cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, Typ))
+                    cursor.execute("INSERT INTO tschakt.tillbehor (Tillbehor, Maskinnummer) values (?, ?)", (x, Typ))
                
                if filePath is not None:
                     try:                         
-                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+maskinnummer+filePath+"', '"+maskinnummer+"');")
+                         cursor.execute("insert into tschakt.bilder (sokvag, maskinnummer) values ('pics/"+maskinnummer+filePath+"', '"+maskinnummer+"');")
                     except Exception:
                          traceback.print_exc()
                
@@ -2577,7 +2580,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           if Typ != "Ny" and Typ != "Byt":
                try:
-                    cursor.execute('SELECT * FROM maskinregister WHERE Maskinnummer = ' + Typ + ';')
+                    cursor.execute('SELECT * FROM tschakt.maskinregister WHERE Maskinnummer = ' + Typ + ';')
                     maskinInfo = cursor.fetchone()
                     maskinInfo = list(maskinInfo)
                except:
@@ -2654,7 +2657,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     pass
 
                try:
-                    cursor.execute("SELECT Sokvag FROM bilder WHERE Maskinnummer = " + maskinnummer + " order by bildid desc LIMIT 1;")
+                    cursor.execute("SELECT TOP 1 Sokvag FROM tschakt.bilder WHERE Maskinnummer = " + maskinnummer + " order by bildid desc;")
                     img = cursor.fetchone()
                     print(img[0])
                     img = Image.open(img[0])  
@@ -2864,7 +2867,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
                forarnamn=""
                if maskinInfo[40] != None:
-                    cursor.execute('SELECT Namn FROM forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+                    cursor.execute('SELECT Namn FROM tschakt.forare WHERE Forarid = ' + str(maskinInfo[40]) + ';')
                     forarnamn = cursor.fetchone()
 
                try:
@@ -2878,7 +2881,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                referenser = []     
                referenser.clear()
                if maskinInfo[40] != None:
-                    cursor.execute('SELECT Beskrivning FROM referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
+                    cursor.execute('SELECT Beskrivning FROM tschakt.referens WHERE Forarid = ' + str(maskinInfo[40]) + ';')
                     referenser = cursor.fetchall()
                     
                try:
@@ -2932,7 +2935,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                except:
                     pass
 
-               cursor.execute('SELECT Tillbehor FROM tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
+               cursor.execute('SELECT Tillbehor FROM tschakt.tillbehor WHERE Maskinnummer = ' + str(maskinnummer) + ';')
                tillbehor = cursor.fetchall()
           
                if lbMaskintillbehor.index("end") != 0:
@@ -2943,20 +2946,20 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     for x in tillbehor:
                          lbMaskintillbehor.insert("end", x[0])
                
-               cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+               cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
                maskiner = cursor.fetchall()
 
                if LbDelagaresMaskiner.index("end") != 0:
                     LbDelagaresMaskiner.delete(0, "end")
                     for x in maskiner:
-                         LbDelagaresMaskiner.insert("end", x)
+                         LbDelagaresMaskiner.insert("end", x[0])
                else:
                     for x in maskiner:
-                         LbDelagaresMaskiner.insert("end", x)    
+                         LbDelagaresMaskiner.insert("end", x[0])    
 #Fyller LbDelagare (Listboxen på Home-fliken) med delägarna ifrån databsen
 def fyllListboxDelagare():
 
-     cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister")
+     cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM tschakt.foretagsregister")
      delagareLista = []
      delagareLista = cursor.fetchall()
      LbDelagare.delete(0, 'end')
@@ -2989,7 +2992,7 @@ def hamtaAllaMaskiner(self):
      stringSelectedDelagare = str(selectedDelagare[0:indexSpace])
      delagare = "".join(stringSelectedDelagare)
      medlemsnummer = delagare
-     cursor.execute('SELECT Maskinnummer, MarkeModell, Arsmodell FROM maskinregister WHERE Medlemsnummer = ' + delagare + ';')
+     cursor.execute('SELECT Maskinnummer, MarkeModell, Arsmodell FROM tschakt.maskinregister WHERE Medlemsnummer = ' + delagare + ';')
      result = cursor.fetchall()
         
      if LbMaskiner.index("end") != 0:
@@ -3063,7 +3066,7 @@ def fyllDelagarInfoMedNummer(self):
 #Fyller delägarens info i Delägare-fliken
 def fyllDelagarInfo(medlemsnummer):
 
-     cursor.execute("SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM foretagsregister WHERE medlemsnummer = %s", (medlemsnummer,))
+     cursor.execute("SELECT medlemsnummer, foretagsnamn, fornamn, efternamn, gatuadress, postnummer, postadress, telefon FROM tschakt.foretagsregister WHERE medlemsnummer = ?", (medlemsnummer,))
      delagarInfo = cursor.fetchone()
      if delagarInfo is None:
           messagebox.showerror("Fel", "Def finns ingen delägare med det numret.")
@@ -3328,11 +3331,11 @@ def taBortMaskin(maskinnummer):
           response = messagebox.askyesno("Varning!", "Är du säker på att du vill ta bort maskin nr. " + str(maskinnummer) + "?")
           if response == 1:  
                try:  
-                    cursor.execute("select sokvag from bilder where maskinnummer ="+maskinnummer+";")
+                    cursor.execute("select sokvag from tschakt.bilder where maskinnummer ="+maskinnummer+";")
                     listaAvBilder = cursor.fetchall() 
-                    cursor.execute("Delete from bilder where maskinnummer ="+maskinnummer+";")   
-                    cursor.execute("Delete from tillbehor where maskinnummer ="+maskinnummer+";")   
-                    cursor.execute("DELETE FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
+                    cursor.execute("Delete from tschakt.bilder where maskinnummer ="+maskinnummer+";")   
+                    cursor.execute("Delete from tschakt.tillbehor where maskinnummer ="+maskinnummer+";")   
+                    cursor.execute("DELETE FROM tschakt.maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
                     db.commit()
                     taBortBilder(listaAvBilder)
                     tomMaskinInfo()
@@ -3355,17 +3358,18 @@ def taBortBilder(listaAvBilder):
 def hamtaDelagarensMaskiner():
      global medlemsnummer
 
-     cursor.execute('SELECT Maskinnummer FROM maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
+     cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ';')
      maskiner = cursor.fetchall()
+
      if len(maskiner) != 0:
           LbDelagaresMaskiner.selection_clear(0, "end")
           if LbDelagaresMaskiner.index("end") != 0:
                LbDelagaresMaskiner.delete(0, "end")
                for x in maskiner:
-                    LbDelagaresMaskiner.insert("end", x)
+                    LbDelagaresMaskiner.insert("end", x[0])
           else:
                for x in maskiner:
-                    LbDelagaresMaskiner.insert("end", x)   
+                    LbDelagaresMaskiner.insert("end", x[0])   
           LbDelagaresMaskiner.selection_set(0)
           fyllMaskinInfo("endastDelagare")
 #Hämtar delägare ifrån Delägare-flikens sökfunktion
@@ -3456,11 +3460,11 @@ def historikFonster(maskinnummer):
 #Sparar historik i databasen
 def sparaHistorik(maskinnummer):
 
-     cursor.execute("SELECT MarkeModell, Registreringsnummer, ME_Klass FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
+     cursor.execute("SELECT MarkeModell, Registreringsnummer, ME_Klass FROM tschakt.maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ";")
      maskinHistorik = cursor.fetchone()
      maskinHistorik = list(maskinHistorik)
 
-     cursor.execute("SELECT Foretagsnamn FROM foretagsregister WHERE Medlemsnummer IN (SELECT Medlemsnummer FROM maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ");")
+     cursor.execute("SELECT Foretagsnamn FROM foretagsregister WHERE Medlemsnummer IN (SELECT Medlemsnummer FROM tschakt.maskinregister WHERE Maskinnummer = " + str(maskinnummer) + ");")
      foretagLista = cursor.fetchone()   
      foretagLista = list(foretagLista)
 
@@ -3479,14 +3483,14 @@ def sparaHistorik(maskinnummer):
           pass
      
      if me_klass is None:
-          cursor.execute("INSERT INTO historik (Maskinnummer, Beteckning, Datum, Registreringsnummer, Foretag) VALUES (%s, %s, %s, %s, %s)", (maskinnummer, beteckning, datum, regnr, foretag))
+          cursor.execute("INSERT INTO tschakt.historik (Maskinnummer, Beteckning, Datum, Registreringsnummer, Foretag) VALUES (?, ?, ?, ?, ?)", (maskinnummer, beteckning, datum, regnr, foretag))
      else:
-          cursor.execute("INSERT INTO historik (Maskinnummer, Beteckning, Datum, Registreringsnummer, ME_klass, Foretag) VALUES (%s, %s, %s, %s, %s, %s)", (maskinnummer, beteckning, datum, regnr, me_klass, foretag))
+          cursor.execute("INSERT INTO tschakt.historik (Maskinnummer, Beteckning, Datum, Registreringsnummer, ME_klass, Foretag) VALUES (?, ?, ?, ?, ?, ?)", (maskinnummer, beteckning, datum, regnr, me_klass, foretag))
      db.commit()
 #Hämtar förare ur databasen och lägger dessa i LbForare på Förare-fliken
 def hamtaForare():
 
-     cursor.execute("SELECT Forarid, Namn FROM forare")
+     cursor.execute("SELECT Forarid, Namn FROM tschakt.forare")
      forarlista = cursor.fetchall()
      lbForare.delete(0, 'end')
      for item in forarlista:         
@@ -3504,9 +3508,9 @@ def hamtaReferenser(self):
      stringSelectedForare = str(selectedForare[0:indexSpace])
      forarid = "".join(stringSelectedForare)
 
-     cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = "+ forarid +";")
+     cursor.execute("SELECT Beskrivning FROM tschakt.referens WHERE Forarid = "+ forarid +";")
      referenser = cursor.fetchall()
-     cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = " +forarid +" LIMIT 1;")
+     cursor.execute("SELECT TOP 1 Maskinnummer FROM tschakt.maskinregister WHERE Forarid = " +forarid + ";")
      koppladMaskin = cursor.fetchone()
      lbReferenser.delete(0, 'end')
      refreshKoppladMaskin(forarid)
@@ -3520,7 +3524,7 @@ def laggTillForare(forare):
      if len(forare) == 0:
           messagebox.showerror("Fel", "Fyll i ett namn på föraren.")
      else:
-          cursor.execute("INSERT INTO forare (Namn) VALUES (%s)", (forare,))
+          cursor.execute("INSERT INTO tschakt.forare (Namn) VALUES (?)", (forare,))
           hamtaForare()
           db.commit()
 
@@ -3537,12 +3541,12 @@ def laggTillReferens(beskrivning):
           messagebox.showerror("Fel", "Välj en förare.")
 
      else:
-          cursor.execute("INSERT INTO referens (Beskrivning, Forarid) VALUES (%s, %s)", (beskrivning, forarid))
+          cursor.execute("INSERT INTO tschakt.referens (Beskrivning, Forarid) VALUES (?, ?)", (beskrivning, forarid))
           db.commit()
           
           entLaggTillReferens.delete(0, 'end')
 
-          cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = %s", (forarid,))
+          cursor.execute("SELECT Beskrivning FROM referens WHERE Forarid = ?", (forarid,))
           referenser = cursor.fetchall()
           lbReferenser.delete(0, 'end')
                
@@ -3569,9 +3573,9 @@ def taBortReferens():
 def taBortForare():
      global forarid
      def deleteForare(forarensId):
-          cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = %s", (forarensId,))
-          cursor.execute("Delete from referens where forarid =%s", (forarensId,))
-          cursor.execute("DELETE FROM forare WHERE forarid = %s", (forarensId,))
+          cursor.execute("UPDATE tschakt.maskinregister SET Forarid = NULL WHERE Forarid = ?", (forarensId,))
+          cursor.execute("Delete from tschakt.referens where forarid =?", (forarensId,))
+          cursor.execute("DELETE FROM tschakt.forare WHERE forarid = ?", (forarensId,))
      if len(lbForare.curselection()) == 0:
           messagebox.showerror("Fel", "Välj föraren som skall tas bort.")
      else:
@@ -3579,7 +3583,7 @@ def taBortForare():
           indexSpace = selectedForare.index(" ")
           stringSelectedForare = str(selectedForare[0:indexSpace])
           forarid = "".join(stringSelectedForare)
-          cursor.execute("SELECT forarid FROM maskinregister WHERE forarid = %s", (forarid,))
+          cursor.execute("SELECT forarid FROM tschakt.maskinregister WHERE forarid = ?", (forarid,))
           kopplad = cursor.fetchall()
           #Kollar om föraren är kopplad till en maskin.
 
@@ -3623,7 +3627,7 @@ def taBortForare():
 #Hämtar delägare efter det medlemsnummer som söks på i Home-fliken
 def hamtaDelagareFranEntry():
 
-     cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM foretagsregister WHERE Medlemsnummer LIKE '" + EntMedlemsnummer.get() + "%'")
+     cursor.execute("SELECT Medlemsnummer, Fornamn, Efternamn, Foretagsnamn FROM tschakt.foretagsregister WHERE Medlemsnummer LIKE '" + EntMedlemsnummer.get() + "%'")
      delagareLista = []
      delagareLista = cursor.fetchall()
      delagareLista = list(delagareLista)
@@ -3651,7 +3655,7 @@ def hamtaDelagareFranEntry():
 #Hämta maskiner efter det maskinnummer som söks på i Home-fliken
 def hamtaMaskinerFranEntry():
 
-     cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
+     cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM tschakt.maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
      result = cursor.fetchall()
      result = list(result)
      LbMaskiner.delete(0, "end")   
@@ -3686,7 +3690,7 @@ def bytForsakring():
           print(nyForsakring)
           if nyForsakring is not None:
                try:
-                    cursor.execute("update forsakringsgivare set forsakringsgivare = %s where idforsakringsgivare=1", (nyForsakring,))
+                    cursor.execute("update tschakt.forsakringsgivare set forsakringsgivare = ? where idforsakringsgivare=1", (nyForsakring,))
                     db.commit()
                     hamtaForsakring()
                except Exception:
@@ -3698,7 +3702,7 @@ def bytForsakring():
 def hamtaForsakring():
      forsakringsGivare=""
      try:
-          cursor.execute("select Forsakringsgivare from forsakringsgivare where idforsakringsgivare=1")
+          cursor.execute("select Forsakringsgivare from tschakt.forsakringsgivare where idforsakringsgivare=1")
           forsakringsGivare = cursor.fetchone()
      except Exception:
           traceback.print_exc()
@@ -3722,7 +3726,7 @@ def uppdateraForsakring():
                denyttSlutDatum.get_date().strftime('%Y-%m-%d')
                entnyArsPremie.get()
                try:
-                    for result in cursor.execute("set sql_safe_updates=0; update maskinregister set period_start ='"+denyttStartDatum.get_date().strftime('%Y-%m-%d')+"' where forsakring =1; update maskinregister set period_slut ='"+denyttSlutDatum.get_date().strftime('%Y-%m-%d')+"' where forsakring =1; update maskinregister set arsbelopp ='"+entnyArsPremie.get()+"' where forsakring=1; set sql_safe_updates=1;", multi=True):
+                    for result in cursor.execute("set sql_safe_updates=0; update tschakt.maskinregister set period_start ='"+denyttStartDatum.get_date().strftime('%Y-%m-%d')+"' where forsakring =1; update maskinregister set period_slut ='"+denyttSlutDatum.get_date().strftime('%Y-%m-%d')+"' where forsakring =1; update maskinregister set arsbelopp ='"+entnyArsPremie.get()+"' where forsakring=1; set sql_safe_updates=1;", multi=True):
                          pass
                     db.commit()
                except Exception:
@@ -3730,7 +3734,7 @@ def uppdateraForsakring():
                     traceback.print_exc()
 #Hämtar alla maskiner i databasen och lägger dessa i Listboxen på Förare-fliken
 def hamtaForareMaskin():
-     cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
+     cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM tschakt.maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
      result = cursor.fetchall()
      result = list(result)
      LbForareDelagaresMaskiner.delete(0, "end")   
@@ -3778,8 +3782,8 @@ def kopplaMaskin():
      #Återanvändningsbar metod för att koppla en forare till en maskin.
      def queryKopplaMaskin():
           try:
-               cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = %s", (foraridString,))
-               cursor.execute("UPDATE maskinregister SET Forarid =" +foraridString + " WHERE Maskinnummer =" +maskinidString +";")
+               cursor.execute("UPDATE tschakt.maskinregister SET Forarid = NULL WHERE Forarid = ?", (foraridString,))
+               cursor.execute("UPDATE tschakt.maskinregister SET Forarid =" +foraridString + " WHERE Maskinnummer =" +maskinidString +";")
                db.commit()
                refreshKoppladMaskin(foraridString)
           except Exception:
@@ -3788,12 +3792,12 @@ def kopplaMaskin():
      
 
      try:
-          cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = %s", (foraridString,))
+          cursor.execute("SELECT Maskinnummer FROM tschakt.maskinregister WHERE Forarid = ?", (foraridString,))
           y=cursor.fetchone()
      except:
           y = None    
 
-     cursor.execute("SELECT Forarid FROM maskinregister WHERE Maskinnummer = %s", (maskinidString,))
+     cursor.execute("SELECT Forarid FROM tschakt.maskinregister WHERE Maskinnummer = ?", (maskinidString,))
      x=cursor.fetchone()
      if x[0] is not None:
           response = messagebox.askyesno("Varning!", "Det finns redan en förare registrerad på maskin nummer "+maskinidString +" \nVill du fortsätta ändå?")
@@ -3821,11 +3825,11 @@ def kopplaBortMaskin():
 
           try:
                if len(entKoppladMaskin.get()) > 0:
-                    cursor.execute("SELECT Namn from forare WHERE Forarid = '" +foraridString +"';")
+                    cursor.execute("SELECT Namn from tschakt.forare WHERE Forarid = '" +foraridString +"';")
                     forarNamn = cursor.fetchone()
                     response = messagebox.askyesno("Varning", "Är du säker att du vill ta bort kopplingen mellan " + str(forarNamn[0]) +" och maskin " + entKoppladMaskin.get() + "?")
                     if response == 1:
-                         cursor.execute("UPDATE maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
+                         cursor.execute("UPDATE tschakt.maskinregister SET Forarid = NULL WHERE Forarid = " +foraridString +";")
                          db.commit()
                          refreshKoppladMaskin(foraridString)
                else: 
@@ -3835,7 +3839,7 @@ def kopplaBortMaskin():
                db.rollback()
 #Uppdaterar rutan som visar vilken maskin en förare är kopplad till.
 def refreshKoppladMaskin(forarId):
-     cursor.execute("SELECT Maskinnummer FROM maskinregister WHERE Forarid = " +forarId +" LIMIT 1;")
+     cursor.execute("SELECT TOP 1 Maskinnummer FROM tschakt.maskinregister WHERE Forarid = " +forarId +";")
      koppladMaskin = cursor.fetchone()
      entKoppladMaskin.config(state=NORMAL)
      entKoppladMaskin.delete(0, 'end')
@@ -3857,27 +3861,34 @@ def readAFile():
      filelist = file.readlines()
      file.close()
 
-#Skapar databasanslutningen
-global filelist
-readAFile()
-h = str(filelist[0])
-_h = h[:-1]
-u = str(filelist[1])
-_u = u[:-1]
-p = str(filelist[2])
-_p = p[:-1]
-_d = str(filelist[3])
-try:
-     db = mysql.connector.connect(
-     host = _h ,
-     user = _u ,
-     password = _p ,
-     database = _d
-     )
-     cursor = db.cursor()
-except Exception:
-     print("Databasuppkopplingen misslyckades!")
-     traceback.print_exc()
+# #Skapar databasanslutningen
+# global filelist
+# readAFile()
+# h = str(filelist[0])
+# _h = h[:-1]
+# u = str(filelist[1])
+# _u = u[:-1]
+# p = str(filelist[2])
+# _p = p[:-1]
+# _d = str(filelist[3])
+# try:
+#      db = mysql.connector.connect(
+#      host = _h ,
+#      user = _u ,
+#      password = _p ,
+#      database = _d
+#      )
+#      cursor = db.cursor()
+# except Exception:
+#      print("Databasuppkopplingen misslyckades!")
+#      traceback.print_exc()
+
+db = pyodbc.connect('Driver={SQL Server};'
+                      'Server=LAPTOP-JA972T49\SQLEXPRESS;'
+                      'Database=tschakt;'
+                      'Trusted_Connection=yes;')
+
+cursor = db.cursor()
 
 #Skapar och namnger huvudfönstret samt sätter storleken på fönstret
 root = Tk()
