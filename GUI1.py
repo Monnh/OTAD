@@ -2015,6 +2015,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
      else:
           global filePath
           
+          tagitBortBild = False
+
                #Bestämmer vilka funktioner som borde köras baserat på om man vill ändra/byta/lägga till                 
           def sparaMaskin(Typ):
                global maskinnummer 
@@ -2521,15 +2523,12 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           img_NyBild = Label(nyMaskin)
           img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
-          img_NyBild.grid_remove()
-
-          tagitBortBild = False          
+          img_NyBild.grid_remove()          
 
           #Skapar fram en dialogruta där man får välja vilken bild det är man ska spara.
           def fileDialog():
-               global filePath
-               global img3
-               global imgNyBild
+               global filePath, img3, imgNyBild
+
                filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
                sparSokVag = filename.rsplit(".", 1)
                filePath= "." + sparSokVag[1]
@@ -2542,15 +2541,18 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                img_NyBild.config(image=img3) 
                img_NyBild.grid()
                btnTaBortBild.grid()
+
           #Kollar om det finns en bild och isåfall sparas den i korrekt mapp.
           def fileSave():
+               global imgNyBild
+
                print("Maskinnummret är: "+str(maskinnummer))
                if imgNyBild is not None:
                     imgNyBild.save('pics/'+str(maskinnummer)+filePath)
 
           def taBortBild():
-               cursor.execute("SELECT maskinID FROM tschakt.maskinregister WHERE maskinnummer = ?",(str(maskinnummer)))
-               maskinID = cursor.fetchone()
+               global imgNyBild
+
                if len(txtSokvag.get('1.0', 'end-1c')) > 0:
                     txtSokvag.delete('1.0', 'end')
                     txtSokvag.grid_remove()
@@ -3844,7 +3846,7 @@ def uppdateraForsakring():
                     messagebox.showinfo("Fel", "Uppdateringen misslyckades.")
 #Hämtar alla maskiner i databasen och lägger dessa i Listboxen på Förare-fliken
 def hamtaForareMaskin():
-     cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM tschakt.maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%'")
+     cursor.execute("SELECT Maskinnummer, MarkeModell, Arsmodell FROM tschakt.maskinregister WHERE Maskinnummer LIKE '" + EntMaskinnummer.get() + "%' order by Maskinnummer asc")
      result = cursor.fetchall()
      result = list(result)
      LbForareDelagaresMaskiner.delete(0, "end")   
