@@ -2022,8 +2022,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     print("nyMaskin Ändra")
                     try:
                          andraMaskin(Typ, False)
-                         db.commit()
                          fileSave()
+                         db.commit()
                          fyllMaskinInfo("empty")
                          nyMaskin.destroy()
                     except Exception:
@@ -2132,7 +2132,14 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           #Ändrar maskin baserat på de nya inputsen/entrys.
           def andraMaskin(Typ, byteTillbehor):
                global filePath
-               filePath = None
+               filePath =""
+               try:
+                    filePath = entSokvag.get()
+                    filePath = filePath.rsplit("/",1)
+                    filePath = filePath[1]
+               except:
+                    filePath = None
+
                if byteTillbehor is True:
                     cursor.execute("Delete from tillbehor where maskinnummer ="+Typ+";")
                     cursor.execute("Delete from bilder where maskinnummer ="+Typ+";")
@@ -2475,7 +2482,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           #Kollar om det finns en bild och isåfall sparas den i korrekt mapp.
           def fileSave():
                if imgNyBild is not None:
-                    imgNyBild.save('pics/'+str(maskinnummer)+filePath)
+                    if filePath is not None:
+                         imgNyBild.save('pics/'+str(maskinnummer)+filePath)
           
           
                
@@ -3908,7 +3916,7 @@ tabControl.grid(column=0, row=0)
 
 #Globala variabler
 
-filePath = None
+filePath = ""
 imgNyBild = None
 medlemsnummer = ""
 maskinnummer = ""
