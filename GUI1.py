@@ -1559,8 +1559,12 @@ def fyllMaskinInfo(self):
           except:
                entMaskinBatterityp.config(state=DISABLED)
 
+          deMaskinperiod1.state(['!disabled'])
+          deMaskinperiod2.state(['!disabled'])
           deMaskinperiod1.delete(0, END)
           deMaskinperiod2.delete(0, END)
+          deMaskinperiod1.state(['disabled'])
+          deMaskinperiod2.state(['disabled'])
 
           if maskinInfo[7] is not None:
                try:
