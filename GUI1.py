@@ -2854,8 +2854,12 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
                if maskinInfo[7] is not None:
                     try:
+                         deMaskinperiod1.state(['!disabled'])
+                         deMaskinperiod2.state(['!disabled'])
                          deMaskinperiod1.set_date(maskinInfo[7])
                          deMaskinperiod2.set_date(maskinInfo[42])
+                         deMaskinperiod1.state(['disabled'])
+                         deMaskinperiod2.state(['disabled'])
                     except:
                          pass
 
@@ -4104,7 +4108,7 @@ lblDelagareMaskiner.grid(row=0, column=0, sticky=NW)
 
 ScbLbDelagaresMaskiner = Scrollbar(frameMaskiner, orient="vertical")
 ScbLbDelagaresMaskiner.grid(row = 1, column = 0, sticky = N+S+E)
-ScbLbDelagaresMaskiner.config(command =LbMaskiner.yview)
+ScbLbDelagaresMaskiner.config(command =LbDelagaresMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Bilden kopplad till maskinen
