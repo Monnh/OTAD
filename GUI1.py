@@ -2858,12 +2858,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
                if maskinInfo[7] is not None:
                     try:
-                         deMaskinperiod1.state(['!disabled'])
-                         deMaskinperiod2.state(['!disabled'])
                          deMaskinperiod1.set_date(maskinInfo[7])
                          deMaskinperiod2.set_date(maskinInfo[42])
-                         deMaskinperiod1.state(['disabled'])
-                         deMaskinperiod2.state(['disabled'])
                     except:
                          pass
 
