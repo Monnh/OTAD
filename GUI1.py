@@ -2549,6 +2549,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     imgNyBild.save('pics/'+str(maskinnummer)+filePath)
 
           def taBortBild():
+               global imgNyBild
                cursor.execute("SELECT maskinID FROM tschakt.maskinregister WHERE maskinnummer = ?",(str(maskinnummer)))
                maskinID = cursor.fetchone()
                if len(txtSokvag.get('1.0', 'end-1c')) > 0:
@@ -3440,7 +3441,8 @@ def taBortMaskin(maskinnummer):
                     cursor.execute("select sokvag from tschakt.bilder where maskinID ="+str(maskinID[0])+";")
                     listaAvBilder = cursor.fetchall() 
                     cursor.execute("Delete from tschakt.bilder where maskinID ="+str(maskinID[0])+";")   
-                    cursor.execute("Delete from tschakt.tillbehor where maskinID ="+str(maskinID[0])+";")   
+                    cursor.execute("Delete from tschakt.tillbehor where maskinID ="+str(maskinID[0])+";") 
+                    cursor.execute("DELETE FROM tschakt.historik WHERE maskinID ="+str(maskinID[0])+";")  
                     cursor.execute("DELETE FROM tschakt.maskinregister WHERE maskinID = " + str(maskinID[0]) + ";")
                     db.commit()
                     taBortBilder(listaAvBilder)
@@ -3490,6 +3492,7 @@ def hamtaDelagare(medlemsnr):
           medlemsnummer = medlemsnr
 
           fyllDelagarInfo(medlemsnummer)
+          tomMaskinInfo()
           hamtaDelagarensMaskiner()
 #Skapar ett fönster med historiken kopplad till en maskin
 def historikFonster(maskinnummer):
@@ -3994,7 +3997,7 @@ def readAFile():
 #      traceback.print_exc()
 
 db = pyodbc.connect('Driver={SQL Server};'
-                      'Server=LAPTOP-JA972T49\SQLEXPRESS;'
+                      'Server=MSI\SQLEXPRESS;'
                       'Database=tschakt;'
                       'Trusted_Connection=yes;')
 
