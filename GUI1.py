@@ -1898,11 +1898,7 @@ def laggTillAndraDelagare(Typ):
 
      lblNyPostnummer = Label(nyDelagare, text= "Postnummer")
      lblNyPostnummer.grid(row = 5, column = 0, sticky = W, padx = (10, 0), pady=(7, 0))
-<<<<<<< HEAD
      entNyPostnummer = Entry(nyDelagare, width = 25, validate="key")
-=======
-     entNyPostnummer = Entry(nyDelagare, width = 25)
->>>>>>> 8cad5407fb9740dc62a3806c18f67f65a5eb0408
      entNyPostnummer.grid(row = 5, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
      lblNyPostadress = Label(nyDelagare, text= "Postadress")
@@ -2042,12 +2038,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          pass
                elif Typ=="Ny":
                     try:
-<<<<<<< HEAD
                          skapaNyMaskin()
-=======
-                         
-                         bytOchNyMaskin()
->>>>>>> 8cad5407fb9740dc62a3806c18f67f65a5eb0408
                          db.commit()
                          fileSave()
                          fyllMaskinInfo("empty")
@@ -2133,21 +2124,10 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     cursor.execute("SELECT maskinID from tschaktmaskinregister WHERE maskinnummer = ?", (str(maskinnummer)))
                     maskinID = cursor.fetchone()
                     for x in tillbehorAttLaggaTill:
-<<<<<<< HEAD
                          if len(x) != 0:
                               cursor.execute("INSERT INTO tschakt.tillbehor (Tillbehor, maskinID) values (?, ?)", (x, str(maskinID[0])))
                     if filePath is not None:
                          cursor.execute("insert into tschakt.bilder (sokvag, maskinID) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinID[0])+"');")
-=======
-                         cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, str(maskinnummer)))
-                    try:
-                         print (str(maskinnummer)+filePath)
-                    except:
-                         pass
-                    
-                    if filePath is not None:                        
-                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
->>>>>>> 8cad5407fb9740dc62a3806c18f67f65a5eb0408
                          
 
                else:
@@ -2561,18 +2541,10 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                global img3
                global imgNyBild
                filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
-<<<<<<< HEAD
                sparSokVag = filename.rsplit(".", 1)
                filePath= "." + sparSokVag[1]
                txtSokvag.grid()
                txtSokvag.insert('end', filename)
-=======
-               sparSokVag = filename.rsplit("/", 1)
-               filePath=sparSokVag[1]
-               entSokvag.grid()
-               entSokvag.delete(0, 'end')
-               entSokvag.insert(0, filename)
->>>>>>> 8cad5407fb9740dc62a3806c18f67f65a5eb0408
                nyMaskin.lift()
                imgNyBild = Image.open(filename)  
                imgFixadBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
