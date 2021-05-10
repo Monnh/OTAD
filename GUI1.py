@@ -183,10 +183,10 @@ def miljodeklaration(maskinnummer):
           page.mergePage(new_pdf.getPage(0))
           output.addPage(page)
 
-          outputStream = open( "Miljödeklaration - " + str(maskinnummer) + ".pdf", "wb")
+          outputStream = open("Miljödeklarationer\Miljödeklaration - " + str(maskinnummer) + ".pdf", "wb")
           output.write(outputStream)
           outputStream.close()
-          os.startfile("Miljödeklaration - " + str(maskinnummer) + ".pdf" )
+          os.startfile("Miljödeklarationer\Miljödeklaration - " + str(maskinnummer) + ".pdf" )
 #Funktion som skapar PDF-rapporten maskinpresentation
 def maskinpresentation(maskinnummer):     
 
@@ -299,7 +299,7 @@ def maskinpresentation(maskinnummer):
           page.mergePage(new_pdf.getPage(0))
           output.addPage(page)
           #Fixa i framtiden så att man kan använda sig av custom paths (till servern) för att spara dokumenten på andra ställen.
-          outputStream = open("Maskinpresentationer/Maskinpresentation - " + maskinnummer + ".pdf", "wb")
+          outputStream = open("Maskinpresentationer\Maskinpresentation - " + maskinnummer + ".pdf", "wb")
           output.write(outputStream)
           outputStream.close()
           #Öppnar dokumentet efter man skapat det. Måste ändra sökväg efter vi fixat servern.
@@ -2013,13 +2013,23 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           messagebox.showerror(title="Ej valt maskin", message ="Du måste välja en maskin för att kunna ändra den.")
 
      else:
-          global filePath
+          global filePath, tagitBortBild
           
-          tagitBortBild = False
-
+          def taBortBild():
+               global imgNyBild, tagitBortBild
+               
+               if len(txtSokvag.get('1.0', 'end-1c')) > 0:
+                    txtSokvag.delete('1.0', 'end')
+                    txtSokvag.grid_remove()
+                    img_NyBild.grid_remove()
+                    imgNyBild = None
+               else:
+                    tagitBortBild = True
+                    img_Bild.grid_remove()
+          
                #Bestämmer vilka funktioner som borde köras baserat på om man vill ändra/byta/lägga till                 
           def sparaMaskin(Typ):
-               global maskinnummer 
+               global maskinnummer, tagitBortBild
 
                if Typ=="Byt":
                     response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
@@ -2065,6 +2075,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          fileSave()
                          fyllMaskinInfo("empty")
                          nyMaskin.destroy()
+                         tagitBortBild = False
                     except Exception:
                          db.rollback()
                          traceback.print_exc()
@@ -2169,8 +2180,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     else:
                          messagebox.showerror(title="Upptaget", message="Maskinnumret är upptaget, var god välj ett.")
                          raise ValueError("Inkorrekt")
-                    
-
 
           #Ändrar maskin baserat på de nya inputsen/entrys.
           def andraMaskin(Typ, byteTillbehor):
@@ -2187,62 +2196,49 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                else:                   
                     cursor.execute("UPDATE tschakt.maskinregister SET regummerbar = 0 WHERE Maskinnummer = " + Typ +";")
                     
-               
                if cbMaskinregummerade.instate(['selected']) == True:                   
                     cursor.execute("UPDATE tschakt.maskinregister SET regummerad = 1 WHERE Maskinnummer = " + Typ +";")                
                else:                   
-                    cursor.execute("UPDATE tschakt.maskinregister SET regummerad = 0 WHERE Maskinnummer = " + Typ +";")           
+                    cursor.execute("UPDATE tschakt.maskinregister SET regummerad = 0 WHERE Maskinnummer = " + Typ +";")
+
                if cbMaskinKollektivforsakring.instate(['selected']) == True:                 
                     cursor.execute("UPDATE tschakt.maskinregister SET Forsakring = 1 WHERE Maskinnummer = " + Typ +";")            
                else:             
-                    cursor.execute("UPDATE tschakt.maskinregister SET Forsakring = 0 WHERE Maskinnummer = " + Typ +";")      
+                    cursor.execute("UPDATE tschakt.maskinregister SET Forsakring = 0 WHERE Maskinnummer = " + Typ +";") 
+
                if cbMaskininsatserlagd.instate(['selected']) == True:              
                     cursor.execute("UPDATE tschakt.maskinregister SET Maskininsats = 1 WHERE Maskinnummer = " + Typ +";")      
                else:               
                     cursor.execute("UPDATE tschakt.maskinregister SET Maskininsats = 0 WHERE Maskinnummer = " + Typ +";")
+
                if cbMaskinmotorvarmare.instate(['selected']) == True:              
                     cursor.execute("UPDATE tschakt.maskinregister SET Motorvarmare = 1 WHERE Maskinnummer = " + Typ +";")         
                else:            
                     cursor.execute("UPDATE tschakt.maskinregister SET Motorvarmare = 0 WHERE Maskinnummer = " + Typ +";")
                     
-
                if cbMaskinkatalysator.instate(['selected']) == True:   
                     cursor.execute("UPDATE tschakt.maskinregister SET Katalysator = 1 WHERE Maskinnummer = " + Typ +";")
-                    
                else:
-                         cursor.execute("UPDATE tschakt.maskinregister SET Katalysator = 0 WHERE Maskinnummer = " + Typ +";")
+                    cursor.execute("UPDATE tschakt.maskinregister SET Katalysator = 0 WHERE Maskinnummer = " + Typ +";")
                     
-
                if cbMaskinpartikelfilter.instate(['selected']) == True:
-                    
                     cursor.execute("UPDATE tschakt.maskinregister SET Partikelfilter = 1 WHERE Maskinnummer = " + Typ +";")
-                    
                else:
-                    
                     cursor.execute("UPDATE tschakt.maskinregister SET Partikelfilter = 0 WHERE Maskinnummer = " + Typ +";")
                     
 
                if cbMaskinvattenbaseradlack.instate(['selected']) == True:
-                    
                     cursor.execute("UPDATE tschakt.maskinregister SET Vattenbaseradlack = 1 WHERE Maskinnummer = " + Typ +";")
-                    
                else:
-                    
                     cursor.execute("UPDATE tschakt.maskinregister SET Vattenbaseradlack = 0 WHERE Maskinnummer = " + Typ +";")
                     
-
                if cbMaskingasolanlaggning.instate(['selected']) == True:
-                    
                     cursor.execute("UPDATE tschakt.maskinregister SET Gasol = 1 WHERE Maskinnummer = " + Typ +";")
-                    
                else:
-                    
                     cursor.execute("UPDATE tschakt.maskinregister SET Gasol = 0 WHERE Maskinnummer = " + Typ +";")
                     
-
                if cbMaskinSaneringsvatska.instate(['selected']) == True:             
                     cursor.execute("UPDATE tschakt.maskinregister SET Saneringsvatska = 1 WHERE Maskinnummer = " + Typ +";")
-                    
                else:              
                     cursor.execute("UPDATE tschakt.maskinregister SET Saneringsvatska = 0 WHERE Maskinnummer = " + Typ +";")
 
@@ -2533,6 +2529,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                sparSokVag = filename.rsplit(".", 1)
                filePath= "." + sparSokVag[1]
                txtSokvag.grid()
+               txtSokvag.delete('1.0', 'end')
                txtSokvag.insert('end', filename)
                nyMaskin.lift()
                imgNyBild = Image.open(filename)  
@@ -2550,17 +2547,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                if imgNyBild is not None:
                     imgNyBild.save('pics/'+str(maskinnummer)+filePath)
 
-          def taBortBild():
-               global imgNyBild
-
-               if len(txtSokvag.get('1.0', 'end-1c')) > 0:
-                    txtSokvag.delete('1.0', 'end')
-                    txtSokvag.grid_remove()
-                    img_NyBild.grid_remove()
-                    imgNyBild = None
-               else:
-                    tagitBortBild = True 
-                    img_Bild.grid_remove()
+          
                
           btnNyBild = Button(nyMaskin, text="Lägg till bild", command= fileDialog)
           btnNyBild.grid(column=2, row=21, sticky=W, padx=(10,0))
@@ -3056,7 +3043,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                LbDelagaresMaskiner.delete(0, "end")
                for x in maskiner:
                     LbDelagaresMaskiner.insert("end", x[0])
-                  
 #Fyller LbDelagare (Listboxen på Home-fliken) med delägarna ifrån databsen
 def fyllListboxDelagare():
 
@@ -4025,6 +4011,7 @@ tabControl.grid(column=0, row=0)
 
 #Globala variabler
 
+tagitBortBild = False
 filePath = None
 imgNyBild = None
 medlemsnummer = ""
