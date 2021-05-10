@@ -1898,7 +1898,11 @@ def laggTillAndraDelagare(Typ):
 
      lblNyPostnummer = Label(nyDelagare, text= "Postnummer")
      lblNyPostnummer.grid(row = 5, column = 0, sticky = W, padx = (10, 0), pady=(7, 0))
+<<<<<<< HEAD
      entNyPostnummer = Entry(nyDelagare, width = 25, validate="key")
+=======
+     entNyPostnummer = Entry(nyDelagare, width = 25)
+>>>>>>> 8cad5407fb9740dc62a3806c18f67f65a5eb0408
      entNyPostnummer.grid(row = 5, column = 1, sticky = W, padx = (10, 0), pady=(7,0))
 
      lblNyPostadress = Label(nyDelagare, text= "Postadress")
@@ -2017,7 +2021,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           
                #Bestämmer vilka funktioner som borde köras baserat på om man vill ändra/byta/lägga till                 
           def sparaMaskin(Typ):
-               global maskinnummer 
+               global maskinnummer, filePath 
 
                if Typ=="Byt":
                     response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
@@ -2038,7 +2042,12 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          pass
                elif Typ=="Ny":
                     try:
+<<<<<<< HEAD
                          skapaNyMaskin()
+=======
+                         
+                         bytOchNyMaskin()
+>>>>>>> 8cad5407fb9740dc62a3806c18f67f65a5eb0408
                          db.commit()
                          fileSave()
                          fyllMaskinInfo("empty")
@@ -2073,7 +2082,14 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           #Insertar en ny maskin i databasen
           def skapaNyMaskin():
                global maskinnummer
-
+               filePath =""
+               
+               try:
+                    filePath = entSokvag.get()
+                    filePath = filePath.rsplit("/",1)
+                    filePath = filePath[1]
+               except:
+                    filePath = None
                varCbMotorvarmare = cbMaskinmotorvarmare.instate(['selected'])
                varCbKatalysator = cbMaskinkatalysator.instate(['selected'])
                varCbPartikelfilter = cbMaskinpartikelfilter.instate(['selected'])
@@ -2084,6 +2100,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                varCbGasolanlaggning = cbMaskingasolanlaggning.instate(['selected'])
                varCbSaneringsvatska = cbMaskinSaneringsvatska.instate(['selected'])
                varCbMaskininsatserlagd = cbMaskininsatserlagd.instate(['selected'])
+               
 
                #Hämtar värdet i dessa entries för att sedan kolla om det är tomt. Ifall det är tomt görs det om till None då
                #Int i databasen inte kan konvertera en tom sträng till None av sig självt. 
@@ -2116,10 +2133,21 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     cursor.execute("SELECT maskinID from tschaktmaskinregister WHERE maskinnummer = ?", (str(maskinnummer)))
                     maskinID = cursor.fetchone()
                     for x in tillbehorAttLaggaTill:
+<<<<<<< HEAD
                          if len(x) != 0:
                               cursor.execute("INSERT INTO tschakt.tillbehor (Tillbehor, maskinID) values (?, ?)", (x, str(maskinID[0])))
                     if filePath is not None:
                          cursor.execute("insert into tschakt.bilder (sokvag, maskinID) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinID[0])+"');")
+=======
+                         cursor.execute("INSERT INTO tillbehor (Tillbehor, Maskinnummer) values (%s, %s)", (x, str(maskinnummer)))
+                    try:
+                         print (str(maskinnummer)+filePath)
+                    except:
+                         pass
+                    
+                    if filePath is not None:                        
+                         cursor.execute("insert into bilder (sokvag, maskinnummer) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinnummer)+"');")
+>>>>>>> 8cad5407fb9740dc62a3806c18f67f65a5eb0408
                          
 
                else:
@@ -2173,6 +2201,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           #Ändrar maskin baserat på de nya inputsen/entrys.
           def andraMaskin(Typ, byteTillbehor):
                global filePath
+               filePath = None
                if byteTillbehor is True:
                     cursor.execute("SELECT maskinID from tschakt.maskinregister WHERE maskinnummer = ?",(Typ))
                     maskinID = cursor.fetchone()
@@ -2312,6 +2341,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           entNyMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(7,0))
 
           if Typ=="Ny":
+               
                lblMaskinnummerVal = Label(nyMaskin, text = "Autogen eller ej?")
                lblMaskinnummerVal.grid(column = 1, row = 0, sticky = E, padx=(0,23))
                cbMaskinnummer = ttk.Checkbutton(nyMaskin, command = lambda: autogenEllerEj())
@@ -2531,10 +2561,18 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                global img3
                global imgNyBild
                filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
+<<<<<<< HEAD
                sparSokVag = filename.rsplit(".", 1)
                filePath= "." + sparSokVag[1]
                txtSokvag.grid()
                txtSokvag.insert('end', filename)
+=======
+               sparSokVag = filename.rsplit("/", 1)
+               filePath=sparSokVag[1]
+               entSokvag.grid()
+               entSokvag.delete(0, 'end')
+               entSokvag.insert(0, filename)
+>>>>>>> 8cad5407fb9740dc62a3806c18f67f65a5eb0408
                nyMaskin.lift()
                imgNyBild = Image.open(filename)  
                imgFixadBild = imgNyBild.resize((150,145), Image. ANTIALIAS)
@@ -2544,7 +2582,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                btnTaBortBild.grid()
           #Kollar om det finns en bild och isåfall sparas den i korrekt mapp.
           def fileSave():
-               print("Maskinnummret är: "+str(maskinnummer))
                if imgNyBild is not None:
                     imgNyBild.save('pics/'+str(maskinnummer)+filePath)
 
@@ -2569,6 +2606,10 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           btnTaBortBild.grid_remove()
 
           #------------------------
+
+          entSokvag = Entry(nyMaskin, width = 20)
+          entSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
+          entSokvag.grid_remove()
 
           lblMaskinbransle = Label(nyMaskin, text="Bränsle")
           lblMaskinbransle.grid(column=4, row=0, sticky = W, padx=(10,0), pady=(7,0))
@@ -3967,12 +4008,17 @@ def valideraSiffror(input):
           return True
      else:
           return False
-
+#Funktion för att läsa filer
 def readAFile():
      global filelist
      file = open("test.txt", "r")
      filelist = file.readlines()
      file.close()
+#Sparar inställningar för databasen när man klickar på btnSparaInstallningar
+def sparaInstallningar():
+     f = open("test.txt", "w")
+     f.writelines([str(entLocalHost.get()), "\n" + str(entUsername.get()), "\n" + str(entPassword.get()), "\n" + str(entDatabas.get())])
+     f.close()
 
 # #Skapar databasanslutningen
 # global filelist
@@ -4622,8 +4668,11 @@ entPassword.grid(row=2, column=1, padx=(10,0), pady=(10,0))
 lblDatabas=Label(installningar, text="Databas")
 lblDatabas.grid(row=3, column=0, padx=(10,0), pady=(10,0), sticky=W)
 
-entDtabas=Entry(installningar, width=20)
-entDtabas.grid(row=3, column=1, padx=(10,0), pady=(10,0))
+entDatabas=Entry(installningar, width=20)
+entDatabas.grid(row=3, column=1, padx=(10,0), pady=(10,0))
+
+btnSparaInstallningar=Button(installningar, text="Spara", command=lambda:sparaInstallningar())
+btnSparaInstallningar.grid(row=4, column=1, padx=(10,0), pady=(10,0), sticky=E)
 
 #Funktionerna som körs på uppstart
 hamtaForare()
