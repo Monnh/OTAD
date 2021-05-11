@@ -2391,7 +2391,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           entMaskinmotortyp=Entry(nyMaskin, width = 32)
           entMaskinmotortyp.grid(column=1, row=7, sticky=W, padx=(10,0), pady=(5,0))
 
-          lblMaskinmotor = Label(nyMaskin, text="Motor")
+          lblMaskinmotor = Label(nyMaskin, text="Motorolja")
           lblMaskinmotor.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinmotor = Entry(nyMaskin, width = 32)
           entMaskinmotor.grid(column=1, row=8, sticky=W, padx=(10,0), pady=(5,0))
@@ -4298,7 +4298,7 @@ entMaskinmotortyp=Entry(frameMaskininfo, width = 32)
 entMaskinmotortyp.grid(column=1, row=7, sticky=W, padx=(10,0), pady=(5,0))
 entMaskinmotortyp.config(state=DISABLED)
 
-lblMaskinmotor = Label(frameMaskininfo, text="Motor")
+lblMaskinmotor = Label(frameMaskininfo, text="Motorolja")
 lblMaskinmotor.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinmotor = Entry(frameMaskininfo, width = 32)
 entMaskinmotor.grid(column=1, row=8, sticky=W, padx=(10,0), pady=(5,0))
