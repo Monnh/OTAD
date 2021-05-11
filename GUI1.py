@@ -1366,19 +1366,23 @@ def maskinerMedAndradeBelopp():
 def fyllMaskinInfo(self):
      global maskinnummer, medlemsnummer
 
-     if self == "franDelagare":
+     if self == "franHomeMaskiner":
           selectedMaskin = LbMaskiner.get(LbMaskiner.curselection())
           index2 = selectedMaskin.index(" ")
           stringSelectedMaskin = str(selectedMaskin[0:index2])
           maskinnummer = "".join(stringSelectedMaskin)
-     elif self =="franMaskiner":
-          maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
-          maskinnummer = str(maskinnummer) 
-     elif self =="endastDelagare":
+     elif self =="franDelagareMaskiner":
+          selectedMaskin = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
+          index2 = selectedMaskin.index(" ")
+          stringSelectedMaskin = str(selectedMaskin[0:index2])
+          maskinnummer = "".join(stringSelectedMaskin)
+     elif self =="sokDelagareDelagare":
           if LbDelagaresMaskiner.size() != 0:
                LbDelagaresMaskiner.selection_set(0)
-               maskinnummer = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
-               maskinnummer = str(maskinnummer) 
+               selectedMaskin = LbDelagaresMaskiner.get(LbDelagaresMaskiner.curselection())
+               index2 = selectedMaskin.index(" ")
+               stringSelectedMaskin = str(selectedMaskin[0:index2])
+               maskinnummer = "".join(stringSelectedMaskin)
           else:
                tomMaskinInfo()
                maskinnummer = ""
@@ -1799,14 +1803,34 @@ def fyllMaskinInfo(self):
           else:
                for x in tillbehor:
                     lbMaskintillbehor.insert("end", x[0])
-          if self == "franDelagare":
-               cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ' order by maskinnummer asc;')
+          if self == "franHomeMaskiner":
+               cursor.execute('SELECT Maskinnummer, MarkeModell, Arsmodell FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ' order by maskinnummer asc;')
                maskiner = cursor.fetchall()
                
                LbDelagaresMaskiner.delete(0, "end")
-               for x in maskiner:
-                    LbDelagaresMaskiner.insert("end", x[0])
-   
+               for item in maskiner:
+
+                    item = list(item)
+                    if item[1] == None:
+                         item[1] = ""
+                    if item[2] == None:
+                         item[2] = ""
+                    s=""
+                    s += str(item[0])
+                    if item[1] == "":
+                         s+= ""
+                    elif item[2] == "":
+                         s+= " - "
+                         s+=str(item[1])
+                    else:
+                         s+= " - "
+                         s+=str(item[1])
+                         s+= " - "
+                         s+=str(item[2])
+                    s+=" "
+                         
+                    LbDelagaresMaskiner.insert("end", s)
+
      
           fyllDelagarInfo(medlemsnummer)
      tabControl.select(delagare)
@@ -2172,9 +2196,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                                         harRedanBild = True
                               
                               if harRedanBild == False:
-                                   cursor.execute("insert into tschakt.bilder (sokvag, maskinID) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinID[0])+"');")
+                                   cursor.execute("insert into tschakt.bilder (sokvag, maskinID) values ('Bilder/"+str(maskinnummer)+filePath+"', '"+str(maskinID[0])+"');")
                               else:
-                                   cursor.execute("update tschakt.bilder set sokvag = 'pics/"+str(maskinnummer)+""+filePath+"' where maskinID = '"+str(maskinID[0])+"'")
+                                   cursor.execute("update tschakt.bilder set sokvag = 'Bilder/"+str(maskinnummer)+""+filePath+"' where maskinID = '"+str(maskinID[0])+"'")
                          except Exception:
                               traceback.print_exc()
                else:
@@ -2288,9 +2312,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                                    harRedanBild = True
                          
                          if harRedanBild == False:
-                              cursor.execute("insert into tschakt.bilder (sokvag, maskinID) values ('pics/"+str(maskinnummer)+filePath+"', '"+str(maskinID[0])+"');")
+                              cursor.execute("insert into tschakt.bilder (sokvag, maskinID) values ('Bilder/"+str(maskinnummer)+filePath+"', '"+str(maskinID[0])+"');")
                          else:
-                              cursor.execute("update tschakt.bilder set sokvag = 'pics/"+str(maskinnummer)+""+filePath+"' where maskinID = '"+str(maskinID[0])+"'")
+                              cursor.execute("update tschakt.bilder set sokvag = 'Bilder/"+str(maskinnummer)+""+filePath+"' where maskinID = '"+str(maskinID[0])+"'")
                     except Exception:
                          traceback.print_exc()
                
@@ -2555,7 +2579,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
                print("Maskinnummret är: "+str(maskinnummer))
                if imgNyBild is not None:
-                    imgNyBild.save('pics/'+str(maskinnummer)+filePath)
+                    imgNyBild.save('Bilder/'+str(maskinnummer)+filePath)
 
           
                
@@ -3155,7 +3179,7 @@ def fyllDelagarInfoMedNummer(self):
      fyllDelagarInfo(medlemsnummer)
      try:
           hamtaDelagarensMaskiner()
-          fyllMaskinInfo("endastDelagare")
+          fyllMaskinInfo("sokDelagareDelagare")
      except Exception:
           traceback.print_exc()
 
@@ -3444,7 +3468,7 @@ def taBortMaskin(maskinnummer):
                     taBortBilder(listaAvBilder)
                     tomMaskinInfo()
                     hamtaDelagarensMaskiner()
-                    fyllMaskinInfo("franMaskiner")
+                    fyllMaskinInfo("franDelagareMaskiner")
                     hamtaMaskinerFranEntry()
                except Exception:
                     db.rollback()
@@ -3466,18 +3490,42 @@ def taBortBilder(listaAvBilder):
 def hamtaDelagarensMaskiner():
      global medlemsnummer
 
-     cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ' order by maskinnummer asc;')
+     cursor.execute('SELECT Maskinnummer, MarkeModell, Arsmodell FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ' order by maskinnummer asc;')
      maskiner = cursor.fetchall()
 
      LbDelagaresMaskiner.delete(0, "end")
+     
+     for item in maskiner:
 
-     if len(maskiner) != 0:
-          LbDelagaresMaskiner.selection_clear(0, "end")     
-          for x in maskiner:
-               LbDelagaresMaskiner.insert("end", x[0])
+          item = list(item)
+          if item[1] == None:
+               item[1] = ""
+          if item[2] == None:
+               item[2] = ""
+          s=""
+          s += str(item[0])
+          if item[1] == "":
+               s+= ""
+          elif item[2] == "":
+               s+= " - "
+               s+=str(item[1])
+          else:
+               s+= " - "
+               s+=str(item[1])
+               s+= " - "
+               s+=str(item[2])
+          s+=" "
+               
+          LbDelagaresMaskiner.insert("end", s)
 
-          LbDelagaresMaskiner.selection_set(0)
-          fyllMaskinInfo("endastDelagare")
+
+     # if len(maskiner) != 0:
+     #      LbDelagaresMaskiner.selection_clear(0, "end")     
+     #      for x in maskiner:
+     #           LbDelagaresMaskiner.insert("end", x[0])
+
+     LbDelagaresMaskiner.selection_set(0)
+     fyllMaskinInfo("sokDelagareDelagare")
 #Hämtar delägare ifrån Delägare-flikens sökfunktion
 def hamtaDelagare(medlemsnr):
      global medlemsnummer
@@ -3962,7 +4010,6 @@ def valideraSiffror(input):
           return True
      else:
           return False
-
 def readAFile():
      global filelist
      file = open("test.txt", "r")
@@ -4066,7 +4113,7 @@ LblMaskiner.grid(row=1, column=4, sticky=S, padx=(0, 125))
 
 LbMaskiner = Listbox(home, width = 60, height = 30, exportselection=0)
 LbMaskiner.grid(row = 2, column = 3, columnspan = 2, rowspan = 2, padx=(20,0), pady=(5,0))
-LbMaskiner.bind('<Double-Button>', lambda x=None: fyllMaskinInfo("franDelagare"))
+LbMaskiner.bind('<Double-Button>', lambda x=None: fyllMaskinInfo("franHomeMaskiner"))
 
 ScbDelagare = Scrollbar(home, orient="vertical")
 ScbDelagare.grid(row = 2, column = 2, sticky = N+S+E, rowspan = 2, pady=(10,0))
@@ -4098,7 +4145,7 @@ LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45, height = 12, exportsele
 LbDelagaresMaskiner.grid(row = 1, column = 0)
 LbDelagaresMaskiner.grid_rowconfigure(1, weight=1)
 LbDelagaresMaskiner.grid_columnconfigure(0, weight=1)
-LbDelagaresMaskiner.bind('<<ListboxSelect>>', lambda x=None: fyllMaskinInfo("franMaskiner"))
+LbDelagaresMaskiner.bind('<<ListboxSelect>>', lambda x=None: fyllMaskinInfo("franDelagareMaskiner"))
 
 lblDelagareMaskiner = Label(frameMaskiner, text = "Delägarens maskiner")
 lblDelagareMaskiner.grid(row=0, column=0, sticky=NW)
