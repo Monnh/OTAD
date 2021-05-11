@@ -1781,13 +1781,13 @@ def fyllMaskinInfo(self):
                cursor.execute("SELECT TOP 1 Sokvag FROM tschakt.bilder WHERE maskinID = " + str(maskinInfo[43]) + " order by bildid desc;")
                img = cursor.fetchone()
                img = Image.open(img[0])  
-               img = img.resize((225,200), Image. ANTIALIAS)
+               img = img.resize((260,200), Image. ANTIALIAS)
                img2 = ImageTk.PhotoImage(img)
                img_label.config(image = img2)
                img_label.image=img2
           except Exception:
                img = Image.open("placeholder.png")  
-               img = img.resize((225,200), Image. ANTIALIAS)
+               img = img.resize((260,200), Image. ANTIALIAS)
                img2 = ImageTk.PhotoImage(img)
                img_label.config(image = img2)
                img_label.image=img2
@@ -2329,12 +2329,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           else:
                nyMaskin.title("Ändra maskin")
 
-          nyMaskin.geometry("1025x680")
-
-          lblMaskinnummermaskininfo = Label(nyMaskin, text= "Maskinnummer")
-          lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(7,8))
-          entNyMaskinnummermaskininfo = Entry(nyMaskin, width = 5 ,validate="key", validatecommand=(validera, "%P"))
-          entNyMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(7,0))
+          nyMaskin.geometry("1000x680")
 
           # if Typ=="Ny":
           #      lblMaskinnummerVal = Label(nyMaskin, text = "Autogen eller ej?")
@@ -2352,207 +2347,284 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           #      pass
 
           #Skapar fälten för att kunna skriva i den nya informationen.
+          #Kolumn 1
+
+          lblMaskinnummermaskininfo = Label(nyMaskin, text= "Maskinnummer")
+          lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(5,0))
+          entNyMaskinnummermaskininfo = Entry(nyMaskin, width = 5 ,validate="key", validatecommand=(validera, "%P"))
+          entNyMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(5,0))
+
           lblMaskinbeteckning = Label(nyMaskin, text="Beteckning")
-          lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinbeteckning = Entry(nyMaskin, width = 32)
-          entMaskinbeteckning.grid(column=1, row=1, sticky = W, padx=(10,0))
+          entMaskinbeteckning.grid(column=1, row=1, sticky = W, padx=(10,0), pady=(5,0))
 
           lblMaskinme_klass = Label(nyMaskin, text="ME-Klass")
-          lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinme_klass = Entry(nyMaskin, width = 32,validate="key", validatecommand=(validera, "%P"))
-          entMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0))
+          entMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0), pady=(5,0))
+
+          lblMaskinarsmodell = Label(nyMaskin, text="Årsmodell")
+          lblMaskinarsmodell.grid(column=0, row=3, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskinarsmodell=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
+          entMaskinarsmodell.grid(column=1, row=3, sticky=W, padx=(10,0), pady=(5,0))
+
+          lblMaskinregistreringsnummer = Label(nyMaskin, text="Reg. nr/Ser. nr")
+          lblMaskinregistreringsnummer.grid(column=0, row=4, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskinregistreringsnummer=Entry(nyMaskin, width = 32)
+          entMaskinregistreringsnummer.grid(column=1, row=4, sticky=W, padx=(10,0), pady=(5,0))
+
+          lblMaskintyp = Label(nyMaskin, text="Maskintyp")
+          lblMaskintyp.grid(column=0, row=5, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskintyp=Entry(nyMaskin, width = 32)
+          entMaskintyp.grid(column=1, row=5, sticky=W, padx=(10,0), pady=(5,0))
+
+          #----#
 
           lblMaskinmotorfabrikat = Label(nyMaskin, text="Motorfabrikat")
-          lblMaskinmotorfabrikat.grid(column=0, row=3, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinmotorfabrikat.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(40,0))
           entMaskinmotorfabrikat = Entry(nyMaskin, width = 32)
-          entMaskinmotorfabrikat.grid(column=1, row=3, sticky=W, padx=(10,0))
+          entMaskinmotorfabrikat.grid(column=1, row=6, sticky=W, padx=(10,0), pady=(40,0))
 
           lblMaskinmotortyp = Label(nyMaskin, text="Motortyp")
-          lblMaskinmotortyp.grid(column=0, row=4, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinmotortyp.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinmotortyp=Entry(nyMaskin, width = 32)
-          entMaskinmotortyp.grid(column=1, row=4, sticky=W, padx=(10,0))
+          entMaskinmotortyp.grid(column=1, row=7, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinmotor = Label(nyMaskin, text="Motor")
-          lblMaskinmotor.grid(column=0, row=5, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinmotor.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinmotor = Entry(nyMaskin, width = 32)
-          entMaskinmotor.grid(column=1, row=5, sticky=W, padx=(10,0))
+          entMaskinmotor.grid(column=1, row=8, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinvaxellada = Label(nyMaskin, text="Växellåda")
-          lblMaskinvaxellada.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinvaxellada.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinvaxellada=Entry(nyMaskin, width = 32)
-          entMaskinvaxellada.grid(column=1, row=6, sticky=W, padx=(10,0))
+          entMaskinvaxellada.grid(column=1, row=9, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinhydraulsystem = Label(nyMaskin, text="Hydraulsystem")
-          lblMaskinhydraulsystem.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinhydraulsystem.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinhydraulsystem=Entry(nyMaskin, width = 32)
-          entMaskinhydraulsystem.grid(column=1, row=7, sticky=W, padx=(10,0))
+          entMaskinhydraulsystem.grid(column=1, row=10, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinkylvatska = Label(nyMaskin, text="Kylvätska")
-          lblMaskinkylvatska.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinkylvatska.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinkylvatska=Entry(nyMaskin, width = 32)
-          entMaskinkylvatska.grid(column=1, row=8, sticky=W, padx=(10,0))
-
-          lblMaskinmotoreffekt = Label(nyMaskin, text="Motoreffekt/KW")
-          lblMaskinmotoreffekt.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinmotoreffekt=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
-          entMaskinmotoreffekt.grid(column=1, row=9, sticky=W, padx=(10,0))
-
-          lblMaskinmotorvarmare = Label(nyMaskin, text="Motorvärmare")
-          lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(0,8))
-          cbMaskinmotorvarmare = ttk.Checkbutton(nyMaskin)
-          cbMaskinmotorvarmare.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinmotorvarmare.grid(column = 1, row = 10, sticky = W, padx=(5,0))
-
-          lblMaskinkatalysator = Label(nyMaskin, text="Katalysator")
-          lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(0,8))
-          cbMaskinkatalysator = ttk.Checkbutton(nyMaskin)
-          cbMaskinkatalysator.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinkatalysator.grid(column = 1, row = 11, sticky = W, padx=(5,0))
-
-          lblMaskinpartikelfilter = Label(nyMaskin, text="Partikelfilter")
-          lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(0,8))
-          cbMaskinpartikelfilter = ttk.Checkbutton(nyMaskin)
-          cbMaskinpartikelfilter.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinpartikelfilter.grid(column = 1, row = 12, sticky = W, padx=(5,0))
-
-          lblMaskinvattenbaseradlack = Label(nyMaskin, text="Vattenbaserad lack")
-          lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0), pady=(0,8))
-          cbMaskinvattenbaseradlack = ttk.Checkbutton(nyMaskin)
-          cbMaskinvattenbaseradlack.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinvattenbaseradlack.grid(column = 1, row = 13, sticky = W, padx=(5,0))
-
-          lblMaskinkylmedia = Label(nyMaskin, text="Kylmedia")
-          lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinkylmedia=Entry(nyMaskin, width = 32)
-          entMaskinkylmedia.grid(column=1, row=14, sticky=W, padx=(10,0))
-
-          lblMaskinbullernivautv = Label(nyMaskin, text="Bullernivå utvändigt")
-          lblMaskinbullernivautv.grid(column=0, row=15, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinbullernivautv=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
-          entMaskinbullernivautv.grid(column=1, row=15, sticky=W, padx=(10,0))
-
-          lblMaskinbullernivainv = Label(nyMaskin, text="Bullernivå invändigt")
-          lblMaskinbullernivainv.grid(column=0, row=16, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinbullernivainv=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
-          entMaskinbullernivainv.grid(column=1, row=16, sticky=W, padx=(10,0))
+          entMaskinkylvatska.grid(column=1, row=11, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinsmorjfett = Label(nyMaskin, text="Smörjfett")
-          lblMaskinsmorjfett.grid(column=0, row=17, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinsmorjfett.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinsmorjfett=Entry(nyMaskin, width = 32)
-          entMaskinsmorjfett.grid(column=1, row=17, sticky=W, padx=(10,0))
+          entMaskinsmorjfett.grid(column=1, row=12, sticky=W, padx=(10,0), pady=(5,0))
 
-          lblMaskinBatterityp = Label(nyMaskin, text="Batterityp")
-          lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinBatterityp=Entry(nyMaskin, width = 20)
-          entMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
-
-          lblMaskinbatteriAntal = Label(nyMaskin, text="Antal")
-          lblMaskinbatteriAntal.grid(column=1, row=18, sticky=E, padx=(0,35))
-          entMaskinbatteriAntal = Entry(nyMaskin, width=5, validate="key", validatecommand=(validera, "%P"))
-          entMaskinbatteriAntal.grid(column=1, row=18, sticky=E)
-
-          #checkbox
           lblMaskinKollektivforsakring = Label(nyMaskin, text="Kollektiv försäkring")
-          lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinKollektivforsakring.grid(column=0, row=13, sticky = W, pady=(40,0), padx=(10,0))
           cbMaskinKollektivforsakring = ttk.Checkbutton(nyMaskin)
           cbMaskinKollektivforsakring.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinKollektivforsakring.grid(column = 1, row = 19, sticky = W, padx=(5,0))
+          cbMaskinKollektivforsakring.grid(column = 1, row = 13, sticky = W, pady=(40,0), padx=(10,0))
 
           lblMaskinperiod = Label(nyMaskin, text="Period")
-          lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0), pady=(0,8))
+          lblMaskinperiod.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(5,0))
           
           btnNollstallDatum = Button(nyMaskin, text="Nollställ", command= lambda: nollstallDatum())
-          btnNollstallDatum.grid(column=0, row=20, sticky = E)
+          btnNollstallDatum.grid(column=0, row=14, sticky = E)
 
           def nollstallDatum():
                deMaskinperiod1.delete(0, "end")
                deMaskinperiod2.delete(0, "end")
 
-          #Date entry
           deMaskinperiod1 = DateEntry(nyMaskin, values="Text", date_pattern="yyyy-mm-dd")
           deMaskinperiod1.delete(0, 'end')
-          deMaskinperiod1.grid(column=1, row=20, sticky=W, padx=(10,0))
+          deMaskinperiod1.grid(column=1, row=14, sticky=W, padx=(10,0), pady=(5,0))
 
           deMaskinperiod2 = DateEntry(nyMaskin, values="Text", date_pattern="yyyy-mm-dd")
           deMaskinperiod2.delete(0, 'end')
-          deMaskinperiod2.grid(column=1, row=20, sticky=E)
+          deMaskinperiod2.grid(column=1, row=14, sticky=E, pady=(5,0))
 
           lblMaskinarsbelopp = Label(nyMaskin, text="Årsbelopp")
-          lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
-          entMaskinarsbelopp=Entry(nyMaskin, width = 25, validate="key", validatecommand=(validera, "%P"))
-          entMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
+          lblMaskinarsbelopp.grid(column=0, row=15, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskinarsbelopp=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
+          entMaskinarsbelopp.grid(column=1, row=15, sticky=W, padx=(10,0), pady=(5,0))
 
-          #Buttons
 
-          btnSparaNyMaskin=Button(nyMaskin, text="Spara", command = lambda: sparaMaskin(Typ))
-          btnSparaNyMaskin.grid(column=5, row=21, sticky=E, padx=(0,55))
-          btnAvbrytNyMaskin=Button(nyMaskin, text="Avbryt", command = lambda: nyMaskin.destroy())
-          btnAvbrytNyMaskin.grid(column=5, row=21,sticky=E)
-
-          #--------------------
+          #Kolumn 2
 
           lblMaskinmiljostatus = Label(nyMaskin, text="Miljöstatus")
-          lblMaskinmiljostatus.grid(column=2, row=0, sticky = W, padx=(10,0), pady=(7,0))
+          lblMaskinmiljostatus.grid(column=2, row=0, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinmiljostatus=Entry(nyMaskin, width = 32)
-          entMaskinmiljostatus.grid(column=3, row=0, sticky=W, padx=(10,0), pady=(7,0))
+          entMaskinmiljostatus.grid(column=3, row=0, sticky=W, padx=(10,0), pady=(5,0))
 
-          lblMaskinarsmodell = Label(nyMaskin, text="Årsmodell")
-          lblMaskinarsmodell.grid(column=2, row=1, sticky = W, padx=(10,0))
-          entMaskinarsmodell=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
-          entMaskinarsmodell.grid(column=3, row=1, sticky=W, padx=(10,0))
+          lblMaskinbransle = Label(nyMaskin, text="Bränsle")
+          lblMaskinbransle.grid(column=2, row=1, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskinbransle=Entry(nyMaskin, width = 32)
+          entMaskinbransle.grid(column=3, row=1, sticky=W, padx=(10,0), pady=(5,0))
 
-          lblMaskinregistreringsnummer = Label(nyMaskin, text="Reg. nr/Ser. nr")
-          lblMaskinregistreringsnummer.grid(column=2, row=2, sticky = W, padx=(10,0))
-          entMaskinregistreringsnummer=Entry(nyMaskin, width = 20)
-          entMaskinregistreringsnummer.grid(column=3, row=2, sticky=W, padx=(10,0))
+          lblMaskindackfabrikat = Label(nyMaskin, text="Däckfabrikat")
+          lblMaskindackfabrikat.grid(column=2, row=2, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskindackfabrikat=Entry(nyMaskin, width = 32)
+          entMaskindackfabrikat.grid(column=3, row=2, sticky=W, padx=(10,0), pady=(5,0))
 
-          lblMaskintyp = Label(nyMaskin, text="Maskintyp")
-          lblMaskintyp.grid(column=2, row=3, sticky = W, padx=(10,0))
-          entMaskintyp=Entry(nyMaskin, width = 32)
-          entMaskintyp.grid(column=3, row=3, sticky=W, padx=(10,0))
+          lblMaskindimension = Label(nyMaskin, text="Dimension/typ")
+          lblMaskindimension.grid(column=2, row=3, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskindimension=Entry(nyMaskin, width = 32)
+          entMaskindimension.grid(column=3, row=3, sticky=W, padx=(10,0), pady=(5,0))
+
+          lblMaskinbullernivautv = Label(nyMaskin, text="Bullernivå utv.")
+          lblMaskinbullernivautv.grid(column=2, row=4, sticky = W, padx=(10,0))
+          entMaskinbullernivautv=Entry(nyMaskin, width = 13)
+          entMaskinbullernivautv.grid(column=3, row=4, sticky=W, padx=(10,0))
+
+          lblMaskinbullernivainv = Label(nyMaskin, text="Inv.")
+          lblMaskinbullernivainv.grid(column=3, row=4, sticky = E, padx=(0,85))
+          entMaskinbullernivainv=Entry(nyMaskin, width = 13)
+          entMaskinbullernivainv.grid(column=3, row=4, sticky=E)
+
+          lblMaskinBatterityp = Label(nyMaskin, text="Batterityp")
+          lblMaskinBatterityp.grid(column=2, row=5, sticky = W, padx=(10,0))
+          entMaskinBatterityp=Entry(nyMaskin, width = 20)
+          entMaskinBatterityp.grid(column=3, row=5, sticky=W, padx=(10,0))
+
+          lblMaskinBatteriantal = Label(nyMaskin, text="Antal:")
+          lblMaskinBatteriantal.grid(column=3, row=5, sticky=E, padx=(0,35))
+          entMaskinBatteriantal = Entry(nyMaskin, width=5, validate="key", validatecommand=(validera, "%P"))
+          entMaskinBatteriantal.grid(column=3, row=5, sticky=E)
+
+
+          lblMaskinmotoreffekt = Label(nyMaskin, text="Motoreffekt/KW")
+          lblMaskinmotoreffekt.grid(column=2, row=7, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskinmotoreffekt=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
+          entMaskinmotoreffekt.grid(column=3, row=7, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinmotoroljevolym  = Label(nyMaskin, text="Motorolja volym/liter")
-          lblMaskinmotoroljevolym.grid(column=2, row=5, sticky = W, padx=(10,0))
+          lblMaskinmotoroljevolym.grid(column=2, row=8, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinmotoroljevolym=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
-          entMaskinmotoroljevolym.grid(column=3, row=5, sticky=W, padx=(10,0))
+          entMaskinmotoroljevolym.grid(column=3, row=8, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinvaxelladevolym = Label(nyMaskin, text="Växellåda volym/liter")
-          lblMaskinvaxelladevolym.grid(column=2, row=6, sticky = W, padx=(10,0))
+          lblMaskinvaxelladevolym.grid(column=2, row=9, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinvaxelladevolym=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
-          entMaskinvaxelladevolym.grid(column=3, row=6, sticky=W, padx=(10,0))
+          entMaskinvaxelladevolym.grid(column=3, row=9, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinhydraulsystemvolym = Label(nyMaskin, text="Hydraul volym/liter")
-          lblMaskinhydraulsystemvolym.grid(column=2, row=7, sticky = W, padx=(10,0))
+          lblMaskinhydraulsystemvolym.grid(column=2, row=10, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinhydraulsystemvolym=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
-          entMaskinhydraulsystemvolym.grid(column=3, row=7, sticky=W, padx=(10,0))
+          entMaskinhydraulsystemvolym.grid(column=3, row=10, sticky=W, padx=(10,0), pady=(5,0))
 
           lblMaskinkylvatskavolym = Label(nyMaskin, text="Kylvätska volym/liter")
-          lblMaskinkylvatskavolym.grid(column=2, row=8, sticky = W, padx=(10,0))
+          lblMaskinkylvatskavolym.grid(column=2, row=11, sticky = W, padx=(10,0), pady=(5,0))
           entMaskinkylvatskavolym=Entry(nyMaskin, width = 32, validate="key", validatecommand=(validera, "%P"))
-          entMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
+          entMaskinkylvatskavolym.grid(column=3, row=11, sticky=W, padx=(10,0), pady=(5,0))
+
+          lblMaskinkylmedia = Label(nyMaskin, text="Kylmedia")
+          lblMaskinkylmedia.grid(column=2, row=12, sticky = W, padx=(10,0), pady=(5,0))
+          entMaskinkylmedia=Entry(nyMaskin, width = 32)
+          entMaskinkylmedia.grid(column=3, row=12, sticky=W, padx=(10,0), pady=(5,0))
+
+          #----#
+
+          lblMaskinmotorvarmare = Label(nyMaskin, text="Motorvärmare")
+          lblMaskinmotorvarmare.grid(column=0, row=16, sticky = W, pady=(40,0), padx=(10,0))
+          cbMaskinmotorvarmare = ttk.Checkbutton(nyMaskin)
+          cbMaskinmotorvarmare.state(['!alternate', '!selected', '!disabled'])
+          cbMaskinmotorvarmare.grid(column = 1, row = 16, sticky = W,  pady=(40,0))
+
+          lblMaskinkatalysator = Label(nyMaskin, text="Katalysator")
+          lblMaskinkatalysator.grid(column=0, row=17, sticky = W, padx=(10,0))
+          cbMaskinkatalysator = ttk.Checkbutton(nyMaskin)
+          cbMaskinkatalysator.state(['!alternate', '!selected', '!disabled'])
+          cbMaskinkatalysator.grid(column = 1, row = 17, sticky = W)
+
+          lblMaskinpartikelfilter = Label(nyMaskin, text="Partikelfilter")
+          lblMaskinpartikelfilter.grid(column=0, row=18, sticky = W, padx=(10,0))
+          cbMaskinpartikelfilter = ttk.Checkbutton(nyMaskin)
+          cbMaskinpartikelfilter.state(['!alternate', '!selected', '!disabled'])
+          cbMaskinpartikelfilter.grid(column = 1, row = 18, sticky = W)
+
+          lblMaskinvattenbaseradlack = Label(nyMaskin, text="Vattenbaserad lack")
+          lblMaskinvattenbaseradlack.grid(column=0, row=19, sticky = W, padx=(10,0))
+          cbMaskinvattenbaseradlack = ttk.Checkbutton(nyMaskin)
+          cbMaskinvattenbaseradlack.state(['!alternate', '!selected', '!disabled'])
+          cbMaskinvattenbaseradlack.grid(column = 1, row = 19, sticky = W)
+
+          lblMaskinregummerbara = Label(nyMaskin, text="Regummerbara")
+          lblMaskinregummerbara.grid(column=1, row=16, sticky = W, padx=(50,0), pady=(40,0))
+          cbMaskinregummerbara = ttk.Checkbutton(nyMaskin)
+          cbMaskinregummerbara.state(['!alternate', '!selected', '!disabled'])
+          cbMaskinregummerbara.grid(column = 1, row = 16, sticky = E, pady=(40,0), padx=(0,15))
+
+          lblMaskinregummerade = Label(nyMaskin, text="Regummerade")
+          lblMaskinregummerade.grid(column=1, row=17, sticky = W, padx=(50,0))
+          cbMaskinregummerade = ttk.Checkbutton(nyMaskin)
+          cbMaskinregummerade.state(['!alternate', '!selected', '!disabled'])
+          cbMaskinregummerade.grid(column = 1, row = 17, sticky = E, padx=(0,15))
+
+          lblMaskingasolanlaggning = Label(nyMaskin, text="Gasolanläggning")
+          lblMaskingasolanlaggning.grid(column=1, row=18, sticky = W, padx=(50,0))
+          cbMaskingasolanlaggning = ttk.Checkbutton(nyMaskin)
+          cbMaskingasolanlaggning.state(['!alternate', '!selected', '!disabled'])
+          cbMaskingasolanlaggning.grid(column = 1, row = 18, sticky = E, padx=(0,15))
+
+          lblMaskinSaneringsvatska = Label(nyMaskin, text="Saneringsvätska")
+          lblMaskinSaneringsvatska.grid(column=1, row=19, sticky = W, padx=(50,0))
+          cbMaskinSaneringsvatska = ttk.Checkbutton(nyMaskin)
+          cbMaskinSaneringsvatska.state(['!alternate', '!selected', '!disabled'])
+          cbMaskinSaneringsvatska.grid(column = 1, row = 19, sticky = E, padx=(0,15))
+
+          lblMaskininsattserlagd = Label(nyMaskin, text="Maskininsats erlagd")
+          lblMaskininsattserlagd.grid(column=1, row=20, sticky = W, padx=(50,0))
+          cbMaskininsatserlagd = ttk.Checkbutton(nyMaskin)
+          cbMaskininsatserlagd.state(['!alternate', '!selected', '!disabled'])
+          cbMaskininsatserlagd.grid(column = 1, row = 20, sticky = E, padx=(0,15))
+
+
+          #Kolumn 3
+
+          lblMaskinforare = Label(nyMaskin, text="Förare")
+          lblMaskinforare.grid(column=4, row=0, sticky = W, padx=(20,0), pady=(5,0))
+          entMaskinforare=Entry(nyMaskin, width = 32)
+          entMaskinforare.grid(column=5, row=0, sticky=E, padx=(20,0), pady=(5,0))
+          entMaskinforare.config(state=DISABLED)
+     
+          lblMaskintillbehor = Label(nyMaskin, text="Tillbehör")
+          lblMaskintillbehor.grid(column=4, row=1, sticky = W, padx=(20,0), pady=(5,0))
+          entMaskinTillbehor=Entry(nyMaskin, width = 32)
+          entMaskinTillbehor.grid(column=5, row=1, sticky=E, padx=(20,0), pady=(5,0))
+
+          lbMaskintillbehor = Listbox(nyMaskin, height=4)
+          lbMaskintillbehor.grid(column=4, row=2, columnspan=2, rowspan=4, sticky=NSEW, padx=(20,0), pady=(5,0))
+          ScbLbMaskintillbehor = Scrollbar(nyMaskin, orient="vertical")
+          ScbLbMaskintillbehor.grid(row = 2, column = 6, sticky = N+S+W, rowspan = 4)
+          ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
+          lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 
           lblOvrigtext = Label(nyMaskin, text="Övrig Text")
-          lblOvrigtext.grid(column=2, row=9, sticky = W, padx=(10,0))
+          lblOvrigtext.grid(column=4, row=7, sticky = W, padx=(10,0), pady=(5,0))
           TxtOvrigtext = Text(nyMaskin, width = 32, height=3)
-          TxtOvrigtext.grid(row=10, column=2, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,15))
-
-          #Scrollbar
+          TxtOvrigtext.grid(row=8, column=4, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0))
           ScbTxtOvrigText = Scrollbar(nyMaskin, orient="vertical")
-          ScbTxtOvrigText.grid(row = 10, column = 3, sticky = N+S+E, rowspan = 4)
+          ScbTxtOvrigText.grid(row = 8, column = 5, sticky = N+S+E, rowspan = 4)
           ScbTxtOvrigText.config(command =TxtOvrigtext.yview)
-
           TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set) 
+
+          btnTaBortTillbehor = Button(nyMaskin, text="Ta bort tillbehör", command = lambda x = None: taBortTillbehor(x))
+          btnTaBortTillbehor.grid(column=5, row=6, sticky=E)
+          
+          entMaskinTillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', entMaskinTillbehor.get()), tillbehorAttLaggaTill.append(entMaskinTillbehor.get()), entMaskinTillbehor.delete(0,'end')))
+          deMaskinperiod1.bind('<Button-3>', lambda x: rensaDatum(1))
+          deMaskinperiod2.bind('<Button-3>', lambda x: rensaDatum(2))
+
+          tillbehorAttTaBort=[]
+          tillbehorAttLaggaTill=[]
 
           #Bild
           img_Bild = Label(nyMaskin) 
-          img_Bild.grid(row=15, column=2, columnspan=2, rowspan=6)
+          img_Bild.grid(row=15, column=3, rowspan=6)
 
           txtSokvag = Text(nyMaskin, width = 20, height=0.1)
-          txtSokvag.grid(column = 2, row = 14, padx=(10,0), columnspan=2, sticky=W+E)
+          txtSokvag.grid(column = 3, row = 14, padx=(10,0), sticky=W+E)
           txtSokvag.grid_remove()
 
           img_NyBild = Label(nyMaskin)
-          img_NyBild.grid(row=15, column=2, columnspan=2, rowspan=6)
+          img_NyBild.grid(row=15, column=3, columnspan=2, rowspan=6, sticky = W)
           img_NyBild.grid_remove()          
 
           #Skapar fram en dialogruta där man får välja vilken bild det är man ska spara.
@@ -2584,75 +2656,12 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           
                
           btnNyBild = Button(nyMaskin, text="Lägg till bild", command= fileDialog)
-          btnNyBild.grid(column=2, row=21, sticky=W, padx=(10,0))
+          btnNyBild.grid(column=3, row=21, sticky=W)
 
           btnTaBortBild = Button(nyMaskin, text="Ta bort bild", command= taBortBild)
           btnTaBortBild.grid(column=3, row=21, sticky=E)
           btnTaBortBild.grid_remove()
 
-          #------------------------
-
-          lblMaskinbransle = Label(nyMaskin, text="Bränsle")
-          lblMaskinbransle.grid(column=4, row=0, sticky = W, padx=(10,0), pady=(7,0))
-          entMaskinbransle=Entry(nyMaskin, width = 32)
-          entMaskinbransle.grid(column=5, row=0, sticky=W, padx=(10,0), pady=(7,0))
-
-          lblMaskindackfabrikat = Label(nyMaskin, text="Däckfabrikat")
-          lblMaskindackfabrikat.grid(column=4, row=1, sticky = W, padx=(10,0))
-          entMaskindackfabrikat=Entry(nyMaskin, width = 32)
-          entMaskindackfabrikat.grid(column=5, row=1, sticky=W, padx=(10,0))
-
-          lblMaskindimension = Label(nyMaskin, text="Dimension/typ")
-          lblMaskindimension.grid(column=4, row=2, sticky = W, padx=(10,0))
-          entMaskindimension=Entry(nyMaskin, width = 32)
-          entMaskindimension.grid(column=5, row=2, sticky=W, padx=(10,0))
-
-          #Checkbox
-          lblMaskinregummerbara = Label(nyMaskin, text="Regummerbara")
-          lblMaskinregummerbara.grid(column=4, row=3, sticky = W, padx=(10,0))
-          cbMaskinregummerbara = ttk.Checkbutton(nyMaskin)
-          cbMaskinregummerbara.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinregummerbara.grid(column = 5, row = 3, sticky = W, padx=(5,0))
-
-          #Checkbox
-          lblMaskinregummerade = Label(nyMaskin, text="Regummerade")
-          lblMaskinregummerade.grid(column=4, row=4, sticky = W, padx=(10,0))
-          cbMaskinregummerade = ttk.Checkbutton(nyMaskin)
-          cbMaskinregummerade.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinregummerade.grid(column = 5, row = 4, sticky = W, padx=(5,0))
-
-          lblMaskingasolanlaggning = Label(nyMaskin, text="Gasolanläggning")
-          lblMaskingasolanlaggning.grid(column=4, row=5, sticky = W, padx=(10,0))
-          cbMaskingasolanlaggning = ttk.Checkbutton(nyMaskin)
-          cbMaskingasolanlaggning.state(['!alternate', '!selected', '!disabled'])
-          cbMaskingasolanlaggning.grid(column = 5, row = 5, sticky = W, padx=(5,0))
-
-          lblMaskinSaneringsvatska = Label(nyMaskin, text="Saneringsvätska")
-          lblMaskinSaneringsvatska.grid(column=4, row=6, sticky = W, padx=(10,0))
-          cbMaskinSaneringsvatska = ttk.Checkbutton(nyMaskin)
-          cbMaskinSaneringsvatska.state(['!alternate', '!selected', '!disabled'])
-          cbMaskinSaneringsvatska.grid(column = 5, row = 6, sticky = W, padx=(5,0))
-
-          #Checkbox
-          lblMaskininsattserlagd = Label(nyMaskin, text="Maskininsats erlagd")
-          lblMaskininsattserlagd.grid(column=4, row=7, sticky = W, padx=(10,0))
-          cbMaskininsatserlagd = ttk.Checkbutton(nyMaskin)
-          cbMaskininsatserlagd.state(['!alternate', '!selected', '!disabled'])
-          cbMaskininsatserlagd.grid(column = 5, row = 7, sticky = W, padx=(5,0))
-
-          lblMaskinforare = Label(nyMaskin, text="Förare")
-          lblMaskinforare.grid(column=4, row=8, sticky = W, padx=(10,0))
-          entMaskinforare=Entry(nyMaskin, width = 32)
-          entMaskinforare.grid(column=5, row=8, sticky=W, padx=(10,0))
-          entMaskinforare.config(state=DISABLED)
-     
-          lblMaskintillbehor = Label(nyMaskin, text="Tillbehör")
-          lblMaskintillbehor.grid(column=4, row=9, sticky = W, padx=(10,0))
-          entMaskinTillbehor=Entry(nyMaskin, width = 25)
-          entMaskinTillbehor.grid(column=5, row=9, sticky=W, padx=(10,0))
-
-          tillbehorAttTaBort=[]
-          tillbehorAttLaggaTill=[]
 
           def rensaDatum(self):
                if self == 1:
@@ -2672,24 +2681,12 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     except:
                          pass
                     lbMaskintillbehor.delete(lbMaskintillbehor.curselection())
-
           
+          btnSparaNyMaskin=Button(nyMaskin, text="Spara", command = lambda: sparaMaskin(Typ))
+          btnSparaNyMaskin.grid(column=5, row=21, sticky=E, padx=(0,55))
+          btnAvbrytNyMaskin=Button(nyMaskin, text="Avbryt", command = lambda: nyMaskin.destroy())
+          btnAvbrytNyMaskin.grid(column=5, row=21,sticky=E)
           
-          lbMaskintillbehor = Listbox(nyMaskin, height=4)
-          lbMaskintillbehor.grid(column=4, row=10, columnspan=2, rowspan=4, sticky=NSEW, padx=(10,0), pady=(5,5))  
-
-          btnTaBortTillbehor = Button(nyMaskin, text="Ta bort tillbehör", command = lambda x = None: taBortTillbehor(x))
-          btnTaBortTillbehor.grid(column=5, row=14, sticky=E)
-
-
-          ScbLbMaskintillbehor = Scrollbar(nyMaskin, orient="vertical")
-          ScbLbMaskintillbehor.grid(row = 10, column = 6, sticky = N+S+W, rowspan = 4)
-          ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
-          lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
-     
-          entMaskinTillbehor.bind('<Return>', lambda x: (lbMaskintillbehor.insert('end', entMaskinTillbehor.get()), tillbehorAttLaggaTill.append(entMaskinTillbehor.get()), entMaskinTillbehor.delete(0,'end')))
-          deMaskinperiod1.bind('<Button-3>', lambda x: rensaDatum(1))
-          deMaskinperiod2.bind('<Button-3>', lambda x: rensaDatum(2))
 
           #Försöker fylla all relevant information i korrekt entrys.
           if Typ == "Byt":
@@ -3071,12 +3068,32 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     for x in tillbehor:
                          lbMaskintillbehor.insert("end", x[0])
                
-               cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ' order by maskinnummer asc;')
+               cursor.execute('SELECT Maskinnummer, MarkeModell, Arsmodell FROM tschakt.maskinregister WHERE Medlemsnummer = ' + medlemsnummer + ' order by maskinnummer asc;')
                maskiner = cursor.fetchall()
-
+               
                LbDelagaresMaskiner.delete(0, "end")
-               for x in maskiner:
-                    LbDelagaresMaskiner.insert("end", x[0])
+               for item in maskiner:
+
+                    item = list(item)
+                    if item[1] == None:
+                         item[1] = ""
+                    if item[2] == None:
+                         item[2] = ""
+                    s=""
+                    s += str(item[0])
+                    if item[1] == "":
+                         s+= ""
+                    elif item[2] == "":
+                         s+= " - "
+                         s+=str(item[1])
+                    else:
+                         s+= " - "
+                         s+=str(item[1])
+                         s+= " - "
+                         s+=str(item[2])
+                    s+=" "
+                         
+                    LbDelagaresMaskiner.insert("end", s)
 #Fyller LbDelagare (Listboxen på Home-fliken) med delägarna ifrån databsen
 def fyllListboxDelagare():
 
@@ -3485,7 +3502,6 @@ def taBortBilder(listaAvBilder):
                     os.remove(x[0])
                else:
                     print("Finns inga bilder")    
-
 #Hämtar maskinerna som tillhör en viss Delägare och fyller LbDelagaresMaskiner med dem.
 def hamtaDelagarensMaskiner():
      global medlemsnummer
@@ -4010,6 +4026,7 @@ def valideraSiffror(input):
           return True
      else:
           return False
+#Läser in lösenord till SQL, används ej
 def readAFile():
      global filelist
      file = open("test.txt", "r")
@@ -4048,7 +4065,7 @@ cursor = db.cursor()
 #Skapar och namnger huvudfönstret samt sätter storleken på fönstret
 root = Tk()
 root.title("T-schakts delägarregister")
-root.geometry("1365x750")
+root.geometry("1365x720")
 root.resizable(False, False)
  
 #Flikarna som finns i GUI:t
@@ -4132,16 +4149,20 @@ delagare.columnconfigure(1, weight=1)
 delagare.rowconfigure(0, weight=1)
 
 frameDelagare = Frame(delagare, highlightbackground="grey", highlightthickness=1)
-frameDelagare.grid(row = 0, column = 0, sticky = NW, padx=(10,0), pady=(10,0))
+frameDelagare.grid(row = 0, column = 0, sticky = NW, padx=(10,20), pady=(10,0))
 frameMaskiner= Frame(delagare)
-frameMaskiner.grid(row = 1, column =0, sticky = N+E+W, padx=(10,0), pady=(10,0))
-frameOvrigText= Frame(delagare)
-frameOvrigText.grid(row=2, column=0, sticky=NSEW, padx=(10,0), pady=(10,0))
+frameMaskiner.grid(row = 1, column =0, sticky = N+E+W, padx=(10,20), pady=(10,0))
+frameBild= Frame(delagare)
+frameBild.grid(row=2, column=0, sticky=NSEW, padx=(10,0), pady=(10,10))
 frameMaskininfo = Frame(delagare)
-frameMaskininfo.grid(row = 0, column =1, rowspan = 3, sticky = NSEW, pady=(10,0))
+frameMaskininfo.grid(row = 0, column =1, rowspan = 3, sticky = NSEW, pady=(10,10))
+frameMaskininfoListboxes = Frame(delagare)
+frameMaskininfoListboxes.grid(row = 0, column = 2, rowspan = 3, sticky = NSEW, pady=(10,10))
+frameMaskininfoButtons = Frame(delagare)
+frameMaskininfoButtons.grid(row = 2, column = 1, columnspan = 2, sticky = S, pady = (10,10))
 
 #Listbox med maskiner tillhörande valda delägaren
-LbDelagaresMaskiner = Listbox(frameMaskiner, width = 45, height = 12, exportselection=0)
+LbDelagaresMaskiner = Listbox(frameMaskiner, width = 47, height = 9, exportselection=0)
 LbDelagaresMaskiner.grid(row = 1, column = 0)
 LbDelagaresMaskiner.grid_rowconfigure(1, weight=1)
 LbDelagaresMaskiner.grid_columnconfigure(0, weight=1)
@@ -4157,9 +4178,9 @@ LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Bilden kopplad till maskinen
 img = Image.open("placeholder.png")  
-img = img.resize((225,200), Image. ANTIALIAS)
+img = img.resize((260,200), Image. ANTIALIAS)
 img4 = ImageTk.PhotoImage(img)
-img_label = Label(frameOvrigText, image=img4)
+img_label = Label(frameBild, image=img4)
 img_label.grid(row=0, column=0, sticky = NW)
 
 
@@ -4225,326 +4246,325 @@ btnTaBortDelagare = Button(frameDelagare, text="Ta bort delägare", command = la
 btnTaBortDelagare.grid(row=9, column =1, sticky=E, padx=(0,5), pady=(0,5))
 
 #Maskinens data 
+#Kolumn 1
 
 lblMaskinnummermaskininfo = Label(frameMaskininfo, text= "Maskinnummer")
-lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinnummermaskininfo = Entry(frameMaskininfo, width = 5)
-entMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0))
+entMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinnummermaskininfo.config(state=DISABLED)
 
 lblMaskinbeteckning = Label(frameMaskininfo, text="Beteckning")
-lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinbeteckning = Entry(frameMaskininfo, width = 32)
-entMaskinbeteckning.grid(column=1, row=1, sticky = W, padx=(10,0))
+entMaskinbeteckning.grid(column=1, row=1, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinbeteckning.config(state=DISABLED)
 
 lblMaskinme_klass = Label(frameMaskininfo, text="ME-Klass")
-lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinme_klass.grid(column=0, row=2, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinme_klass = Entry(frameMaskininfo, width = 32)
-entMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0))
+entMaskinme_klass.grid(column=1, row=2, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinme_klass.config(state=DISABLED)
 
+lblMaskinarsmodell = Label(frameMaskininfo, text="Årsmodell")
+lblMaskinarsmodell.grid(column=0, row=3, sticky = W, padx=(10,0), pady=(5,0))
+entMaskinarsmodell=Entry(frameMaskininfo, width = 32)
+entMaskinarsmodell.grid(column=1, row=3, sticky=W, padx=(10,0), pady=(5,0))
+entMaskinarsmodell.config(state=DISABLED)
+
+lblMaskinregistreringsnummer = Label(frameMaskininfo, text="Reg. nr/Ser. nr")
+lblMaskinregistreringsnummer.grid(column=0, row=4, sticky = W, padx=(10,0), pady=(5,0))
+entMaskinregistreringsnummer=Entry(frameMaskininfo, width = 32)
+entMaskinregistreringsnummer.grid(column=1, row=4, sticky=W, padx=(10,0), pady=(5,0))
+entMaskinregistreringsnummer.config(state=DISABLED)
+
+lblMaskintyp = Label(frameMaskininfo, text="Maskintyp")
+lblMaskintyp.grid(column=0, row=5, sticky = W, padx=(10,0), pady=(5,0))
+entMaskintyp=Entry(frameMaskininfo, width = 32)
+entMaskintyp.grid(column=1, row=5, sticky=W, padx=(10,0), pady=(5,0))
+entMaskintyp.config(state=DISABLED)
+
+#----#
+
 lblMaskinmotorfabrikat = Label(frameMaskininfo, text="Motorfabrikat")
-lblMaskinmotorfabrikat.grid(column=0, row=3, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinmotorfabrikat.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(40,0))
 entMaskinmotorfabrikat = Entry(frameMaskininfo, width = 32)
-entMaskinmotorfabrikat.grid(column=1, row=3, sticky=W, padx=(10,0))
+entMaskinmotorfabrikat.grid(column=1, row=6, sticky=W, padx=(10,0), pady=(40,0))
 entMaskinmotorfabrikat.config(state=DISABLED)
 
 lblMaskinmotortyp = Label(frameMaskininfo, text="Motortyp")
-lblMaskinmotortyp.grid(column=0, row=4, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinmotortyp.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinmotortyp=Entry(frameMaskininfo, width = 32)
-entMaskinmotortyp.grid(column=1, row=4, sticky=W, padx=(10,0))
+entMaskinmotortyp.grid(column=1, row=7, sticky=W, padx=(10,0), pady=(5,0))
 entMaskinmotortyp.config(state=DISABLED)
 
 lblMaskinmotor = Label(frameMaskininfo, text="Motor")
-lblMaskinmotor.grid(column=0, row=5, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinmotor.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinmotor = Entry(frameMaskininfo, width = 32)
-entMaskinmotor.grid(column=1, row=5, sticky=W, padx=(10,0))
+entMaskinmotor.grid(column=1, row=8, sticky=W, padx=(10,0), pady=(5,0))
 entMaskinmotor.config(state=DISABLED)
 
 lblMaskinvaxellada = Label(frameMaskininfo, text="Växellåda")
-lblMaskinvaxellada.grid(column=0, row=6, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinvaxellada.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinvaxellada=Entry(frameMaskininfo, width = 32)
-entMaskinvaxellada.grid(column=1, row=6, sticky=W, padx=(10,0))
+entMaskinvaxellada.grid(column=1, row=9, sticky=W, padx=(10,0), pady=(5,0))
 entMaskinvaxellada.config(state=DISABLED)
 
 lblMaskinhydraulsystem = Label(frameMaskininfo, text="Hydraulsystem")
-lblMaskinhydraulsystem.grid(column=0, row=7, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinhydraulsystem.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinhydraulsystem=Entry(frameMaskininfo, width = 32)
-entMaskinhydraulsystem.grid(column=1, row=7, sticky=W, padx=(10,0))
+entMaskinhydraulsystem.grid(column=1, row=10, sticky=W, padx=(10,0), pady=(5,0))
 entMaskinhydraulsystem.config(state=DISABLED)
 
 lblMaskinkylvatska = Label(frameMaskininfo, text="Kylvätska")
-lblMaskinkylvatska.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinkylvatska.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinkylvatska=Entry(frameMaskininfo, width = 32)
-entMaskinkylvatska.grid(column=1, row=8, sticky=W, padx=(10,0))
+entMaskinkylvatska.grid(column=1, row=11, sticky=W, padx=(10,0), pady=(5,0))
 entMaskinkylvatska.config(state=DISABLED)
 
-lblMaskinmotoreffekt = Label(frameMaskininfo, text="Motoreffekt/KW")
-lblMaskinmotoreffekt.grid(column=0, row=9, sticky = W, padx=(10,0), pady=(0,8))
-entMaskinmotoreffekt=Entry(frameMaskininfo, width = 32)
-entMaskinmotoreffekt.grid(column=1, row=9, sticky=W, padx=(10,0))
-entMaskinmotoreffekt.config(state=DISABLED)
-
-lblMaskinmotorvarmare = Label(frameMaskininfo, text="Motorvärmare")
-lblMaskinmotorvarmare.grid(column=0, row=10, sticky = W, padx=(10,0), pady=(0,8))
-cbMaskinmotorvarmare = ttk.Checkbutton(frameMaskininfo)
-cbMaskinmotorvarmare.state(['!alternate', '!selected', 'disabled'])
-cbMaskinmotorvarmare.grid(column = 1, row = 10, sticky = W, padx=(5,0))
-
-lblMaskinkatalysator = Label(frameMaskininfo, text="Katalysator")
-lblMaskinkatalysator.grid(column=0, row=11, sticky = W, padx=(10,0), pady=(0,8))
-cbMaskinkatalysator = ttk.Checkbutton(frameMaskininfo)
-cbMaskinkatalysator.state(['!alternate', '!selected', 'disabled'])
-cbMaskinkatalysator.grid(column = 1, row = 11, sticky = W, padx=(5,0))
-
-lblMaskinpartikelfilter = Label(frameMaskininfo, text="Partikelfilter")
-lblMaskinpartikelfilter.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(0,8))
-cbMaskinpartikelfilter = ttk.Checkbutton(frameMaskininfo)
-cbMaskinpartikelfilter.state(['!alternate', '!selected', 'disabled'])
-cbMaskinpartikelfilter.grid(column = 1, row = 12, sticky = W, padx=(5,0))
-
-lblMaskinvattenbaseradlack = Label(frameMaskininfo, text="Vattenbaserad lack")
-lblMaskinvattenbaseradlack.grid(column=0, row=13, sticky = W, padx=(10,0), pady=(0,8))
-cbMaskinvattenbaseradlack = ttk.Checkbutton(frameMaskininfo)
-cbMaskinvattenbaseradlack.state(['!alternate', '!selected', 'disabled'])
-cbMaskinvattenbaseradlack.grid(column = 1, row = 13, sticky = W, padx=(5,0))
-
-lblMaskinkylmedia = Label(frameMaskininfo, text="Kylmedia")
-lblMaskinkylmedia.grid(column=0, row=14, sticky = W, padx=(10,0), pady=(0,8))
-entMaskinkylmedia=Entry(frameMaskininfo, width = 32)
-entMaskinkylmedia.grid(column=1, row=14, sticky=W, padx=(10,0))
-entMaskinkylmedia.config(state=DISABLED)
-
-lblMaskinbullernivautv = Label(frameMaskininfo, text="Bullernivå utvändigt")
-lblMaskinbullernivautv.grid(column=0, row=15, sticky = W, padx=(10,0), pady=(0,8))
-entMaskinbullernivautv=Entry(frameMaskininfo, width = 32)
-entMaskinbullernivautv.grid(column=1, row=15, sticky=W, padx=(10,0))
-entMaskinbullernivautv.config(state=DISABLED)
-
-lblMaskinbullernivainv = Label(frameMaskininfo, text="Bullernivå invändigt")
-lblMaskinbullernivainv.grid(column=0, row=16, sticky = W, padx=(10,0), pady=(0,8))
-entMaskinbullernivainv=Entry(frameMaskininfo, width = 32)
-entMaskinbullernivainv.grid(column=1, row=16, sticky=W, padx=(10,0))
-entMaskinbullernivainv.config(state=DISABLED)
-
 lblMaskinsmorjfett = Label(frameMaskininfo, text="Smörjfett")
-lblMaskinsmorjfett.grid(column=0, row=17, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinsmorjfett.grid(column=0, row=12, sticky = W, padx=(10,0), pady=(5,0))
 entMaskinsmorjfett=Entry(frameMaskininfo, width = 32)
-entMaskinsmorjfett.grid(column=1, row=17, sticky=W, padx=(10,0))
+entMaskinsmorjfett.grid(column=1, row=12, sticky=W, padx=(10,0), pady=(5,0))
 entMaskinsmorjfett.config(state=DISABLED)
 
-lblMaskinBatterityp = Label(frameMaskininfo, text="Batterityp")
-lblMaskinBatterityp.grid(column=0, row=18, sticky = W, padx=(10,0), pady=(0,8))
-entMaskinBatterityp=Entry(frameMaskininfo, width = 20)
-entMaskinBatterityp.grid(column=1, row=18, sticky=W, padx=(10,0))
-entMaskinBatterityp.config(state=DISABLED)
 
-lblMaskinBatteriantal = Label(frameMaskininfo, text="Antal")
-lblMaskinBatteriantal.grid(column=1, row=18, sticky=E, padx=(0,35))
-entMaskinBatteriantal = Entry(frameMaskininfo, width=5)
-entMaskinBatteriantal.grid(column=1, row=18, sticky=E)
-entMaskinBatteriantal.config(state=DISABLED)
+#----#
 
-#Checkboxar för maskinens boolean-värden i databasen
 lblMaskinKollektivforsakring = Label(frameMaskininfo, text="Kollektiv försäkring")
-lblMaskinKollektivforsakring.grid(column=0, row=19, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinKollektivforsakring.grid(column=0, row=17, sticky = W, padx=(10,0))
 cbMaskinKollektivforsakring = ttk.Checkbutton(frameMaskininfo)
 cbMaskinKollektivforsakring.state(['!alternate', '!selected', 'disabled'])
-cbMaskinKollektivforsakring.grid(column = 1, row = 19, sticky = W, padx=(5,0))
+cbMaskinKollektivforsakring.grid(column = 1, row = 17, sticky = W, padx=(10,0))
 
 lblMaskinperiod = Label(frameMaskininfo, text="Period")
-lblMaskinperiod.grid(column=0, row=20, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinperiod.grid(column=0, row=18, sticky = W, padx=(10,0))
 deMaskinperiod1 = DateEntry(frameMaskininfo, values="Text", date_pattern="yyyy-mm-dd")
 deMaskinperiod1.delete(0, 'end')
-deMaskinperiod1.grid(column=1, row=20, sticky=W, padx=(10,0))
+deMaskinperiod1.grid(column=1, row=18, sticky=W, padx=(10,0))
 deMaskinperiod1.state(['disabled'])
-
 deMaskinperiod2 = DateEntry(frameMaskininfo, values="Text", date_pattern="yyyy-mm-dd")
 deMaskinperiod2.delete(0, 'end')
-deMaskinperiod2.grid(column=1, row=20, sticky=E)
+deMaskinperiod2.grid(column=1, row=18, sticky=E)
 deMaskinperiod2.state(['disabled'])
 
 lblMaskinarsbelopp = Label(frameMaskininfo, text="Årsbelopp")
-lblMaskinarsbelopp.grid(column=0, row=21, sticky = W, padx=(10,0), pady=(0,8))
+lblMaskinarsbelopp.grid(column=0, row=19, sticky = W, padx=(10,0))
 entMaskinarsbelopp=Entry(frameMaskininfo, width = 32)
-entMaskinarsbelopp.grid(column=1, row=21, sticky=W, padx=(10,0))
+entMaskinarsbelopp.grid(column=1, row=19, sticky=W, padx=(10,0))
 entMaskinarsbelopp.config(state=DISABLED)
 
-#Knapparna/Buttons i fliken Delägare
 
-btnMaskinpresentation=Button(frameMaskininfo,text="Maskinpresentation", command = lambda: maskinpresentation(entMaskinnummermaskininfo.get()))
-btnMaskinpresentation.grid(column=0, row=22, sticky=W, padx=(10,0), pady=(20,0))
-
-btnMiljodeklaration=Button(frameMaskininfo, text="Miljödeklaration", command = lambda: miljodeklaration(entMaskinnummermaskininfo.get()))
-btnMiljodeklaration.grid(column=1, row=22, sticky=W, padx=(10,0), pady=(20,0))
-
-btnHistorik=Button(frameMaskininfo, text="Historik", command = lambda: historikFonster(entMaskinnummermaskininfo.get()))
-btnHistorik.grid(column=6, row=0, sticky=W, padx=(10,10))
-
-btnLaggtillmaskin=Button(frameMaskininfo, text="Lägg till ny", command = lambda: nyMaskinFonster("Ny",entMaskinnummermaskininfo.get(), txtMedlemsnummerDelagare.get(1.0, END)))
-btnLaggtillmaskin.grid(column=4, row=22, sticky=W, pady=(20,0))
-
-btnAndramaskin=Button(frameMaskininfo, text="Ändra", command = lambda: nyMaskinFonster(entMaskinnummermaskininfo.get(),entMaskinnummermaskininfo.get(), txtMedlemsnummerDelagare.get(1.0, END)))
-btnAndramaskin.grid(column=4, row=22,sticky=E, pady=(20,0))
-
-btnBytmaskin=Button(frameMaskininfo, text="Byt maskin", command = lambda: nyMaskinFonster("Byt",entMaskinnummermaskininfo.get(), txtMedlemsnummerDelagare.get(1.0, END)))
-btnBytmaskin.grid(column=5, row=22, padx=(0,60), pady=(20,0))
-
-btnTabortmaskin=Button(frameMaskininfo, text="Ta bort maskin", command  = lambda: taBortMaskin(entMaskinnummermaskininfo.get()))
-btnTabortmaskin.grid(column=5, row=22, sticky=E, pady=(20,0))
-
-
-
-#--------------------
+#Kolumn 2
 
 lblMaskinmiljostatus = Label(frameMaskininfo, text="Miljöstatus")
-lblMaskinmiljostatus.grid(column=2, row=0, sticky = W, padx=(10,0))
+lblMaskinmiljostatus.grid(column=2, row=0, sticky = W, padx=(20,0))
 entMaskinmiljostatus=Entry(frameMaskininfo, width = 32)
 entMaskinmiljostatus.grid(column=3, row=0, sticky=W, padx=(10,0))
 entMaskinmiljostatus.config(state=DISABLED)
 
-lblMaskinarsmodell = Label(frameMaskininfo, text="Årsmodell")
-lblMaskinarsmodell.grid(column=2, row=1, sticky = W, padx=(10,0))
-entMaskinarsmodell=Entry(frameMaskininfo, width = 32)
-entMaskinarsmodell.grid(column=3, row=1, sticky=W, padx=(10,0))
-entMaskinarsmodell.config(state=DISABLED)
-
-lblMaskinregistreringsnummer = Label(frameMaskininfo, text="Reg. nr/Ser. nr")
-lblMaskinregistreringsnummer.grid(column=2, row=2, sticky = W, padx=(10,0))
-entMaskinregistreringsnummer=Entry(frameMaskininfo, width = 32)
-entMaskinregistreringsnummer.grid(column=3, row=2, sticky=W, padx=(10,0))
-entMaskinregistreringsnummer.config(state=DISABLED)
-
-lblMaskintyp = Label(frameMaskininfo, text="Maskintyp")
-lblMaskintyp.grid(column=2, row=3, sticky = W, padx=(10,0))
-entMaskintyp=Entry(frameMaskininfo, width = 32)
-entMaskintyp.grid(column=3, row=3, sticky=W, padx=(10,0))
-entMaskintyp.config(state=DISABLED)
-
-lblMaskinmotoroljevolym  = Label(frameMaskininfo, text="Motorolja volym/liter")
-lblMaskinmotoroljevolym.grid(column=2, row=5, sticky = W, padx=(10,0))
-entMaskinmotoroljevolym=Entry(frameMaskininfo, width = 32)
-entMaskinmotoroljevolym.grid(column=3, row=5, sticky=W, padx=(10,0))
-entMaskinmotoroljevolym.config(state=DISABLED)
-
-lblMaskinvaxelladevolym = Label(frameMaskininfo, text="Växellåda volym/liter")
-lblMaskinvaxelladevolym.grid(column=2, row=6, sticky = W, padx=(10,0))
-entMaskinvaxelladevolym=Entry(frameMaskininfo, width = 32)
-entMaskinvaxelladevolym.grid(column=3, row=6, sticky=W, padx=(10,0))
-entMaskinvaxelladevolym.config(state=DISABLED)
-
-lblMaskinhydraulsystemvolym = Label(frameMaskininfo, text="Hydraul volym/liter")
-lblMaskinhydraulsystemvolym.grid(column=2, row=7, sticky = W, padx=(10,0))
-entMaskinhydraulsystemvolym=Entry(frameMaskininfo, width = 32)
-entMaskinhydraulsystemvolym.grid(column=3, row=7, sticky=W, padx=(10,0))
-entMaskinhydraulsystemvolym.config(state=DISABLED)
-
-lblMaskinkylvatskavolym = Label(frameMaskininfo, text="Kylvätska volym/liter")
-lblMaskinkylvatskavolym.grid(column=2, row=8, sticky = W, padx=(10,0))
-entMaskinkylvatskavolym=Entry(frameMaskininfo, width = 32)
-entMaskinkylvatskavolym.grid(column=3, row=8, sticky=W, padx=(10,0))
-entMaskinkylvatskavolym.config(state=DISABLED)
-
-#Textruta, fält för Övrig Text
-lblOvrigtext = Label(frameMaskininfo, text="Övrig text")
-lblOvrigtext.grid(column=2, row=14, sticky=W, padx=(10,0))
-TxtOvrigtext = Text(frameMaskininfo, width = 20, height=4)
-TxtOvrigtext.grid(row=15, column=2, columnspan=2, rowspan=6, sticky=NSEW, padx=(10,15))
-TxtOvrigtext.config(state=DISABLED)
-
-#Scrollbar
-ScbTxtOvrigText = Scrollbar(frameMaskininfo, orient="vertical")
-ScbTxtOvrigText.grid(row = 15, column = 3, sticky = N+S+E, rowspan = 6)
-ScbTxtOvrigText.config(command =TxtOvrigtext.yview)
-
-TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set)
-
-#------------------------
-
 lblMaskinbransle = Label(frameMaskininfo, text="Bränsle")
-lblMaskinbransle.grid(column=4, row=0, sticky = W, padx=(10,0))
+lblMaskinbransle.grid(column=2, row=1, sticky = W, padx=(20,0))
 entMaskinbransle=Entry(frameMaskininfo, width = 32)
-entMaskinbransle.grid(column=5, row=0, sticky=W, padx=(10,0))
+entMaskinbransle.grid(column=3, row=1, sticky=W, padx=(10,0))
 entMaskinbransle.config(state=DISABLED)
 
 lblMaskindackfabrikat = Label(frameMaskininfo, text="Däckfabrikat")
-lblMaskindackfabrikat.grid(column=4, row=1, sticky = W, padx=(10,0))
+lblMaskindackfabrikat.grid(column=2, row=2, sticky = W, padx=(20,0))
 entMaskindackfabrikat=Entry(frameMaskininfo, width = 32)
-entMaskindackfabrikat.grid(column=5, row=1, sticky=W, padx=(10,0))
+entMaskindackfabrikat.grid(column=3, row=2, sticky=W, padx=(10,0))
 entMaskindackfabrikat.config(state=DISABLED)
 
 lblMaskindimension = Label(frameMaskininfo, text="Dimension/typ")
-lblMaskindimension.grid(column=4, row=2, sticky = W, padx=(10,0))
+lblMaskindimension.grid(column=2, row=3, sticky = W, padx=(20,0))
 entMaskindimension=Entry(frameMaskininfo, width = 32)
-entMaskindimension.grid(column=5, row=2, sticky=W, padx=(10,0))
+entMaskindimension.grid(column=3, row=3, sticky=W, padx=(10,0))
 entMaskindimension.config(state=DISABLED)
 
-#Checkbox
+lblMaskinbullernivautv = Label(frameMaskininfo, text="Bullernivå utv.")
+lblMaskinbullernivautv.grid(column=2, row=4, sticky = W, padx=(20,0))
+entMaskinbullernivautv=Entry(frameMaskininfo, width = 13)
+entMaskinbullernivautv.grid(column=3, row=4, sticky=W, padx=(10,0))
+entMaskinbullernivautv.config(state=DISABLED)
+
+lblMaskinbullernivainv = Label(frameMaskininfo, text="Inv.")
+lblMaskinbullernivainv.grid(column=3, row=4, sticky = E, padx=(0,85))
+entMaskinbullernivainv=Entry(frameMaskininfo, width = 13)
+entMaskinbullernivainv.grid(column=3, row=4, sticky=E)
+entMaskinbullernivainv.config(state=DISABLED)
+
+lblMaskinBatterityp = Label(frameMaskininfo, text="Batterityp")
+lblMaskinBatterityp.grid(column=2, row=5, sticky = W, padx=(20,0))
+entMaskinBatterityp=Entry(frameMaskininfo, width = 20)
+entMaskinBatterityp.grid(column=3, row=5, sticky=W, padx=(10,0))
+entMaskinBatterityp.config(state=DISABLED)
+
+lblMaskinBatteriantal = Label(frameMaskininfo, text="Antal:")
+lblMaskinBatteriantal.grid(column=3, row=5, sticky=E, padx=(0,35))
+entMaskinBatteriantal = Entry(frameMaskininfo, width=5)
+entMaskinBatteriantal.grid(column=3, row=5, sticky=E)
+entMaskinBatteriantal.config(state=DISABLED)
+
+
+#----#
+
+lblMaskinmotoreffekt = Label(frameMaskininfo, text="Motoreffekt/KW")
+lblMaskinmotoreffekt.grid(column=2, row=7, sticky = W, padx=(20,0))
+entMaskinmotoreffekt=Entry(frameMaskininfo, width = 32)
+entMaskinmotoreffekt.grid(column=3, row=7, sticky=W, padx=(10,0))
+entMaskinmotoreffekt.config(state=DISABLED)
+
+lblMaskinmotoroljevolym  = Label(frameMaskininfo, text="Motorolja volym/liter")
+lblMaskinmotoroljevolym.grid(column=2, row=8, sticky = W, padx=(20,0))
+entMaskinmotoroljevolym=Entry(frameMaskininfo, width = 32)
+entMaskinmotoroljevolym.grid(column=3, row=8, sticky=W, padx=(10,0))
+entMaskinmotoroljevolym.config(state=DISABLED)
+
+lblMaskinvaxelladevolym = Label(frameMaskininfo, text="Växellåda volym/liter")
+lblMaskinvaxelladevolym.grid(column=2, row=9, sticky = W, padx=(20,0))
+entMaskinvaxelladevolym=Entry(frameMaskininfo, width = 32)
+entMaskinvaxelladevolym.grid(column=3, row=9, sticky=W, padx=(10,0))
+entMaskinvaxelladevolym.config(state=DISABLED)
+
+lblMaskinhydraulsystemvolym = Label(frameMaskininfo, text="Hydraul volym/liter")
+lblMaskinhydraulsystemvolym.grid(column=2, row=10, sticky = W, padx=(20,0))
+entMaskinhydraulsystemvolym=Entry(frameMaskininfo, width = 32)
+entMaskinhydraulsystemvolym.grid(column=3, row=10, sticky=W, padx=(10,0))
+entMaskinhydraulsystemvolym.config(state=DISABLED)
+
+lblMaskinkylvatskavolym = Label(frameMaskininfo, text="Kylvätska volym/liter")
+lblMaskinkylvatskavolym.grid(column=2, row=11, sticky = W, padx=(20,0))
+entMaskinkylvatskavolym=Entry(frameMaskininfo, width = 32)
+entMaskinkylvatskavolym.grid(column=3, row=11, sticky=W, padx=(10,0))
+entMaskinkylvatskavolym.config(state=DISABLED)
+
+lblMaskinkylmedia = Label(frameMaskininfo, text="Kylmedia")
+lblMaskinkylmedia.grid(column=2, row=12, sticky = W, padx=(20,0))
+entMaskinkylmedia=Entry(frameMaskininfo, width = 32)
+entMaskinkylmedia.grid(column=3, row=12, sticky=W, padx=(10,0))
+entMaskinkylmedia.config(state=DISABLED)
+
+#----#
+
+lblMaskinmotorvarmare = Label(frameMaskininfo, text="Motorvärmare")
+lblMaskinmotorvarmare.grid(column=2, row=15, sticky = W, pady=(40,0), padx=(40,0))
+cbMaskinmotorvarmare = ttk.Checkbutton(frameMaskininfo)
+cbMaskinmotorvarmare.state(['!alternate', '!selected', 'disabled'])
+cbMaskinmotorvarmare.grid(column = 3, row = 15, sticky = W, pady=(40,0))
+
+lblMaskinkatalysator = Label(frameMaskininfo, text="Katalysator")
+lblMaskinkatalysator.grid(column=2, row=16, sticky = W, padx=(40,0))
+cbMaskinkatalysator = ttk.Checkbutton(frameMaskininfo)
+cbMaskinkatalysator.state(['!alternate', '!selected', 'disabled'])
+cbMaskinkatalysator.grid(column = 3, row = 16, sticky = W)
+
+lblMaskinpartikelfilter = Label(frameMaskininfo, text="Partikelfilter")
+lblMaskinpartikelfilter.grid(column=2, row=17, sticky = W, padx=(40,0))
+cbMaskinpartikelfilter = ttk.Checkbutton(frameMaskininfo)
+cbMaskinpartikelfilter.state(['!alternate', '!selected', 'disabled'])
+cbMaskinpartikelfilter.grid(column = 3, row = 17, sticky = W)
+
+lblMaskinvattenbaseradlack = Label(frameMaskininfo, text="Vattenbaserad lack")
+lblMaskinvattenbaseradlack.grid(column=2, row=18, sticky = W, padx=(40,0))
+cbMaskinvattenbaseradlack = ttk.Checkbutton(frameMaskininfo)
+cbMaskinvattenbaseradlack.state(['!alternate', '!selected', 'disabled'])
+cbMaskinvattenbaseradlack.grid(column = 3, row = 18, sticky = W)
+
 lblMaskinregummerbara = Label(frameMaskininfo, text="Regummerbara")
-lblMaskinregummerbara.grid(column=4, row=3, sticky = W, padx=(10,0))
+lblMaskinregummerbara.grid(column = 3, row = 15, sticky = W, padx=(50,0), pady=(40,0))
 cbMaskinregummerbara = ttk.Checkbutton(frameMaskininfo)
 cbMaskinregummerbara.state(['!alternate', '!selected', 'disabled'])
-cbMaskinregummerbara.grid(column = 5, row = 3, sticky = W, padx=(5,0))
+cbMaskinregummerbara.grid(column = 3, row = 15, sticky = E, pady=(40,0), padx=(0,15))
 
-#Checkbox
 lblMaskinregummerade = Label(frameMaskininfo, text="Regummerade")
-lblMaskinregummerade.grid(column=4, row=4, sticky = W, padx=(10,0))
+lblMaskinregummerade.grid(column = 3, row=16, sticky = W, padx=(50,0))
 cbMaskinregummerade = ttk.Checkbutton(frameMaskininfo)
 cbMaskinregummerade.state(['!alternate', '!selected', 'disabled'])
-cbMaskinregummerade.grid(column = 5, row = 4, sticky = W, padx=(5,0))
+cbMaskinregummerade.grid(column = 3, row = 16, sticky = E, padx=(0,15))
 
 lblMaskingasolanlaggning = Label(frameMaskininfo, text="Gasolanläggning")
-lblMaskingasolanlaggning.grid(column=4, row=5, sticky = W, padx=(10,0))
+lblMaskingasolanlaggning.grid(column=3, row=17, sticky = W, padx=(50,0))
 cbMaskingasolanlaggning = ttk.Checkbutton(frameMaskininfo)
 cbMaskingasolanlaggning.state(['!alternate', '!selected', 'disabled'])
-cbMaskingasolanlaggning.grid(column = 5, row = 5, sticky = W, padx=(5,0))
+cbMaskingasolanlaggning.grid(column = 3, row = 17, sticky = E, padx=(0,15))
 
 lblMaskinSaneringsvatska = Label(frameMaskininfo, text="Saneringsvätska")
-lblMaskinSaneringsvatska.grid(column=4, row=6, sticky = W, padx=(10,0))
+lblMaskinSaneringsvatska.grid(column=3, row=18, sticky = W, padx=(50,0))
 cbMaskinSaneringsvatska = ttk.Checkbutton(frameMaskininfo)
 cbMaskinSaneringsvatska.state(['!alternate', '!selected', 'disabled'])
-cbMaskinSaneringsvatska.grid(column = 5, row = 6, sticky = W, padx=(5,0))
+cbMaskinSaneringsvatska.grid(column = 3, row = 18, sticky = E, padx=(0,15))
 
-#Checkbox
 lblMaskininsattserlagd = Label(frameMaskininfo, text="Maskininsats erlagd")
-lblMaskininsattserlagd.grid(column=4, row=7, sticky = W, padx=(10,0))
+lblMaskininsattserlagd.grid(column=3, row=19, sticky = W, padx=(50,0))
 cbMaskininsatserlagd = ttk.Checkbutton(frameMaskininfo)
 cbMaskininsatserlagd.state(['!alternate', '!selected', 'disabled'])
-cbMaskininsatserlagd.grid(column = 5, row = 7, sticky = W, padx=(5,0))
+cbMaskininsatserlagd.grid(column = 3, row = 19, sticky = E, padx=(0,15))
 
-lblMaskinforare = Label(frameMaskininfo, text="Förare")
-lblMaskinforare.grid(column=4, row=8, sticky = W, padx=(10,0))
-entMaskinforare=Entry(frameMaskininfo, width = 32)
-entMaskinforare.grid(column=5, row=8, sticky=W, padx=(10,0))
+#Kolumn 3
+
+#Förare + referenser
+lblMaskinforare = Label(frameMaskininfoListboxes, text="Förare")
+lblMaskinforare.grid(column=0, row=0, sticky = W, padx=(10,0))
+entMaskinforare=Entry(frameMaskininfoListboxes, width = 32)
+entMaskinforare.grid(column=1, row=0, sticky=E, padx=(10,0), rowspan=1)
 entMaskinforare.config(state=DISABLED)
-
-lblMaskinreferens = Label(frameMaskininfo, text="Referensjobb")
-lblMaskinreferens.grid(column=4, row=9, sticky =W, padx=(10,0))
-lbMaskinreferens=Listbox(frameMaskininfo, width = 20, height=5)
-lbMaskinreferens.grid(column=4, row=10, sticky=NSEW, padx=(10,0), columnspan=2, rowspan=3)
-
-#Scrollbar
-ScbTxtMaskinreferens = Scrollbar(frameMaskininfo, orient="vertical")
-ScbTxtMaskinreferens.grid(row = 10, column = 6, sticky = W+N+S, rowspan = 3)
+lblMaskinreferens = Label(frameMaskininfoListboxes, text="Förarens referenser")
+lblMaskinreferens.grid(column=0, row=1, sticky =W, padx=(10,0), pady=(10,0))
+lbMaskinreferens=Listbox(frameMaskininfoListboxes, width = 20, height=4)
+lbMaskinreferens.grid(column=0, row=2, sticky=NSEW, padx=(10,0), columnspan=2, rowspan=3)
+ScbTxtMaskinreferens = Scrollbar(frameMaskininfoListboxes, orient="vertical")
+ScbTxtMaskinreferens.grid(row = 2, column = 2, sticky = W+N+S, rowspan = 3)
 ScbTxtMaskinreferens.config(command =LbMaskiner.yview)
-
 lbMaskinreferens.config(yscrollcommand=ScbTxtMaskinreferens.set)
 
-#Listbox
-lblMaskintillbehor = Label(frameMaskininfo, text="Tillbehör")
-lblMaskintillbehor.grid(column=4, row=14, sticky = W, padx=(10,0))
-lbMaskintillbehor=Listbox(frameMaskininfo)
-lbMaskintillbehor.grid(column=4, row=15, rowspan=6, columnspan=2,sticky=NSEW, padx=(10,0))
-
-#Scrollbar
-ScbLbMaskintillbehor = Scrollbar(frameMaskininfo, orient="vertical")
-ScbLbMaskintillbehor.grid(row = 15, column = 6, sticky = N+W+S, rowspan = 6)
+#Tillbehör
+lblMaskintillbehor = Label(frameMaskininfoListboxes, text="Tillbehör")
+lblMaskintillbehor.grid(column=0, row=8, sticky = W, padx=(10,0), pady=(20,0))
+lbMaskintillbehor=Listbox(frameMaskininfoListboxes)
+lbMaskintillbehor.grid(column=0, row=9, rowspan=6, columnspan=2,sticky=NSEW, padx=(10,0))
+ScbLbMaskintillbehor = Scrollbar(frameMaskininfoListboxes, orient="vertical")
+ScbLbMaskintillbehor.grid(row = 9, column = 2, sticky = N+W+S, rowspan = 6)
 ScbLbMaskintillbehor.config(command =lbMaskintillbehor.yview)
-
 lbMaskintillbehor.config(yscrollcommand=ScbLbMaskintillbehor.set)
 
-#Förare
+#Textruta, fält för Övrig Text
+lblOvrigtext = Label(frameMaskininfoListboxes, text="Övrig text")
+lblOvrigtext.grid(column=0, row=17, sticky=W, padx=(10,0), pady=(20,0))
+TxtOvrigtext = Text(frameMaskininfoListboxes, width = 20, height=11)
+TxtOvrigtext.grid(row=18, column=0, columnspan=2, rowspan=8, sticky=NSEW, padx=(10,0))
+TxtOvrigtext.config(state=DISABLED)
+ScbTxtOvrigText = Scrollbar(frameMaskininfoListboxes, orient="vertical")
+ScbTxtOvrigText.grid(row = 18, column = 2, sticky = N+W+S, rowspan = 8)
+ScbTxtOvrigText.config(command =TxtOvrigtext.yview)
+TxtOvrigtext.config(yscrollcommand=ScbTxtOvrigText.set)
+
+#Knapparna/Buttons i fliken Delägare
+
+
+btnMaskinpresentation=Button(frameMaskininfoButtons,text="Maskinpresentation", command = lambda: maskinpresentation(entMaskinnummermaskininfo.get()))
+btnMaskinpresentation.grid(column=0, row=0, sticky=W, pady=(20,2))
+
+btnMiljodeklaration=Button(frameMaskininfoButtons, text="Miljödeklaration", command = lambda: miljodeklaration(entMaskinnummermaskininfo.get()))
+btnMiljodeklaration.grid(column=1, row=0, sticky=W, padx=(10,10), pady=(20,2))
+
+btnHistorik=Button(frameMaskininfoButtons, text="Historik", command = lambda: historikFonster(entMaskinnummermaskininfo.get()))
+btnHistorik.grid(column=2, row=0, sticky=W, padx=(0,200), pady=(20,2))
+
+btnLaggtillmaskin=Button(frameMaskininfoButtons, text="Lägg till ny", command = lambda: nyMaskinFonster("Ny",entMaskinnummermaskininfo.get(), txtMedlemsnummerDelagare.get(1.0, END)))
+btnLaggtillmaskin.grid(column=3, row=0, sticky=E, pady=(20,2), padx=(240,0))
+
+btnAndramaskin=Button(frameMaskininfoButtons, text="Ändra", command = lambda: nyMaskinFonster(entMaskinnummermaskininfo.get(),entMaskinnummermaskininfo.get(), txtMedlemsnummerDelagare.get(1.0, END)))
+btnAndramaskin.grid(column=4, row=0, sticky=E, pady=(20,2), padx=(10,0))
+
+btnBytmaskin=Button(frameMaskininfoButtons, text="Byt maskin", command = lambda: nyMaskinFonster("Byt",entMaskinnummermaskininfo.get(), txtMedlemsnummerDelagare.get(1.0, END)))
+btnBytmaskin.grid(column=5, row=0, sticky=E, pady=(20,2), padx=(10,0))
+
+btnTabortmaskin=Button(frameMaskininfoButtons, text="Ta bort maskin", command  = lambda: taBortMaskin(entMaskinnummermaskininfo.get()))
+btnTabortmaskin.grid(column=6, row=0, sticky=E, pady=(20,2), padx=(10,10))
+
+
+
+#Förare-flik
 lblForare = Label(forare, text="Förare i systemet")
 lblForare.grid(column=0, row=0, sticky=N, pady=(10,0), padx=(10,0))
 lbForare = Listbox(forare, width=48, height=25, exportselection=0)
