@@ -142,7 +142,7 @@ def miljodeklaration(maskinnummer):
                c.drawString(375, 244, "Ja")
           elif maskinInfo[35] == 0:
                c.drawString(375, 244, "Nej")
-          c.drawString(470, 210, str(maskinInfo[38]))
+          c.drawString(470, 244, str(maskinInfo[38]))
           if maskinInfo[33] is not None:
                if len(maskinInfo[33]) > 25:
                     c.setFontSize(9)
@@ -284,8 +284,13 @@ def maskinpresentation(maskinnummer):
           c.drawString(142, 501, str(rad4))
           c.drawString(142, 481, str(rad5))
           if referenser is not None and len(referenser) != 0:
-               c.drawString(152, 112, str(referenser[0][0]))
-               c.drawString(152, 86, str(referenser[1][0]))
+               c.drawString(152, 156, str(referenser[0][0]))
+               if len(referenser) > 1:
+                    c.drawString(152, 130, str(referenser[1][0]))
+                    if len(referenser) > 2:
+                         c.drawString(152, 104, str(referenser[2][0]))
+                         if len(referenser) > 3:
+                              c.drawString(152, 78, str(referenser[3][0]))
 
           c.save() 
 
