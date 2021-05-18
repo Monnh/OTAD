@@ -2046,15 +2046,18 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           
           def taBortBild():
                global imgNyBild, tagitBortBild
-               
+               print(len(txtSokvag.get('1.0', 'end-1c')))
                if len(txtSokvag.get('1.0', 'end-1c')) > 0:
                     txtSokvag.delete('1.0', 'end')
                     txtSokvag.grid_remove()
                     img_NyBild.grid_remove()
                     imgNyBild = None
+                    btnNyBild.config(text="Byt bild")
                else:
                     tagitBortBild = True
                     img_Bild.grid_remove()
+                    btnTaBortBild.grid_remove()
+                    btnNyBild.config(text="Lägg till bild")
           
                #Bestämmer vilka funktioner som borde köras baserat på om man vill ändra/byta/lägga till                 
           def sparaMaskin(Typ):
@@ -2103,8 +2106,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               cursor.execute("DELETE FROM tschakt.Bilder WHERE MaskinID = ?",(maskinID))
                               taBortBilder(listaAvBilder)
                          db.commit()
-                         hamtaDelagarensMaskiner()
                          fileSave()
+                         hamtaDelagarensMaskiner()
                          maskinnummer = entNyMaskinnummermaskininfo.get()
                          fyllMaskinInfo("empty")
                          nyMaskin.destroy()
@@ -2264,22 +2267,63 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                if len(entMaskinarsmodell.get())== 0:
                     varArsModell = None
 
+               if cbMaskinnummer.instate(['selected']) == True:
 
-               maskinnummerFinns = False
-               valtMaskinNummer = entNyMaskinnummermaskininfo.get()
-               cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister')
-               result = cursor.fetchall()
+                    maskinnummerFinns = False
+                    valtMaskinNummer = entNyMaskinnummermaskininfo.get()
+                    cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister')
+                    result = cursor.fetchall()
 
-               for x in result:
-                    if valtMaskinNummer== str(x[0]):
-                         maskinnummerFinns = True
-                         break
+                    for x in result:
+                         if valtMaskinNummer== str(x[0]):
+                              maskinnummerFinns = True
+                              break
+                         else:
+                              pass
+                    #Kollar om maskinnummret existerar sedan innan.
+                    if maskinnummerFinns == False:
+                         cursor.execute("UPDATE tschakt.maskinregister SET Maskinnummer = ?, MarkeModell= ?, ME_Klass= ?, Motorfabrikat= ?, Motortyp= ?, Motorolja= ?, Vaxelladsolja= ?, Hydraulolja= ?, Kylvatska= ?, Motoreffekt= ?, Kylmedia= ?, Bullernivaute= ?, Bullernivainne= ?, Smorjfett= ?, Batterityp= ?, Arsbelopp= ?, Miljostatus= ?, Arsmodell= ?, Registreringsnummer= ?, Maskintyp= ?, Motorvolymolja= ?, Vaxelladavolym= ?, Hydraulvolym= ?, Kylvatskavolym= ?, Ovrig_text= ?, Bransle= ?, Dackfabrikat= ?, Dimension= ?, Batteriantal= ? WHERE Maskinnummer = ?", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), entMaskinBatteriantal.get(), Typ)) 
+                         if len(deMaskinperiod1.get()) != 0 or len(deMaskinperiod2.get()) != 0:
+                              cursor.execute("UPDATE tschakt.maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
+                              cursor.execute("UPDATE tschakt.maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
+                         else:
+                              cursor.execute("UPDATE tschakt.maskinregister SET Period_start = Null WHERE Maskinnummer = " + Typ +";")              
+                              cursor.execute("UPDATE tschakt.maskinregister SET Period_slut = Null WHERE Maskinnummer = " + Typ +";")
+
+                         for x in tillbehorAttTaBort:
+                              cursor.execute("SELECT MaskinID FROM tschakt.maskinregister WHERE Maskinnummer = ?", (Typ))
+                              maskinID = cursor.fetchone()
+                              cursor.execute("DELETE tillbehor FROM tschakt.Tillbehor WHERE MaskinID = " + str(maskinID[0]) +" AND Tillbehor = '" + x +"';")                   
+                         for x in tillbehorAttLaggaTill:
+                              cursor.execute("SELECT MaskinID FROM tschakt.maskinregister WHERE Maskinnummer = ?", (Typ))
+                              maskinID = cursor.fetchone()
+                              if len(x) != 0:
+                                   cursor.execute("INSERT INTO tschakt.tillbehor (Tillbehor, maskinID) values (?, ?)", (x, str(maskinID[0])))
+                         
+                         if filePath is not None:
+                              try:
+                                   cursor.execute("SELECT maskinID from tschakt.maskinregister WHERE maskinnummer = ?", (str(maskinnummer)))
+                                   maskinID = cursor.fetchone()
+                                   cursor.execute("SELECT maskinID from tschakt.bilder")
+                                   allaMaskinID = cursor.fetchall()
+                                   harRedanBild = False
+                                   for x in allaMaskinID:
+                                        if x[0] == maskinID[0]:
+                                             harRedanBild = True
+                                   
+                                   if harRedanBild == False:
+                                        cursor.execute("insert into tschakt.bilder (sokvag, maskinID) values ('Bilder/"+str(maskinnummer)+filePath+"', '"+str(maskinID[0])+"');")
+                                   else:
+                                        cursor.execute("update tschakt.bilder set sokvag = 'Bilder/"+str(maskinnummer)+""+filePath+"' where maskinID = '"+str(maskinID[0])+"'")
+                              except Exception:
+                                   traceback.print_exc()
                     else:
-                         pass
-               #Kollar om maskinnummret existerar sedan innan.
-               if maskinnummerFinns == False:
+                         messagebox.showerror(title="Upptaget", message="Maskinnumret är upptaget, var god välj ett.")
+                         raise ValueError("Inkorrekt")
+                    
+               else:
+
                     cursor.execute("UPDATE tschakt.maskinregister SET Maskinnummer = ?, MarkeModell= ?, ME_Klass= ?, Motorfabrikat= ?, Motortyp= ?, Motorolja= ?, Vaxelladsolja= ?, Hydraulolja= ?, Kylvatska= ?, Motoreffekt= ?, Kylmedia= ?, Bullernivaute= ?, Bullernivainne= ?, Smorjfett= ?, Batterityp= ?, Arsbelopp= ?, Miljostatus= ?, Arsmodell= ?, Registreringsnummer= ?, Maskintyp= ?, Motorvolymolja= ?, Vaxelladavolym= ?, Hydraulvolym= ?, Kylvatskavolym= ?, Ovrig_text= ?, Bransle= ?, Dackfabrikat= ?, Dimension= ?, Batteriantal= ? WHERE Maskinnummer = ?", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), entMaskinBatteriantal.get(), Typ)) 
-                    #cursor.execute("UPDATE maskinregister SET Maskinnummer = '" + entNyMaskinnummermaskininfo.get() + "', MarkeModell = '" + entMaskinbeteckning.get() + "', ME_Klass = '" + varMeKlass + "', Motorfabrikat = '" + entMaskinmotorfabrikat.get() + "', Motortyp = '" + entMaskinmotortyp.get() + "', Motorolja = '" + entMaskinmotor.get() + "', Vaxelladsolja = '" + entMaskinvaxellada.get() + "', Hydraulolja = '" + entMaskinhydraulsystem.get() + "', Kylvatska = '" + entMaskinkylvatska.get() + "', Motoreffekt = '" + varMotoreffekt + "', Kylmedia = '" + entMaskinkylmedia.get() + "', Bullernivaute = '" + entMaskinbullernivautv.get() + "', Bullernivainne = '" + entMaskinbullernivainv.get() + "', Smorjfett = '" + entMaskinsmorjfett.get() + "', Batterityp = '" + entMaskinBatterityp.get() + "', Arsbelopp = '" + varArsbelopp + "', Miljostatus = '" + entMaskinmiljostatus.get() + "', Arsmodell = '" + varArsModell + "', Registreringsnummer = '" + entMaskinregistreringsnummer.get() + "', Maskintyp = '" + entMaskintyp.get() + "', Motorvolymolja = '" + entMaskinmotoroljevolym.get() + "', Vaxelladavolym = '" + entMaskinvaxelladevolym.get() + "', Hydraulvolym = '" + entMaskinhydraulsystemvolym.get() + "', Kylvatskavolym = '" + entMaskinkylvatskavolym.get() + "', Ovrig_text = '" + TxtOvrigtext.get('1.0','end') + "', Bransle = '" + entMaskinbransle.get() + "', Dackfabrikat = '" + entMaskindackfabrikat.get() + "', Dimension = '" + entMaskindimension.get() + "', Batteriantal = '" + entMaskinbatteriAntal.get() + "' WHERE Maskinnummer = " + Typ +";")            
                     if len(deMaskinperiod1.get()) != 0 or len(deMaskinperiod2.get()) != 0:
                          cursor.execute("UPDATE tschakt.maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
                          cursor.execute("UPDATE tschakt.maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
@@ -2314,9 +2358,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                                    cursor.execute("update tschakt.bilder set sokvag = 'Bilder/"+str(maskinnummer)+""+filePath+"' where maskinID = '"+str(maskinID[0])+"'")
                          except Exception:
                               traceback.print_exc()
-               else:
-                    messagebox.showerror(title="Upptaget", message="Maskinnumret är upptaget, var god välj ett.")
-                    raise ValueError("Inkorrekt")
 
           nyMaskin = Toplevel(root)
 
@@ -2328,22 +2369,11 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           else:
                nyMaskin.title("Ändra maskin")
 
+
           nyMaskin.geometry("1000x680")
 
-          # if Typ=="Ny":
-          #      lblMaskinnummerVal = Label(nyMaskin, text = "Autogen eller ej?")
-          #      lblMaskinnummerVal.grid(column = 1, row = 0, sticky = E, padx=(0,23))
-          #      cbMaskinnummer = ttk.Checkbutton(nyMaskin, command = lambda: autogenEllerEj())
-          #      cbMaskinnummer.state(['!alternate', '!selected', '!disabled'])
-          #      cbMaskinnummer.grid(column = 1, row = 0, sticky = E, padx=(5,0))
-
-          #      def autogenEllerEj():
-          #           if cbMaskinnummer.instate(['selected']) == True:
-          #                entNyMaskinnummermaskininfo.config(state=DISABLED)
-          #           else:
-          #                entNyMaskinnummermaskininfo.config(state=NORMAL)
-          # else:
-          #      pass
+          
+               
 
           #Skapar fälten för att kunna skriva i den nya informationen.
           #Kolumn 1
@@ -2352,6 +2382,19 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           lblMaskinnummermaskininfo.grid(column = 0, row = 0, sticky = W, padx=(10,0), pady=(5,0))
           entNyMaskinnummermaskininfo = Entry(nyMaskin, width = 5 ,validate="key", validatecommand=(validera, "%P"))
           entNyMaskinnummermaskininfo.grid(column =1, row =0, sticky = W, padx=(10,0), pady=(5,0))
+
+          if Typ != "Ny" and Typ != "Byt":
+               lblMaskinnummerVal = Label(nyMaskin, text = "Ändra maskinnummer")
+               lblMaskinnummerVal.grid(column = 1, row = 0, sticky = E, padx=(0,23))
+               cbMaskinnummer = ttk.Checkbutton(nyMaskin, command = lambda: andraMaskinnummer())
+               cbMaskinnummer.state(['!alternate', '!selected', '!disabled'])
+               cbMaskinnummer.grid(column = 1, row = 0, sticky = E, padx=(5,0))
+
+               def andraMaskinnummer():
+                    if cbMaskinnummer.instate(['selected']) == True:
+                         entNyMaskinnummermaskininfo.config(state=NORMAL)
+                    else:
+                         entNyMaskinnummermaskininfo.config(state=DISABLED)
 
           lblMaskinbeteckning = Label(nyMaskin, text="Beteckning")
           lblMaskinbeteckning.grid(column = 0, row=1, sticky = W, padx=(10,0), pady=(5,0))
@@ -2616,7 +2659,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
 
           #Bild
           img_Bild = Label(nyMaskin) 
-          img_Bild.grid(row=15, column=3, rowspan=6)
+          img_Bild.grid(row=15, column=3, rowspan=6, sticky = W)
 
           txtSokvag = Text(nyMaskin, width = 20, height=0.1)
           txtSokvag.grid(column = 3, row = 14, padx=(10,0), sticky=W+E)
@@ -2643,14 +2686,17 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                img_NyBild.config(image=img3) 
                img_NyBild.grid()
                btnTaBortBild.grid()
+               btnNyBild.config(text="Byt bild")
 
           #Kollar om det finns en bild och isåfall sparas den i korrekt mapp.
           def fileSave():
                global imgNyBild
 
                if imgNyBild is not None:
-                    imgNyBild.save('Bilder/'+str(maskinnummer)+filePath)
-
+                    try:
+                         imgNyBild.save('Bilder/'+str(maskinnummer)+filePath)
+                    except Exception:
+                         traceback.print_exc()
           
                
           btnNyBild = Button(nyMaskin, text="Lägg till bild", command= fileDialog)
@@ -2708,6 +2754,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     entNyMaskinnummermaskininfo.config(state=NORMAL)
                     entNyMaskinnummermaskininfo.delete(0, 'end')
                     entNyMaskinnummermaskininfo.insert(0, maskinInfo[0])
+                    entNyMaskinnummermaskininfo.config(state=DISABLED)
                except:
                     pass
 
@@ -2783,6 +2830,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     img_Bild.config(image = img2)
                     img_Bild.image=img2
                     btnTaBortBild.grid()
+                    btnNyBild.config(text="Byt bild")
 
                except:
                     img = Image.open("placeholder.png")  
@@ -2790,6 +2838,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     img2 = ImageTk.PhotoImage(img)
                     img_Bild.config(image = img2)
                     img_Bild.image=img2
+                    btnNyBild.config(text="Lägg till bild")
 
                try:
                     entMaskinmotoreffekt.config(state=NORMAL)
@@ -4100,10 +4149,7 @@ def readAFile():
 #      print("Databasuppkopplingen misslyckades!")
 #      traceback.print_exc()
 
-db = pyodbc.connect('Driver={SQL Server};'
-                      'Server=LAPTOP-JA972T49\SQLEXPRESS;'
-                      'Database=tschakt;'
-                      'Trusted_Connection=yes;')
+db = pyodbc.connect('DSN=Tschakt2;Trusted_Connection=yes;')
 
 cursor = db.cursor()
 
@@ -4139,13 +4185,13 @@ validera = root.register(valideraSiffror)
 
 #Skapar de widgets vi har på Home-fliken
 
-BtnMaskinnehav = Button(home, text="Maskininnehav", command = lambda: maskininnehav(medlemsnummer))
+BtnMaskinnehav = Button(home, text="Maskininnehav för vald delägare", command = lambda: maskininnehav(medlemsnummer))
 BtnMaskinnehav.grid(row=3, column = 5)
 
-BtnForsakringFraga = Button(home, text="Försäkring (fråga)", command = lambda: forsakringPerDelagareFraga(medlemsnummer))
+BtnForsakringFraga = Button(home, text="Försäkringar för vald delägare", command = lambda: forsakringPerDelagareFraga(medlemsnummer))
 BtnForsakringFraga.grid(row=3, column=5, pady=(100,0))
 
-BtnForsakringLista = Button(home, text="Försäkringar", command = lambda: forsakringPerDelagare())
+BtnForsakringLista = Button(home, text="Alla försäkrade maskiner", command = lambda: forsakringPerDelagare())
 BtnForsakringLista.grid(row=3, column=5, pady=(200,0))
 
 BtnMaskinerAndradeBelopp = Button(home, text="Maskiner med\nändrade belopp", command = lambda: maskinerMedAndradeBelopp())
