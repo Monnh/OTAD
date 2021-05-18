@@ -2072,6 +2072,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               maskinnummer = entNyMaskinnummermaskininfo.get()                       
                               fyllMaskinInfo("empty")
                               nyMaskin.destroy()
+                              hamtaForareMaskin()
                          except Exception:
                               db.rollback()
                               traceback.print_exc()
@@ -2085,6 +2086,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          fyllMaskinInfo("empty")
                          hamtaDelagarensMaskiner()                                  
                          nyMaskin.destroy()
+                         hamtaForareMaskin()
                     except Exception:
                          db.rollback()
                          nyMaskin.lift()
@@ -2105,6 +2107,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          fyllMaskinInfo("empty")
                          nyMaskin.destroy()
                          tagitBortBild = False
+                         hamtaForareMaskin()
                     except Exception:
                          db.rollback()
                          traceback.print_exc()
@@ -3550,11 +3553,6 @@ def hamtaDelagarensMaskiner():
           LbDelagaresMaskiner.insert("end", s)
 
 
-     # if len(maskiner) != 0:
-     #      LbDelagaresMaskiner.selection_clear(0, "end")     
-     #      for x in maskiner:
-     #           LbDelagaresMaskiner.insert("end", x[0])
-
      LbDelagaresMaskiner.selection_set(0)
      fyllMaskinInfo("sokDelagareDelagare")
 #Hämtar delägare ifrån Delägare-flikens sökfunktion
@@ -3614,7 +3612,7 @@ def historikFonster(maskinnummer):
                     cursor.execute("DELETE FROM tschakt.historik WHERE historikid = '" + historikid + "'")
                     db.commit()
                except Exception:
-                    traceback.print_exc()
+                    messagebox.showerror("Fel", "Inget historikinlägg valt.")
                     db.rollback()
           
           LbHistorik = ttk.Treeview(historikFonster)
@@ -4209,6 +4207,7 @@ txtMedlemsnummerDelagare.config(state=DISABLED)
 
 entSokMedlem = Entry(frameDelagare, width = 5, validate="key", validatecommand=(validera, "%P"))
 entSokMedlem.grid(row = 1, column =1, sticky=E, padx=(40, 50))
+entSokMedlem.bind('<Return>', lambda x=None: hamtaDelagare(entSokMedlem.get()))
 btnSokMedlem = Button(frameDelagare, text = "Sök", command= lambda: hamtaDelagare(entSokMedlem.get()))
 btnSokMedlem.grid(row =1, column = 1, sticky=E, padx=(0,10))
 
