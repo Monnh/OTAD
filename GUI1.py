@@ -3443,6 +3443,12 @@ def tomMaskinInfo():
           TxtOvrigtext.delete('1.0', 'end')
           TxtOvrigtext.config(state=DISABLED)
 
+          img = Image.open("placeholder.png")  
+          img = img.resize((260,200), Image. ANTIALIAS)
+          img2 = ImageTk.PhotoImage(img)
+          img_label.config(image = img2)
+          img_label.image=img2
+
 
 #Tömmer alla entrys/texts etc gällande Delägare
 def tomDelagareInfo():
@@ -4071,7 +4077,7 @@ def readAFile():
 #      traceback.print_exc()
 
 db = pyodbc.connect('Driver={SQL Server};'
-                      'Server=LAPTOP-JA972T49\SQLEXPRESS;'
+                      'Server=DESKTOP-25OMDE7\SQLEXPRESS;'
                       'Database=tschakt;'
                       'Trusted_Connection=yes;')
 
