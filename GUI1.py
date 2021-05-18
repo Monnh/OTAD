@@ -3438,6 +3438,12 @@ def tomMaskinInfo():
           lbMaskinreferens.delete(0, "end")
           lbMaskintillbehor.delete(0, "end")
           LbDelagaresMaskiner.delete(0, "end")
+
+          TxtOvrigtext.config(state=NORMAL)
+          TxtOvrigtext.delete('1.0', 'end')
+          TxtOvrigtext.config(state=DISABLED)
+
+
 #Tömmer alla entrys/texts etc gällande Delägare
 def tomDelagareInfo():
           
