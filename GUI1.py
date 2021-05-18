@@ -3213,6 +3213,7 @@ def fyllDelagarInfo(medlemsnummer):
      delagarInfo = cursor.fetchone()
      if delagarInfo is None:
           messagebox.showerror("Fel", "Def finns ingen delägare med det numret.")
+          raise ValueError("Finns ingen delägare med det här numret.")
      else:
           delagarInfo = list(delagarInfo)
 
@@ -3571,9 +3572,11 @@ def hamtaDelagare(medlemsnr):
           messagebox.showerror("Fel", "Fyll i ett medlemsnummer.") 
      else:
           medlemsnummer = medlemsnr
-
-          fyllDelagarInfo(medlemsnummer)
-          hamtaDelagarensMaskiner()
+          try:
+               fyllDelagarInfo(medlemsnummer)
+               hamtaDelagarensMaskiner()
+          except:
+               pass
 #Skapar ett fönster med historiken kopplad till en maskin
 def historikFonster(maskinnummer):
 
