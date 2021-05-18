@@ -232,7 +232,7 @@ def maskinpresentation(maskinnummer):
           y=1
 
           if bild is not None:
-               c.drawImage(bild[0], 72, 134, 450, 340)
+               c.drawImage(bild[0], 72, 175, 445, 300)
           if maskinInfo[0] is not None:
                c.drawString(133, 710, str(maskinInfo[0])) 
           if maskinInfo[1] is not None:
@@ -2111,7 +2111,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     except Exception:
                          db.rollback()
                          traceback.print_exc()
-                         print("Kunde inte ändra maskin")
+                         
 
 
      
@@ -2657,7 +2657,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           def fileSave():
                global imgNyBild
 
-               print("Maskinnummret är: "+str(maskinnummer))
                if imgNyBild is not None:
                     imgNyBild.save('Bilder/'+str(maskinnummer)+filePath)
 
@@ -2787,7 +2786,6 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                try:
                     cursor.execute("SELECT TOP 1 Sokvag FROM tschakt.bilder WHERE maskinID = " + str(maskinInfo[43]) + " order by bildid desc;")
                     img = cursor.fetchone()
-                    print(img[0])
                     img = Image.open(img[0])  
                     img = img.resize((150,145), Image. ANTIALIAS)
                     img2 = ImageTk.PhotoImage(img)
@@ -3522,11 +3520,10 @@ def taBortBilder(listaAvBilder):
 
      if len(listaAvBilder) != 0:
           for x in listaAvBilder:
-               print(x[0])
                if os.path.exists(x[0]):
                     os.remove(x[0])
                else:
-                    print("Finns inga bilder")    
+                    print("Finns inga bilder")
 #Hämtar maskinerna som tillhör en viss Delägare och fyller LbDelagaresMaskiner med dem.
 def hamtaDelagarensMaskiner():
      global medlemsnummer
@@ -3880,7 +3877,6 @@ def bytForsakring():
      nyForsakring=askstring("Försakring","Namnet på nya försäkringsgivaren.")
      if len(nyForsakring)!=0:
 
-          print(nyForsakring)
           if nyForsakring is not None:
                try:
                     cursor.execute("update tschakt.forsakringsgivare set forsakringsgivare = ? where idforsakringsgivare = 1", (nyForsakring,))
@@ -4078,7 +4074,7 @@ def readAFile():
 #      traceback.print_exc()
 
 db = pyodbc.connect('Driver={SQL Server};'
-                      'Server=DESKTOP-25OMDE7\SQLEXPRESS;'
+                      'Server=LAPTOP-JA972T49\SQLEXPRESS;'
                       'Database=tschakt;'
                       'Trusted_Connection=yes;')
 
