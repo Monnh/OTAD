@@ -231,8 +231,12 @@ def maskinpresentation(maskinnummer):
           rad5=""
           y=1
 
-          if bild is not None:
-               c.drawImage(bild[0], 72, 175, 445, 300)
+          try:
+               if bild is not None:
+                    c.drawImage(bild[0], 72, 175, 445, 300)
+          except:
+               pass
+          
           if maskinInfo[0] is not None:
                c.drawString(133, 710, str(maskinInfo[0])) 
           if maskinInfo[1] is not None:
