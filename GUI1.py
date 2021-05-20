@@ -157,7 +157,7 @@ def miljodeklaration(maskinnummer):
           c.drawString(470, 210, str(maskinInfo[39]))
 
           #Bränsle
-          c.drawString(50, 155, str(maskinInfo[23]))
+          c.drawString(50, 150, str(maskinInfo[23]))
 
           #Försärking
           if maskinInfo[3] == 1:
