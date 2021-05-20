@@ -2075,7 +2075,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               sparaHistorik(maskinnummer)                       
                               andraMaskin(maskinnummer, True)
                               db.commit()
-                              fileSave()
+                              sparaFil()
                               maskinnummer = entNyMaskinnummermaskininfo.get()                       
                               fyllMaskinInfo("empty")
                               nyMaskin.destroy()
@@ -2089,7 +2089,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     try:
                          skapaNyMaskin()
                          db.commit()
-                         fileSave()
+                         sparaFil()
                          fyllMaskinInfo("empty")
                          hamtaDelagarensMaskiner()                                  
                          nyMaskin.destroy()
@@ -2110,7 +2110,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               cursor.execute("DELETE FROM tschakt.Bilder WHERE MaskinID = ?",(maskinID))
                               taBortBilder(listaAvBilder)
                          db.commit()
-                         fileSave()
+                         sparaFil()
                          hamtaDelagarensMaskiner()
                          maskinnummer = entNyMaskinnummermaskininfo.get()
                          fyllMaskinInfo("empty")
@@ -2674,10 +2674,10 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           img_NyBild.grid_remove()          
 
           #Skapar fram en dialogruta där man får välja vilken bild det är man ska spara.
-          def fileDialog():
+          def filVal():
                global filePath, img3, imgNyBild
 
-               filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg"),("all files","*.*")) )
+               filename = filedialog.askopenfilename(initialdir =  "/", title = "Välj en fil", filetype = (("jpeg files","*.jpg *.png *.gif"),("all files","*.*")) )
                sparSokVag = filename.rsplit(".", 1)
                filePath= "." + sparSokVag[1]
                txtSokvag.grid()
@@ -2693,7 +2693,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                btnNyBild.config(text="Byt bild")
 
           #Kollar om det finns en bild och isåfall sparas den i korrekt mapp.
-          def fileSave():
+          def sparaFil():
                global imgNyBild
 
                if imgNyBild is not None:
@@ -2703,7 +2703,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          traceback.print_exc()
           
                
-          btnNyBild = Button(nyMaskin, text="Lägg till bild", command= fileDialog)
+          btnNyBild = Button(nyMaskin, text="Lägg till bild", command= filVal)
           btnNyBild.grid(column=3, row=21, sticky=W)
 
           btnTaBortBild = Button(nyMaskin, text="Ta bort bild", command= taBortBild)
@@ -3487,14 +3487,14 @@ def tomMaskinInfo():
           TxtOvrigtext.config(state=NORMAL)
           TxtOvrigtext.delete('1.0', 'end')
           TxtOvrigtext.config(state=DISABLED)
-
-          img = Image.open("placeholder.png")  
-          img = img.resize((260,200), Image. ANTIALIAS)
-          img2 = ImageTk.PhotoImage(img)
-          img_label.config(image = img2)
-          img_label.image=img2
-
-
+          try:
+               img = Image.open("placeholder.png")  
+               img = img.resize((260,200), Image. ANTIALIAS)
+               img2 = ImageTk.PhotoImage(img)
+               img_label.config(image = img2)
+               img_label.image=img2
+          except:
+               pass
 #Tömmer alla entrys/texts etc gällande Delägare
 def tomDelagareInfo():
           
@@ -4066,9 +4066,6 @@ def kopplaMaskin():
                pass
      else:
           queryKopplaMaskin()
-
-          
-
 #Kopplar isär en förare och en maskin.
 def kopplaBortMaskin():
      if len(lbForare.curselection()) == 0:
@@ -4125,11 +4122,11 @@ def valideraSiffror(input):
      else:
           return False
 #Läser in lösenord till SQL, används ej
-def readAFile():
-     global filelist
-     file = open("test.txt", "r")
-     filelist = file.readlines()
-     file.close()
+# def readAFile():
+#      global filelist
+#      file = open("test.txt", "r")
+#      filelist = file.readlines()
+#      file.close()
 
 
 db = pyodbc.connect('DSN=Tschakt2;Trusted_Connection=yes;')
@@ -4251,12 +4248,14 @@ ScbLbDelagaresMaskiner.config(command =LbDelagaresMaskiner.yview)
 LbDelagaresMaskiner.config(yscrollcommand=ScbLbDelagaresMaskiner.set)
 
 #Bilden kopplad till maskinen
-img = Image.open("placeholder.png")  
-img = img.resize((260,200), Image. ANTIALIAS)
-img4 = ImageTk.PhotoImage(img)
-img_label = Label(frameBild, image=img4)
-img_label.grid(row=0, column=0, sticky = NW)
-
+try:
+     img = Image.open("placeholder.png")  
+     img = img.resize((260,200), Image. ANTIALIAS)
+     img4 = ImageTk.PhotoImage(img)
+     img_label = Label(frameBild, image=img4)
+     img_label.grid(row=0, column=0, sticky = NW)
+except:
+     pass
 
 #Delägarens data
 
