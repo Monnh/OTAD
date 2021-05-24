@@ -2613,7 +2613,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           cbMaskingasolanlaggning.state(['!alternate', '!selected', '!disabled'])
           cbMaskingasolanlaggning.grid(column = 1, row = 18, sticky = E, padx=(0,15))
 
-          lblMaskinSaneringsvatska = Label(nyMaskin, text="Saneringsvätska")
+          lblMaskinSaneringsvatska = Label(nyMaskin, text="Saneringsväska")
           lblMaskinSaneringsvatska.grid(column=1, row=19, sticky = W, padx=(50,0))
           cbMaskinSaneringsvatska = ttk.Checkbutton(nyMaskin)
           cbMaskinSaneringsvatska.state(['!alternate', '!selected', '!disabled'])
@@ -4566,7 +4566,7 @@ cbMaskingasolanlaggning = ttk.Checkbutton(frameMaskininfo)
 cbMaskingasolanlaggning.state(['!alternate', '!selected', 'disabled'])
 cbMaskingasolanlaggning.grid(column = 3, row = 17, sticky = E, padx=(0,15))
 
-lblMaskinSaneringsvatska = Label(frameMaskininfo, text="Saneringsvätska")
+lblMaskinSaneringsvatska = Label(frameMaskininfo, text="Saneringsväska")
 lblMaskinSaneringsvatska.grid(column=3, row=18, sticky = W, padx=(50,0))
 cbMaskinSaneringsvatska = ttk.Checkbutton(frameMaskininfo)
 cbMaskinSaneringsvatska.state(['!alternate', '!selected', 'disabled'])
