@@ -7,7 +7,6 @@ import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import PIL
-import mysql.connector
 import pyodbc
 from tkinter.simpledialog import askstring
 from tkinter import filedialog
@@ -592,7 +591,7 @@ def maskininnehav(medlemsnummer):
           
           os.startfile("Maskininnehav\Maskininnehav - " + medlemsnummer + ".pdf" )
 #Funktion som skapar PDF-rapporten försäkring per delägare (fråga)
-def forsakringPerDelagareFraga(medlemsnummer):
+def forsakringarForValdDelagare(medlemsnummer):
 
      if len(medlemsnummer) == 0:
           messagebox.showerror("Fel", "Ingen delägare är vald.")
@@ -612,368 +611,373 @@ def forsakringPerDelagareFraga(medlemsnummer):
           cursor.execute("SELECT arspremie FROM tschakt.forsakringsgivare WHERE idforsakringsgivare = 1")
           arspremie = cursor.fetchone()
 
-          packet = io.BytesIO()
-          c = canvas.Canvas(packet, pagesize=letter)
-          c.setFontSize(10)
+          #Kollar om delägaren har försäkrade maskiner, avbryter om det inte finns några
+          if not maskiner:
+               messagebox.showerror("Fel", "Delägaren har inga försäkrade maskiner.")
 
-          dPacket = io.BytesIO()
-          d = canvas.Canvas(dPacket, pagesize=letter)
-          d.setFontSize(10)
+          else:
+               packet = io.BytesIO()
+               c = canvas.Canvas(packet, pagesize=letter)
+               c.setFontSize(10)
 
-          #Datum
-          c.drawString(490, 800, str(datetime.date(datetime.now())))
-
-          #Företag
-          c.setFontSize(12)
-          c.drawString(40, 645, str(foretag[0]))
-          if foretag[1] is not None:
-               c.drawString(247, 645, str(foretag[1]))
-          if foretag[1] is not None:
-               c.drawString(348, 645, str(foretag[2]))
-          c.drawString(510, 645, str(medlemsnummer))
-          c.setFontSize(10)
-
-          #Maskiner
-          y=580
-          dy=580
-          counter = 0
-          dCounter = 0
-          belopp = 0
-          dBelopp = 0
-          pages = 1
-          dPages = 0
-
-          for i in maskiner:
-
-               if i[4] == arspremie[0]:
-
-                    if counter < 22: 
-                         c.drawString(40, y, str(forsakringsgivare[0]))
-                         c.setFontSize(7)
-                         c.drawString(140, y, str(i[2]))
-                         c.drawString(174, y, " - ")
-                         c.drawString(180, y, str(i[3]))
-                         c.setFontSize(10)
-                         c.drawString(240, y, str(i[0]))
-                         if i[1] is not None:
-                              if len(i[1]) > 22:
-                                   c.drawString(285, y, str(i[1]))
-                              else:
-                                   c.drawString(300, y, str(i[1]))
-                         if i[5] is not None:
-                              if len(i[5]) > 10:
-                                   c.setFontSize(8)
-                                   c.drawString(430, y, str(i[5]))
-                                   c.setFontSize(10)
-                              else:
-                                   c.drawString(430, y, str(i[5]))
-                         c.drawString(530, y, str(i[4]))
-                         y-=25
-
-                    elif counter == 22:
-                         if counter != len(maskiner):
-                              c.showPage()
-                              c.setFontSize(10)
-                              c.drawString(490, 800, str(datetime.date(datetime.now())))
-                              c.setFontSize(12)
-                              c.drawString(40, 645, str(foretag[0]))
-                              if foretag[1] is not None:
-                                   c.drawString(247, 645, str(foretag[1]))
-                              if foretag[1] is not None:
-                                   c.drawString(348, 645, str(foretag[2]))
-                              c.drawString(510, 645, str(medlemsnummer))
-                              c.setFontSize(10)
-                              y = 580
-                              pages += 1
-
-                    elif counter > 22 and counter < 44:
-                         c.drawString(40, y, str(forsakringsgivare[0]))
-                         c.setFontSize(7)
-                         c.drawString(140, y, str(i[2]))
-                         c.drawString(174, y, " - ")
-                         c.drawString(180, y, str(i[3]))
-                         c.setFontSize(10)
-                         c.drawString(240, y, str(i[0]))
-                         if i[1] is not None:
-                              if len(i[1]) > 22:
-                                   c.drawString(285, y, str(i[1]))
-                              else:
-                                   c.drawString(300, y, str(i[1]))
-                         if i[5] is not None:
-                              if len(i[5]) > 10:
-                                   c.setFontSize(8)
-                                   c.drawString(430, y, str(i[5]))
-                                   c.setFontSize(10)
-                              else:
-                                   c.drawString(430, y, str(i[5]))
-                         c.drawString(530, y, str(i[4]))
-                         y-=25
-
-                    elif counter == 44:
-                         if counter != len(maskiner):
-                              c.showPage()
-                              c.setFontSize(10)
-                              c.drawString(490, 800, str(datetime.date(datetime.now())))
-                              c.setFontSize(12)
-                              c.drawString(40, 645, str(foretag[0]))
-                              if foretag[1] is not None:
-                                   c.drawString(247, 645, str(foretag[1]))
-                              if foretag[1] is not None:
-                                   c.drawString(348, 645, str(foretag[2]))
-                              c.drawString(510, 645, str(medlemsnummer))
-                              c.setFontSize(10)
-                              y = 580
-                              pages += 1
-
-                    elif counter > 44 and counter < 66:
-                         c.drawString(40, y, str(forsakringsgivare[0]))
-                         c.setFontSize(7)
-                         c.drawString(140, y, str(i[2]))
-                         c.drawString(174, y, " - ")
-                         c.drawString(180, y, str(i[3]))
-                         c.setFontSize(10)
-                         c.drawString(240, y, str(i[0]))
-                         if i[1] is not None:
-                              if len(i[1]) > 22:
-                                   c.drawString(285, y, str(i[1]))
-                              else:
-                                   c.drawString(300, y, str(i[1]))
-                         if i[5] is not None:
-                              if len(i[5]) > 10:
-                                   c.setFontSize(8)
-                                   c.drawString(430, y, str(i[5]))
-                                   c.setFontSize(10)
-                              else:
-                                   c.drawString(430, y, str(i[5]))
-                         c.drawString(530, y, str(i[4]))
-                         y-=25
-
-                    elif counter == 66:
-                         if counter != len(maskiner):
-                              c.showPage()
-                              c.setFontSize(10)
-                              c.drawString(490, 800, str(datetime.date(datetime.now())))
-                              c.setFontSize(12)
-                              c.drawString(40, 645, str(foretag[0]))
-                              if foretag[1] is not None:
-                                   c.drawString(247, 645, str(foretag[1]))
-                              if foretag[1] is not None:
-                                   c.drawString(348, 645, str(foretag[2]))
-                              c.drawString(510, 645, str(medlemsnummer))
-                              c.setFontSize(10)
-                              y = 580
-                              pages += 1
-
-                    elif counter > 66 and counter < 88:
-                         c.drawString(40, y, str(forsakringsgivare[0]))
-                         c.setFontSize(7)
-                         c.drawString(140, y, str(i[2]))
-                         c.drawString(174, y, " - ")
-                         c.drawString(180, y, str(i[3]))
-                         c.setFontSize(10)
-                         c.drawString(240, y, str(i[0]))
-                         if i[1] is not None:
-                              if len(i[1]) > 22:
-                                   c.drawString(285, y, str(i[1]))
-                              else:
-                                   c.drawString(300, y, str(i[1]))
-                         if i[5] is not None:
-                              if len(i[5]) > 10:
-                                   c.setFontSize(8)
-                                   c.drawString(430, y, str(i[5]))
-                                   c.setFontSize(10)
-                              else:
-                                   c.drawString(430, y, str(i[5]))
-                         c.drawString(530, y, str(i[4]))
-                         y-=25
-                         
-                    elif counter == 88:
-                         if counter != len(maskiner):
-                              c.showPage()
-                              c.setFontSize(10)
-                              c.drawString(490, 800, str(datetime.date(datetime.now())))
-                              c.setFontSize(12)
-                              c.drawString(40, 645, str(foretag[0]))
-                              if foretag[1] is not None:
-                                   c.drawString(247, 645, str(foretag[1]))
-                              if foretag[1] is not None:
-                                   c.drawString(348, 645, str(foretag[2]))
-                              c.drawString(510, 645, str(medlemsnummer))
-                              c.setFontSize(10)
-                              y = 580
-                              pages += 1
-
-                    elif counter > 88 and counter < 110:
-                         c.drawString(40, y, str(forsakringsgivare[0]))
-                         c.setFontSize(7)
-                         c.drawString(140, y, str(i[2]))
-                         c.drawString(174, y, " - ")
-                         c.drawString(180, y, str(i[3]))
-                         c.setFontSize(10)
-                         c.drawString(240, y, str(i[0]))
-                         if i[1] is not None:
-                              if len(i[1]) > 22:
-                                   c.drawString(285, y, str(i[1]))
-                              else:
-                                   c.drawString(300, y, str(i[1]))
-                         if i[5] is not None:
-                              if len(i[5]) > 10:
-                                   c.setFontSize(8)
-                                   c.drawString(430, y, str(i[5]))
-                                   c.setFontSize(10)
-                              else:
-                                   c.drawString(430, y, str(i[5]))
-                         c.drawString(530, y, str(i[4]))
-                         y-=25
-
-
-                    belopp += i[4]
-                    counter += 1
-               
-               else:
-
-                    if dCounter < 22: 
-                         d.drawString(40, dy, str(forsakringsgivare[0]))
-                         d.setFontSize(7)
-                         d.drawString(140, dy, str(i[2]))
-                         d.drawString(174, dy, " - ")
-                         d.drawString(180, dy, str(i[3]))
-                         d.setFontSize(10)
-                         d.drawString(240, dy, str(i[0]))
-                         if i[1] is not None:
-                              if len(i[1]) > 22:
-                                   d.drawString(285, dy, str(i[1]))
-                              else:
-                                   d.drawString(300, dy, str(i[1]))
-                         if i[5] is not None:
-                              if len(i[5]) > 10:
-                                   d.setFontSize(8)
-                                   d.drawString(430, dy, str(i[5]))
-                                   d.setFontSize(10)
-                              else:
-                                   d.drawString(430, dy, str(i[5]))
-                         d.drawString(530, dy, str(i[4]))
-                         dy-=25
-
-                    elif dCounter == 22:
-                         if dCounter != len(maskiner):
-                              d.showPage()
-                              d.setFontSize(10)
-                              d.drawString(490, 800, str(datetime.date(datetime.now())))
-                              d.drawString(40, 645, str(foretag[0]))
-                              if foretag[1] is not None:
-                                   d.drawString(247, 645, str(foretag[1]))
-                              if foretag[1] is not None:
-                                   d.drawString(348, 645, str(foretag[2]))
-                              d.drawString(510, 620, str(medlemsnummer))
-                              dy = 580
-                              dPages += 1
-
-                    elif dCounter > 22 and counter < 44:
-                         d.drawString(40, dy, str(forsakringsgivare[0]))
-                         d.setFontSize(7)
-                         d.drawString(140, dy, str(i[2]))
-                         d.drawString(174, dy, " - ")
-                         d.drawString(180, dy, str(i[3]))
-                         d.setFontSize(10)
-                         d.drawString(240, dy, str(i[0]))
-                         if i[1] is not None:
-                              if len(i[1]) > 22:
-                                   d.drawString(285, dy, str(i[1]))
-                              else:
-                                   d.drawString(300, dy, str(i[1]))
-                         if i[5] is not None:
-                              if len(i[5]) > 10:
-                                   d.setFontSize(8)
-                                   d.drawString(430, dy, str(i[5]))
-                                   d.setFontSize(10)
-                              else:
-                                   d.drawString(430, dy, str(i[5]))
-                         d.drawString(530, dy, str(i[4]))
-                         dy-=25
-
-                    dBelopp += i[4]
-                    dCounter += 1
-
-          if dCounter > 0:
-               
-               d.drawString(490, 800, str(datetime.date(datetime.now())))
-               d.setFontSize(12)
-               d.drawString(40, 645, str(foretag[0]))
-               if foretag[1] is not None:
-                    d.drawString(247, 645, str(foretag[1]))
-               if foretag[1] is not None:
-                    d.drawString(348, 645, str(foretag[2]))
-               d.drawString(510, 645, str(medlemsnummer))
-               
-               if counter + dCounter == len(maskiner):
-                    if dCounter == 22:
-                         dy-=2
-                    else:
-                         dy-=15
-                    d.setFontSize(11)
-                    d.drawString(460, dy, str("Total:"))
-                    d.drawString(500, dy, str(dBelopp))
-                    dy-=3
-                    d.drawString(459, dy, "_____________")
+               dPacket = io.BytesIO()
+               d = canvas.Canvas(dPacket, pagesize=letter)
                d.setFontSize(10)
 
-          if counter + dCounter == len(maskiner):
-               if counter == 22 or counter == 44 or counter == 66 or counter == 88 or counter == 110:
-                    y-=4
-               else:
-                    y-=15
-               c.setFontSize(11)
-               c.drawString(460, y, str("Total:"))
-               c.drawString(500, y, str(belopp))
-               y-=3
-               c.drawString(459, y, "_____________")
+               #Datum
+               c.drawString(490, 800, str(datetime.date(datetime.now())))
 
-          c.save()
-          d.save()
-          packet.seek(0)
-          dPacket.seek(0)
-          new_pdf = PdfFileReader(packet)
-          output = PdfFileWriter()
+               #Företag
+               c.setFontSize(12)
+               c.drawString(40, 645, str(foretag[0]))
+               if foretag[1] is not None:
+                    c.drawString(247, 645, str(foretag[1]))
+               if foretag[1] is not None:
+                    c.drawString(348, 645, str(foretag[2]))
+               c.drawString(510, 645, str(medlemsnummer))
+               c.setFontSize(10)
 
-          andradeBelopp_pdf = PdfFileReader(dPacket)
-          dOutput = PdfFileWriter()
+               #Maskiner
+               y=580
+               dy=580
+               counter = 0
+               dCounter = 0
+               belopp = 0
+               dBelopp = 0
+               pages = 1
+               dPages = 0
 
-          for x in range(pages):
-               existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
-               page = existing_pdf.getPage(0)
-               page.mergePage(new_pdf.getPage(x))
-               output.addPage(page)
-               outputStream = open("Kollektiv försäkring\Kollektivförsäkring - " + medlemsnummer + ".pdf", "wb")
-               output.write(outputStream)
-               outputStream.close()
+               for i in maskiner:
 
-          if dCounter > 0:
-               if dPages > 0:
-                    for x in range(dPages):
+                    if i[4] == arspremie[0]:
+
+                         if counter < 22: 
+                              c.drawString(40, y, str(forsakringsgivare[0]))
+                              c.setFontSize(7)
+                              c.drawString(140, y, str(i[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(i[3]))
+                              c.setFontSize(10)
+                              c.drawString(240, y, str(i[0]))
+                              if i[1] is not None:
+                                   if len(i[1]) > 22:
+                                        c.drawString(285, y, str(i[1]))
+                                   else:
+                                        c.drawString(300, y, str(i[1]))
+                              if i[5] is not None:
+                                   if len(i[5]) > 10:
+                                        c.setFontSize(8)
+                                        c.drawString(430, y, str(i[5]))
+                                        c.setFontSize(10)
+                                   else:
+                                        c.drawString(430, y, str(i[5]))
+                              c.drawString(530, y, str(i[4]))
+                              y-=25
+
+                         elif counter == 22:
+                              if counter != len(maskiner):
+                                   c.showPage()
+                                   c.setFontSize(10)
+                                   c.drawString(490, 800, str(datetime.date(datetime.now())))
+                                   c.setFontSize(12)
+                                   c.drawString(40, 645, str(foretag[0]))
+                                   if foretag[1] is not None:
+                                        c.drawString(247, 645, str(foretag[1]))
+                                   if foretag[1] is not None:
+                                        c.drawString(348, 645, str(foretag[2]))
+                                   c.drawString(510, 645, str(medlemsnummer))
+                                   c.setFontSize(10)
+                                   y = 580
+                                   pages += 1
+
+                         elif counter > 22 and counter < 44:
+                              c.drawString(40, y, str(forsakringsgivare[0]))
+                              c.setFontSize(7)
+                              c.drawString(140, y, str(i[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(i[3]))
+                              c.setFontSize(10)
+                              c.drawString(240, y, str(i[0]))
+                              if i[1] is not None:
+                                   if len(i[1]) > 22:
+                                        c.drawString(285, y, str(i[1]))
+                                   else:
+                                        c.drawString(300, y, str(i[1]))
+                              if i[5] is not None:
+                                   if len(i[5]) > 10:
+                                        c.setFontSize(8)
+                                        c.drawString(430, y, str(i[5]))
+                                        c.setFontSize(10)
+                                   else:
+                                        c.drawString(430, y, str(i[5]))
+                              c.drawString(530, y, str(i[4]))
+                              y-=25
+
+                         elif counter == 44:
+                              if counter != len(maskiner):
+                                   c.showPage()
+                                   c.setFontSize(10)
+                                   c.drawString(490, 800, str(datetime.date(datetime.now())))
+                                   c.setFontSize(12)
+                                   c.drawString(40, 645, str(foretag[0]))
+                                   if foretag[1] is not None:
+                                        c.drawString(247, 645, str(foretag[1]))
+                                   if foretag[1] is not None:
+                                        c.drawString(348, 645, str(foretag[2]))
+                                   c.drawString(510, 645, str(medlemsnummer))
+                                   c.setFontSize(10)
+                                   y = 580
+                                   pages += 1
+
+                         elif counter > 44 and counter < 66:
+                              c.drawString(40, y, str(forsakringsgivare[0]))
+                              c.setFontSize(7)
+                              c.drawString(140, y, str(i[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(i[3]))
+                              c.setFontSize(10)
+                              c.drawString(240, y, str(i[0]))
+                              if i[1] is not None:
+                                   if len(i[1]) > 22:
+                                        c.drawString(285, y, str(i[1]))
+                                   else:
+                                        c.drawString(300, y, str(i[1]))
+                              if i[5] is not None:
+                                   if len(i[5]) > 10:
+                                        c.setFontSize(8)
+                                        c.drawString(430, y, str(i[5]))
+                                        c.setFontSize(10)
+                                   else:
+                                        c.drawString(430, y, str(i[5]))
+                              c.drawString(530, y, str(i[4]))
+                              y-=25
+
+                         elif counter == 66:
+                              if counter != len(maskiner):
+                                   c.showPage()
+                                   c.setFontSize(10)
+                                   c.drawString(490, 800, str(datetime.date(datetime.now())))
+                                   c.setFontSize(12)
+                                   c.drawString(40, 645, str(foretag[0]))
+                                   if foretag[1] is not None:
+                                        c.drawString(247, 645, str(foretag[1]))
+                                   if foretag[1] is not None:
+                                        c.drawString(348, 645, str(foretag[2]))
+                                   c.drawString(510, 645, str(medlemsnummer))
+                                   c.setFontSize(10)
+                                   y = 580
+                                   pages += 1
+
+                         elif counter > 66 and counter < 88:
+                              c.drawString(40, y, str(forsakringsgivare[0]))
+                              c.setFontSize(7)
+                              c.drawString(140, y, str(i[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(i[3]))
+                              c.setFontSize(10)
+                              c.drawString(240, y, str(i[0]))
+                              if i[1] is not None:
+                                   if len(i[1]) > 22:
+                                        c.drawString(285, y, str(i[1]))
+                                   else:
+                                        c.drawString(300, y, str(i[1]))
+                              if i[5] is not None:
+                                   if len(i[5]) > 10:
+                                        c.setFontSize(8)
+                                        c.drawString(430, y, str(i[5]))
+                                        c.setFontSize(10)
+                                   else:
+                                        c.drawString(430, y, str(i[5]))
+                              c.drawString(530, y, str(i[4]))
+                              y-=25
+                              
+                         elif counter == 88:
+                              if counter != len(maskiner):
+                                   c.showPage()
+                                   c.setFontSize(10)
+                                   c.drawString(490, 800, str(datetime.date(datetime.now())))
+                                   c.setFontSize(12)
+                                   c.drawString(40, 645, str(foretag[0]))
+                                   if foretag[1] is not None:
+                                        c.drawString(247, 645, str(foretag[1]))
+                                   if foretag[1] is not None:
+                                        c.drawString(348, 645, str(foretag[2]))
+                                   c.drawString(510, 645, str(medlemsnummer))
+                                   c.setFontSize(10)
+                                   y = 580
+                                   pages += 1
+
+                         elif counter > 88 and counter < 110:
+                              c.drawString(40, y, str(forsakringsgivare[0]))
+                              c.setFontSize(7)
+                              c.drawString(140, y, str(i[2]))
+                              c.drawString(174, y, " - ")
+                              c.drawString(180, y, str(i[3]))
+                              c.setFontSize(10)
+                              c.drawString(240, y, str(i[0]))
+                              if i[1] is not None:
+                                   if len(i[1]) > 22:
+                                        c.drawString(285, y, str(i[1]))
+                                   else:
+                                        c.drawString(300, y, str(i[1]))
+                              if i[5] is not None:
+                                   if len(i[5]) > 10:
+                                        c.setFontSize(8)
+                                        c.drawString(430, y, str(i[5]))
+                                        c.setFontSize(10)
+                                   else:
+                                        c.drawString(430, y, str(i[5]))
+                              c.drawString(530, y, str(i[4]))
+                              y-=25
+
+
+                         belopp += i[4]
+                         counter += 1
+                    
+                    else:
+
+                         if dCounter < 22: 
+                              d.drawString(40, dy, str(forsakringsgivare[0]))
+                              d.setFontSize(7)
+                              d.drawString(140, dy, str(i[2]))
+                              d.drawString(174, dy, " - ")
+                              d.drawString(180, dy, str(i[3]))
+                              d.setFontSize(10)
+                              d.drawString(240, dy, str(i[0]))
+                              if i[1] is not None:
+                                   if len(i[1]) > 22:
+                                        d.drawString(285, dy, str(i[1]))
+                                   else:
+                                        d.drawString(300, dy, str(i[1]))
+                              if i[5] is not None:
+                                   if len(i[5]) > 10:
+                                        d.setFontSize(8)
+                                        d.drawString(430, dy, str(i[5]))
+                                        d.setFontSize(10)
+                                   else:
+                                        d.drawString(430, dy, str(i[5]))
+                              d.drawString(530, dy, str(i[4]))
+                              dy-=25
+
+                         elif dCounter == 22:
+                              if dCounter != len(maskiner):
+                                   d.showPage()
+                                   d.setFontSize(10)
+                                   d.drawString(490, 800, str(datetime.date(datetime.now())))
+                                   d.drawString(40, 645, str(foretag[0]))
+                                   if foretag[1] is not None:
+                                        d.drawString(247, 645, str(foretag[1]))
+                                   if foretag[1] is not None:
+                                        d.drawString(348, 645, str(foretag[2]))
+                                   d.drawString(510, 620, str(medlemsnummer))
+                                   dy = 580
+                                   dPages += 1
+
+                         elif dCounter > 22 and counter < 44:
+                              d.drawString(40, dy, str(forsakringsgivare[0]))
+                              d.setFontSize(7)
+                              d.drawString(140, dy, str(i[2]))
+                              d.drawString(174, dy, " - ")
+                              d.drawString(180, dy, str(i[3]))
+                              d.setFontSize(10)
+                              d.drawString(240, dy, str(i[0]))
+                              if i[1] is not None:
+                                   if len(i[1]) > 22:
+                                        d.drawString(285, dy, str(i[1]))
+                                   else:
+                                        d.drawString(300, dy, str(i[1]))
+                              if i[5] is not None:
+                                   if len(i[5]) > 10:
+                                        d.setFontSize(8)
+                                        d.drawString(430, dy, str(i[5]))
+                                        d.setFontSize(10)
+                                   else:
+                                        d.drawString(430, dy, str(i[5]))
+                              d.drawString(530, dy, str(i[4]))
+                              dy-=25
+
+                         dBelopp += i[4]
+                         dCounter += 1
+
+               if dCounter > 0:
+                    
+                    d.drawString(490, 800, str(datetime.date(datetime.now())))
+                    d.setFontSize(12)
+                    d.drawString(40, 645, str(foretag[0]))
+                    if foretag[1] is not None:
+                         d.drawString(247, 645, str(foretag[1]))
+                    if foretag[1] is not None:
+                         d.drawString(348, 645, str(foretag[2]))
+                    d.drawString(510, 645, str(medlemsnummer))
+                    
+                    if counter + dCounter == len(maskiner):
+                         if dCounter == 22:
+                              dy-=2
+                         else:
+                              dy-=15
+                         d.setFontSize(11)
+                         d.drawString(490, dy, str("Totalt:"))
+                         d.drawString(530, dy, str(dBelopp))
+                         dy-=3
+                         d.drawString(489, dy, "_____________")
+                    d.setFontSize(10)
+
+               if counter + dCounter == len(maskiner):
+                    if counter == 22 or counter == 44 or counter == 66 or counter == 88 or counter == 110:
+                         y-=4
+                    else:
+                         y-=15
+                    c.setFontSize(11)
+                    c.drawString(490, y, str("Totalt:"))
+                    c.drawString(530, y, str(belopp))
+                    y-=3
+                    c.drawString(489, y, "_____________")
+
+               c.save()
+               d.save()
+               packet.seek(0)
+               dPacket.seek(0)
+               new_pdf = PdfFileReader(packet)
+               output = PdfFileWriter()
+
+               andradeBelopp_pdf = PdfFileReader(dPacket)
+               dOutput = PdfFileWriter()
+
+               for x in range(pages):
+                    existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
+                    page = existing_pdf.getPage(0)
+                    page.mergePage(new_pdf.getPage(x))
+                    output.addPage(page)
+                    outputStream = open("Kollektiv försäkring\Kollektivförsäkring - " + medlemsnummer + ".pdf", "wb")
+                    output.write(outputStream)
+                    outputStream.close()
+
+               if dCounter > 0:
+                    if dPages > 0:
+                         for x in range(dPages):
+                              existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
+                              page = existing_pdf.getPage(0)
+                              page.mergePage(andradeBelopp_pdf.getPage(x))
+                              dOutput.addPage(page)
+                              outputStream = open("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
+                              dOutput.write(outputStream)
+                              outputStream.close()
+                    else:
                          existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
                          page = existing_pdf.getPage(0)
-                         page.mergePage(andradeBelopp_pdf.getPage(x))
+                         page.mergePage(andradeBelopp_pdf.getPage(0))
                          dOutput.addPage(page)
                          outputStream = open("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
                          dOutput.write(outputStream)
                          outputStream.close()
-               else:
-                    existing_pdf = PdfFileReader(open("PDFMallar/Kollektivförsäkring.pdf", "rb"))
-                    page = existing_pdf.getPage(0)
-                    page.mergePage(andradeBelopp_pdf.getPage(0))
-                    dOutput.addPage(page)
-                    outputStream = open("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf", "wb")
-                    dOutput.write(outputStream)
-                    outputStream.close()
-               os.startfile("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf")
+                    os.startfile("Kollektiv försäkring - ändrade belopp\Kollektivförsäkring - ändrade belopp -  " + medlemsnummer + ".pdf")
 
-          try:
-               os.startfile("Kollektiv försäkring\Kollektivförsäkring - " + medlemsnummer + ".pdf")
-          except:
-               pass
+               try:
+                    os.startfile("Kollektiv försäkring\Kollektivförsäkring - " + medlemsnummer + ".pdf")
+               except:
+                    pass
 #Funktion som skapar PDF-rapporten försäkring per delägare
-def forsakringPerDelagare():
+def allForsakradeMaskiner():
 
      cursor.execute("SELECT Medlemsnummer FROM tschakt.foretagsregister")
      medlemmar = cursor.fetchall()
@@ -1009,7 +1013,7 @@ def forsakringPerDelagare():
 
           counter = 0
           y=580
-
+          delagareBelopp = 0
 
           if len(maskiner) != 0:
                c.setFontSize(10)
@@ -1029,7 +1033,7 @@ def forsakringPerDelagare():
                     
                     if n[4] is not None:
                          belopp += int(n[4])
-
+                         delagareBelopp += int(n[4])
                     if counter < 22: 
                          c.drawString(40, y, str(forsakringsgivare[0]))
                          if n[2] is not None and n[3] is not None:
@@ -1245,6 +1249,12 @@ def forsakringPerDelagare():
                     counter+=1
                     totalCounter+=1
                     if counter == len(maskiner):
+                         c.setFontSize(11)
+                         y-=5
+                         c.drawString(490, y, str("Totalt:"))
+                         c.drawString(530, y, str(delagareBelopp))
+                         y-=3
+                         c.drawString(489, y, "_____________")
                          c.showPage()
 
                if totalCounter == len(totaltMaskiner):
@@ -1264,7 +1274,7 @@ def forsakringPerDelagare():
                          page = existing_pdf.getPage(0)
                          page.mergePage(new_pdf.getPage(x))
                          output.addPage(page)
-                         outputStream = open( "AllaFörsäkradeMaskiner.pdf", "wb")
+                         outputStream = open( "Alla försäkrade maskiner\Alla försäkrade maskiner.pdf", "wb")
                          output.write(outputStream)
                            
                          count+=1
@@ -1277,7 +1287,7 @@ def forsakringPerDelagare():
                               output.write(outputStream)
                               outputStream.close()
                
-     os.startfile("AllaFörsäkradeMaskiner.pdf")
+     os.startfile("Alla försäkrade maskiner\Alla försäkrade maskiner.pdf")
 #Funktion som skapar PDF-rapporten maskiner med ändrade belopp
 def maskinerMedAndradeBelopp():
      
@@ -1366,10 +1376,10 @@ def maskinerMedAndradeBelopp():
                page = existing_pdf.getPage(0)
                page.mergePage(new_pdf.getPage(x))
                output.addPage(page)
-               outputStream = open("Maskiner med ändrade årsbelopp.pdf", "wb")
+               outputStream = open("Maskiner med ändrade årsbelopp\Maskiner med ändrade årsbelopp.pdf", "wb")
                output.write(outputStream)
                outputStream.close()
-     os.startfile("Maskiner med ändrade årsbelopp.pdf")
+     os.startfile("Maskiner med ändrade årsbelopp\Maskiner med ändrade årsbelopp.pdf")
 #Fyller delägarfönstret med maskinens data
 def fyllMaskinInfo(self):
      global maskinnummer, medlemsnummer
@@ -4170,16 +4180,16 @@ validera = root.register(valideraSiffror)
 #Skapar de widgets vi har på Home-fliken
 
 BtnMaskinnehav = Button(home, text="Maskininnehav för vald delägare", command = lambda: maskininnehav(medlemsnummer))
-BtnMaskinnehav.grid(row=3, column = 5)
+BtnMaskinnehav.grid(row=3, column = 5, pady=(0,100))
 
-BtnForsakringFraga = Button(home, text="Försäkringar för vald delägare", command = lambda: forsakringPerDelagareFraga(medlemsnummer))
-BtnForsakringFraga.grid(row=3, column=5, pady=(100,0))
+BtnForsakringFraga = Button(home, text="Försäkringar för vald delägare", command = lambda: forsakringarForValdDelagare(medlemsnummer))
+BtnForsakringFraga.grid(row=3, column=5)
 
-BtnForsakringLista = Button(home, text="Alla försäkrade maskiner", command = lambda: forsakringPerDelagare())
+BtnForsakringLista = Button(home, text="Alla försäkrade maskiner", command = lambda: allForsakradeMaskiner())
 BtnForsakringLista.grid(row=3, column=5, pady=(200,0))
 
-BtnMaskinerAndradeBelopp = Button(home, text="Maskiner med\nändrade belopp", command = lambda: maskinerMedAndradeBelopp())
-BtnMaskinerAndradeBelopp.grid(row=3, column=5, pady=(0,100))
+BtnMaskinerAndradeBelopp = Button(home, text="Maskiner med\nändrade årsbelopp", command = lambda: maskinerMedAndradeBelopp())
+BtnMaskinerAndradeBelopp.grid(row=3, column=5, pady=(100,0))
 
 EntMedlemsnummer = Entry(home, width=5, validate="key", validatecommand=(validera, "%P")) 
 EntMedlemsnummer.grid(row=1, column=1, pady=(50,0), padx=(100,0), sticky=E)
@@ -4639,7 +4649,6 @@ btnBytmaskin.grid(column=5, row=0, sticky=E, pady=(20,2), padx=(10,0))
 
 btnTabortmaskin=Button(frameMaskininfoButtons, text="Ta bort maskin", command  = lambda: taBortMaskin(entMaskinnummermaskininfo.get()))
 btnTabortmaskin.grid(column=6, row=0, sticky=E, pady=(20,2), padx=(10,10))
-
 
 
 #Förare-flik
