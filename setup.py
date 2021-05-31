@@ -1,7 +1,7 @@
 import sys
 from cx_Freeze import setup, Executable
 
-build_exe_options = {"packages": ["os", "pynput", "tkinter"]}
+build_exe_options = {"packages": ["os", "tkinter"]}
 
 base = None
 

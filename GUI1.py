@@ -2053,7 +2053,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
      elif Typ =="Byt" and len (entrymaskinnummer) ==0:
           messagebox.showerror(title="Ej valt maskin.", message="Du måste välja en maskin för att kunna byta.")
      elif len(Typ)==0 and len(entrymaskinnummer) == 0:
-          messagebox.showerror(title="Ej valt maskin", message ="Du måste välja en maskin för att kunna ändra den.")
+          messagebox.showerror(title="Ej valt maskin.", message ="Du måste välja en maskin för att kunna ändra den.")
 
      else:
           global filePath, tagitBortBild
@@ -2075,8 +2075,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
           
                #Bestämmer vilka funktioner som borde köras baserat på om man vill ändra/byta/lägga till                 
           def sparaMaskin(Typ):
-               global maskinnummer, tagitBortBild
-
+               global maskinnummer, tagitBortBild, filePath, imgNyBild
+               
+               
                if Typ=="Byt":
                     response = messagebox.askyesno("Varning!", "Vill du byta maskin med maskinnummer " + str(maskinnummer) + "? \nTidigare data sparas som historik.")
                     nyMaskin.lift()
@@ -2090,6 +2091,10 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               fyllMaskinInfo("empty")
                               nyMaskin.destroy()
                               hamtaForareMaskin()
+                              filePath = None
+                              imgNyBild = None
+                              hamtaDelagarensMaskiner()
+                              hamtaMaskinerFranEntry()
                          except Exception:
                               db.rollback()
                               traceback.print_exc()
@@ -2104,6 +2109,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          hamtaDelagarensMaskiner()                                  
                          nyMaskin.destroy()
                          hamtaForareMaskin()
+                         filePath = None
+                         imgNyBild = None
+                         hamtaMaskinerFranEntry()
                     except Exception:
                          db.rollback()
                          nyMaskin.lift()
@@ -2127,6 +2135,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          nyMaskin.destroy()
                          tagitBortBild = False
                          hamtaForareMaskin()
+                         filePath = None
+                         imgNyBild = None
+                         hamtaMaskinerFranEntry()
                     except Exception:
                          db.rollback()
                          traceback.print_exc()
@@ -2153,6 +2164,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                varArsbelopp = entMaskinarsbelopp.get()
                varMotoreffekt = entMaskinmotoreffekt.get()
                varArsModell = entMaskinarsmodell.get()
+               varBatteriAntal = entMaskinBatteriantal.get()
                if len(entMaskinme_klass.get()) == 0:
                     varMeKlass = None
                if len(entMaskinarsbelopp.get()) == 0:
@@ -2161,6 +2173,8 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     varMotoreffekt = None
                if len(entMaskinarsmodell.get())== 0:
                     varArsModell = None
+               if len(entMaskinBatteriantal.get()) == 0:
+                    varBatteriAntal = None
 
                maskinnummerFinns = False
                valtMaskinNummer = entNyMaskinnummermaskininfo.get()
@@ -2180,9 +2194,9 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                          try:
                               maskinnummer = valtMaskinNummer
                               if len(deMaskinperiod1.get()) == 0 or len(deMaskinperiod2.get()) == 0:
-                                   cursor.execute("INSERT INTO tschakt.maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinBatteriantal.get(), TxtOvrigtext.get('1.0','end')))
+                                   cursor.execute("INSERT INTO tschakt.maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), varBatteriAntal, TxtOvrigtext.get('1.0','end')))
                               else:
-                                   cursor.execute("INSERT INTO tschakt.maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), entMaskinBatteriantal.get(), TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
+                                   cursor.execute("INSERT INTO tschakt.maskinregister (Maskinnummer, MarkeModell, ME_Klass, Forsakring, Medlemsnummer, Arsbelopp, Arsmodell, Period_start, Motorfabrikat, Motortyp, Motoreffekt, Vattenbaseradlack, Motorvarmare, Kylmedia, Katalysator, Partikelfilter, Motorolja, Motorvolymolja, Vaxelladsolja, Vaxelladavolym, Hydraulolja, Hydraulvolym, Saneringsvatska, Bransle, Smorjfett, Dackfabrikat, Registreringsnummer, Maskintyp, Maskininsats, Bullernivaute, Miljostatus, Bullernivainne, Kylvatskavolym, Kylvatska, Dimension, Regummerbar, Regummerad, Gasol, Batterityp, Batteriantal, Ovrig_text, Period_slut) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, varCbKollektivForsakring, medlemsnummer, varArsbelopp, varArsModell, deMaskinperiod1.get_date().strftime('%Y-%m-%d'), entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), varMotoreffekt, varCbVattenbaseradlack, varCbMotorvarmare, entMaskinkylmedia.get(), varCbKatalysator, varCbPartikelfilter, entMaskinmotor.get(), entMaskinmotoroljevolym.get(), entMaskinvaxellada.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystem.get(), entMaskinhydraulsystemvolym.get(), varCbSaneringsvatska, entMaskinbransle.get(), entMaskinsmorjfett.get(), entMaskindackfabrikat.get(), entMaskinregistreringsnummer.get(), entMaskintyp.get(), varCbMaskininsatserlagd, entMaskinbullernivautv.get(), entMaskinmiljostatus.get(), entMaskinbullernivainv.get(), entMaskinkylvatskavolym.get(), entMaskinkylvatska.get(), entMaskindimension.get(), varCbRegummerbara, varCbRegummerade, varCbGasolanlaggning, entMaskinBatterityp.get(), varBatteriAntal, TxtOvrigtext.get('1.0','end'), deMaskinperiod2.get_date().strftime('%Y-%m-%d')))
                          except Exception:
                               raise ValueError("Insert 2 error")                            
                          cursor.execute("SELECT maskinID FROM tschakt.maskinregister WHERE maskinnummer = ?", (str(maskinnummer)))
@@ -2276,6 +2290,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                varArsbelopp = entMaskinarsbelopp.get()
                varMotoreffekt = entMaskinmotoreffekt.get()
                varArsModell = entMaskinarsmodell.get()
+               varBatteriAntal = entMaskinBatteriantal.get()
                if len(entMaskinme_klass.get()) == 0:
                     varMeKlass = None
                if len(entMaskinarsbelopp.get()) == 0:
@@ -2284,9 +2299,18 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     varMotoreffekt = None
                if len(entMaskinarsmodell.get())== 0:
                     varArsModell = None
+               if len(entMaskinBatteriantal.get()) == 0:
+                    varBatteriAntal = None
 
-               if cbMaskinnummer.instate(['selected']) == True:
+               andraMaskin = False
 
+               try:                    
+                    if cbMaskinnummer.instate(['selected']) == True:
+                         andraMaskin = True
+               except:
+                    pass
+                    
+               if andraMaskin == True:
                     maskinnummerFinns = False
                     valtMaskinNummer = entNyMaskinnummermaskininfo.get()
                     cursor.execute('SELECT Maskinnummer FROM tschakt.maskinregister')
@@ -2300,7 +2324,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                               pass
                     #Kollar om maskinnummret existerar sedan innan.
                     if maskinnummerFinns == False:
-                         cursor.execute("UPDATE tschakt.maskinregister SET Maskinnummer = ?, MarkeModell= ?, ME_Klass= ?, Motorfabrikat= ?, Motortyp= ?, Motorolja= ?, Vaxelladsolja= ?, Hydraulolja= ?, Kylvatska= ?, Motoreffekt= ?, Kylmedia= ?, Bullernivaute= ?, Bullernivainne= ?, Smorjfett= ?, Batterityp= ?, Arsbelopp= ?, Miljostatus= ?, Arsmodell= ?, Registreringsnummer= ?, Maskintyp= ?, Motorvolymolja= ?, Vaxelladavolym= ?, Hydraulvolym= ?, Kylvatskavolym= ?, Ovrig_text= ?, Bransle= ?, Dackfabrikat= ?, Dimension= ?, Batteriantal= ? WHERE Maskinnummer = ?", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), entMaskinBatteriantal.get(), Typ)) 
+                         cursor.execute("UPDATE tschakt.maskinregister SET Maskinnummer = ?, MarkeModell= ?, ME_Klass= ?, Motorfabrikat= ?, Motortyp= ?, Motorolja= ?, Vaxelladsolja= ?, Hydraulolja= ?, Kylvatska= ?, Motoreffekt= ?, Kylmedia= ?, Bullernivaute= ?, Bullernivainne= ?, Smorjfett= ?, Batterityp= ?, Arsbelopp= ?, Miljostatus= ?, Arsmodell= ?, Registreringsnummer= ?, Maskintyp= ?, Motorvolymolja= ?, Vaxelladavolym= ?, Hydraulvolym= ?, Kylvatskavolym= ?, Ovrig_text= ?, Bransle= ?, Dackfabrikat= ?, Dimension= ?, Batteriantal= ? WHERE Maskinnummer = ?", (entNyMaskinnummermaskininfo.get(), entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), varBatteriAntal, Typ)) 
                          if len(deMaskinperiod1.get()) != 0 or len(deMaskinperiod2.get()) != 0:
                               cursor.execute("UPDATE tschakt.maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
                               cursor.execute("UPDATE tschakt.maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
@@ -2341,7 +2365,7 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     
                else:
 
-                    cursor.execute("UPDATE tschakt.maskinregister SET MarkeModell= ?, ME_Klass= ?, Motorfabrikat= ?, Motortyp= ?, Motorolja= ?, Vaxelladsolja= ?, Hydraulolja= ?, Kylvatska= ?, Motoreffekt= ?, Kylmedia= ?, Bullernivaute= ?, Bullernivainne= ?, Smorjfett= ?, Batterityp= ?, Arsbelopp= ?, Miljostatus= ?, Arsmodell= ?, Registreringsnummer= ?, Maskintyp= ?, Motorvolymolja= ?, Vaxelladavolym= ?, Hydraulvolym= ?, Kylvatskavolym= ?, Ovrig_text= ?, Bransle= ?, Dackfabrikat= ?, Dimension= ?, Batteriantal= ? WHERE Maskinnummer = ?", (entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), entMaskinBatteriantal.get(), Typ)) 
+                    cursor.execute("UPDATE tschakt.maskinregister SET MarkeModell= ?, ME_Klass= ?, Motorfabrikat= ?, Motortyp= ?, Motorolja= ?, Vaxelladsolja= ?, Hydraulolja= ?, Kylvatska= ?, Motoreffekt= ?, Kylmedia= ?, Bullernivaute= ?, Bullernivainne= ?, Smorjfett= ?, Batterityp= ?, Arsbelopp= ?, Miljostatus= ?, Arsmodell= ?, Registreringsnummer= ?, Maskintyp= ?, Motorvolymolja= ?, Vaxelladavolym= ?, Hydraulvolym= ?, Kylvatskavolym= ?, Ovrig_text= ?, Bransle= ?, Dackfabrikat= ?, Dimension= ?, Batteriantal= ? WHERE Maskinnummer = ?", (entMaskinbeteckning.get(), varMeKlass, entMaskinmotorfabrikat.get(), entMaskinmotortyp.get(), entMaskinmotor.get(), entMaskinvaxellada.get(), entMaskinhydraulsystem.get(), entMaskinkylvatska.get(), varMotoreffekt, entMaskinkylmedia.get(), entMaskinbullernivautv.get(), entMaskinbullernivainv.get(), entMaskinsmorjfett.get(), entMaskinBatterityp.get(), varArsbelopp, entMaskinmiljostatus.get(), varArsModell, entMaskinregistreringsnummer.get(), entMaskintyp.get(), entMaskinmotoroljevolym.get(), entMaskinvaxelladevolym.get(), entMaskinhydraulsystemvolym.get(), entMaskinkylvatskavolym.get(), TxtOvrigtext.get('1.0','end'), entMaskinbransle.get(), entMaskindackfabrikat.get(), entMaskindimension.get(), varBatteriAntal, Typ)) 
                     if len(deMaskinperiod1.get()) != 0 or len(deMaskinperiod2.get()) != 0:
                          cursor.execute("UPDATE tschakt.maskinregister SET Period_start = '" + deMaskinperiod1.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")              
                          cursor.execute("UPDATE tschakt.maskinregister SET Period_slut = '" + deMaskinperiod2.get_date().strftime('%Y-%m-%d') + "' WHERE Maskinnummer = " + Typ +";")
@@ -2376,7 +2400,14 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                                    cursor.execute("update tschakt.bilder set sokvag = 'Bilder/"+str(maskinnummer)+""+filePath+"' where maskinID = '"+str(maskinID[0])+"'")
                          except Exception:
                               traceback.print_exc()
-
+                    else:
+                         cursor.execute("SELECT maskinID FROM tschakt.maskinregister WHERE maskinnummer = ?",(str(maskinnummer)))
+                         maskinID = cursor.fetchone()
+                         cursor.execute("select sokvag from tschakt.bilder where maskinID ="+str(maskinID[0])+";")
+                         listaAvBilder = cursor.fetchall() 
+                         cursor.execute("DELETE FROM tschakt.Bilder WHERE MaskinID = ?",(maskinID))
+                         taBortBilder(listaAvBilder)
+                         
           nyMaskin = Toplevel(root)
 
           #Bestämmer titel baserat på vilken knapp man tryckte på.
@@ -2958,6 +2989,13 @@ def nyMaskinFonster(Typ, entrymaskinnummer, entrymedlemsnummer):
                     entMaskinmiljostatus.config(state=NORMAL)
                     entMaskinmiljostatus.delete(0, 'end')
                     entMaskinmiljostatus.insert(0, maskinInfo[30])
+               except:
+                    pass
+
+               try:
+                    entMaskinBatteriantal.config(state=NORMAL)
+                    entMaskinBatteriantal.delete(0, 'end')
+                    entMaskinBatteriantal.insert(0, maskinInfo[39])
                except:
                     pass
 
